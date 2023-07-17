@@ -21,9 +21,8 @@
 class CodeRefactorMatcher
     : public clang::ast_matchers::MatchFinder::MatchCallback {
 public:
-  explicit CodeRefactorMatcher(clang::Rewriter &RewriterForCodeRefactor,
-                               std::string NewName)
-      : CodeRefactorRewriter(RewriterForCodeRefactor), NewName(NewName) {}
+  explicit CodeRefactorMatcher(clang::Rewriter &RewriterForCodeRefactor )
+      : CodeRefactorRewriter(RewriterForCodeRefactor)  {}
   void onEndOfTranslationUnit() override;
 
   void run(const clang::ast_matchers::MatchFinder::MatchResult &) override;
@@ -34,7 +33,7 @@ private:
   // NOTE: This matcher already knows *what* to replace (which method in which
   // class/struct), because it _matched_ a member expression that corresponds to
   // the command line arguments.
-  std::string NewName;
+  std::string NewName="walk";
 };
 
 //-----------------------------------------------------------------------------
@@ -42,8 +41,7 @@ private:
 //-----------------------------------------------------------------------------
 class CodeRefactorASTConsumer : public clang::ASTConsumer {
 public:
-  CodeRefactorASTConsumer(clang::Rewriter &R, std::string ClassName,
-                          std::string OldName, std::string NewName);
+  CodeRefactorASTConsumer(clang::Rewriter &R );
   void HandleTranslationUnit(clang::ASTContext &Ctx) override {
     Finder.matchAST(Ctx);
   }
@@ -53,11 +51,12 @@ private:
   CodeRefactorMatcher CodeRefactorHandler;
   // The name of the class to match. Use base class name to rename in all
   // derived classes.
-  std::string ClassName;
+//  ClassName="Base";OldName="run";NewName="walk";
+  std::string ClassName="Base";
   // The name of the member method to match
-  std::string OldName;
+  std::string OldName="run";;
   // The new name of the member method
-  std::string NewName;
+  std::string NewName="walk";
 };
 
 #endif

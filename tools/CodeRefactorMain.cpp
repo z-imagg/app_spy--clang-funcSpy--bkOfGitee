@@ -29,17 +29,6 @@ using namespace clang;
 //===----------------------------------------------------------------------===//
 static cl::OptionCategory CodeRefactorCategory("ct-code-refactor options");
 
-static cl::opt<std::string> ClassNameOpt{
-    "class-name",
-    cl::desc("The name of the class/struct that the method to be renamed "
-             "belongs to"),
-    cl::Required, cl::init(""), cl::cat(CodeRefactorCategory)};
-static cl::opt<std::string> OldNameOpt{
-    "old-name", cl::desc("The current name of the method to be renamed"),
-    cl::Required, cl::init(""), cl::cat(CodeRefactorCategory)};
-static cl::opt<std::string> NewNameOpt{
-    "new-name", cl::desc("The new name of the method to be renamed"),
-    cl::Required, cl::init(""), cl::cat(CodeRefactorCategory)};
 
 //===----------------------------------------------------------------------===//
 // PluginASTAction
@@ -61,11 +50,11 @@ public:
   // }
 
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
-                                                 StringRef file) override {
+                                                 StringRef file) override {//file:"/pubx/clang_plugin_demo/clang-tutor/test/CodeRefactor_Class.cpp"
     RewriterForCodeRefactor.setSourceMgr(CI.getSourceManager(),
                                          CI.getLangOpts());
     return std::make_unique<CodeRefactorASTConsumer>(
-        RewriterForCodeRefactor, ClassNameOpt, OldNameOpt, NewNameOpt);
+        RewriterForCodeRefactor );
   }
 
 private:

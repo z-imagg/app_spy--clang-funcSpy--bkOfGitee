@@ -65,13 +65,8 @@ void CodeRefactorMatcher::onEndOfTranslationUnit() {
       .write(llvm::outs());
 }
 
-CodeRefactorASTConsumer::CodeRefactorASTConsumer(Rewriter &R,
-                                                 std::string ClassName,
-                                                 std::string OldName,
-                                                 std::string NewName)
-    : CodeRefactorHandler(R, NewName), ClassName(ClassName), OldName(OldName),
-      NewName(NewName) {
-
+CodeRefactorASTConsumer::CodeRefactorASTConsumer(Rewriter &R )
+    : CodeRefactorHandler(R)  {
   const auto MatcherForMemberAccess = cxxMemberCallExpr(
       callee(memberExpr(member(hasName(OldName))).bind("MemberAccess")),
       thisPointerType(cxxRecordDecl(isSameOrDerivedFrom(hasName(ClassName)))));
@@ -154,7 +149,7 @@ public:
     RewriterForCodeRefactor.setSourceMgr(CI.getSourceManager(),
                                          CI.getLangOpts());
     return std::make_unique<CodeRefactorASTConsumer>(
-        RewriterForCodeRefactor, ClassName, OldName, NewName);
+        RewriterForCodeRefactor);
   }
 
 private:
