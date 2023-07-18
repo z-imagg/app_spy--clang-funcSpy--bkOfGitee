@@ -1,26 +1,3 @@
-//==============================================================================
-// FILE:
-//    CodeRefactor.cpp
-//
-// DESCRIPTION: CodeRefactor will rename a specified member method in a class
-// (or a struct) and in all classes derived from it. It will also update all
-// call sites in which the method is used so that the code remains semantically
-// correct. For example we can use CodeRefactor to rename Base::foo as
-// Base::bar.
-//
-// USAGE:
-//    1. As a loadable Clang plugin:
-//      clang -cc1 -load <BUILD_DIR>/lib/libCodeRefactor.dylib  -plugin  '\'
-//      CodeRefactor -plugin-arg-CodeRefactor -class-name '\'
-//      -plugin-arg-CodeRefactor Base  -plugin-arg-CodeRefactor -old-name '\'
-//      -plugin-arg-CodeRefactor run  -plugin-arg-CodeRefactor -new-name '\'
-//      -plugin-arg-CodeRefactor walk test/CodeRefactor_Class.cpp
-//    2. As a standalone tool:
-//       <BUILD_DIR>/bin/ct-code-refactor --class-name=Base --new-name=walk '\'
-//        --old-name=run test/CodeRefactor_Class.cpp
-//
-// License: The Unlicense
-//==============================================================================
 #include "CodeRefactor.h"
 
 #include "clang/AST/Expr.h"
@@ -36,16 +13,13 @@
 using namespace clang;
 using namespace ast_matchers;
 
-//-----------------------------------------------------------------------------
-// CodeRefactorMatcher - implementation
-//-----------------------------------------------------------------------------
-void CodeRefactorMatcher::run(const MatchFinder::MatchResult &Result) {
+void CrMatcher::run(const MatchFinder::MatchResult &Result) {
   const MemberExpr *MemberAccess =
       Result.Nodes.getNodeAs<clang::MemberExpr>("MemberAccess");
 
   if (MemberAccess) {
     SourceRange CallExprSrcRange = MemberAccess->getMemberLoc();
-    CodeRefactorRewriter.ReplaceText(CallExprSrcRange, NewName);
+    mRewriter.ReplaceText(CallExprSrcRange, mNewName);
   }
 
   const NamedDecl *MemberDecl =
@@ -53,31 +27,31 @@ void CodeRefactorMatcher::run(const MatchFinder::MatchResult &Result) {
 
   if (MemberDecl) {
     SourceRange MemberDeclSrcRange = MemberDecl->getLocation();
-    CodeRefactorRewriter.ReplaceText(
-        CharSourceRange::getTokenRange(MemberDeclSrcRange), NewName);
+    mRewriter.ReplaceText(
+            CharSourceRange::getTokenRange(MemberDeclSrcRange), mNewName);
   }
 }
 
-void CodeRefactorMatcher::onEndOfTranslationUnit() {
+void CrMatcher::onEndOfTranslationUnit() {
   // Output to stdout
-  CodeRefactorRewriter
-      .getEditBuffer(CodeRefactorRewriter.getSourceMgr().getMainFileID())
+  mRewriter
+      .getEditBuffer(mRewriter.getSourceMgr().getMainFileID())
       .write(llvm::outs());
 }
 
-CodeRefactorASTConsumer::CodeRefactorASTConsumer(Rewriter &R )
-    : CodeRefactorHandler(R)  {
+CrASTConsumer::CrASTConsumer(Rewriter &rewriter )
+    : mCrMatcher(rewriter)  {
   const auto MatcherForMemberAccess = cxxMemberCallExpr(
-      callee(memberExpr(member(hasName(OldName))).bind("MemberAccess")),
-      thisPointerType(cxxRecordDecl(isSameOrDerivedFrom(hasName(ClassName)))));
+      callee(memberExpr(member(hasName(mOldName))).bind("MemberAccess")),
+      thisPointerType(cxxRecordDecl(isSameOrDerivedFrom(hasName(mClassName)))));
 
-  Finder.addMatcher(MatcherForMemberAccess, &CodeRefactorHandler);
+  mMatchFinder.addMatcher(MatcherForMemberAccess, &mCrMatcher);
 
   const auto MatcherForMemberDecl = cxxRecordDecl(
-      allOf(isSameOrDerivedFrom(hasName(ClassName)),
-            hasMethod(decl(namedDecl(hasName(OldName))).bind("MemberDecl"))));
+      allOf(isSameOrDerivedFrom(hasName(mClassName)),
+            hasMethod(decl(namedDecl(hasName(mOldName))).bind("MemberDecl"))));
 
-  Finder.addMatcher(MatcherForMemberDecl, &CodeRefactorHandler);
+  mMatchFinder.addMatcher(MatcherForMemberDecl, &mCrMatcher);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,7 +122,7 @@ public:
                                                  StringRef file) override {
     RewriterForCodeRefactor.setSourceMgr(CI.getSourceManager(),
                                          CI.getLangOpts());
-    return std::make_unique<CodeRefactorASTConsumer>(
+    return std::make_unique<CrASTConsumer>(
         RewriterForCodeRefactor);
   }
 

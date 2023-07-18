@@ -53,7 +53,7 @@ public:
                                                  StringRef file) override {//file:"/pubx/clang_plugin_demo/clang-tutor/test/CodeRefactor_Class.cpp"
     RewriterForCodeRefactor.setSourceMgr(CI.getSourceManager(),
                                          CI.getLangOpts());
-    return std::make_unique<CodeRefactorASTConsumer>(
+    return std::make_unique<CrASTConsumer>(
         RewriterForCodeRefactor );
   }
 

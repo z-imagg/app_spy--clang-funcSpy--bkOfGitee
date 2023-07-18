@@ -3,7 +3,7 @@
 // RUN: -plugin-arg-CodeRefactor -new-name -plugin-arg-CodeRefactor walk %s 2>&1 | FileCheck %s --match-full-lines
 // RUN:  ../bin/ct-code-refactor --class-name=Base --new-name=walk --old-name=run %s -- | FileCheck %s --match-full-lines
 
-//   `run`  -->  `walk` 
+//   `run`  -->  `walk`
 
 
 class Base {
