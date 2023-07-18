@@ -1,4 +1,4 @@
-#include "CodeStyleChecker.h"
+#include "CodeStyleChecker/CscASTConsumer.h"
 
 #include "clang/AST/AST.h"
 #include "clang/AST/RecursiveASTVisitor.h"

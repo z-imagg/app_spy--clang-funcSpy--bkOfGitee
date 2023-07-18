@@ -1,4 +1,4 @@
-#include "CodeStyleChecker.h"
+#include "CodeStyleChecker/CscASTConsumer.h"
 
 void CscASTConsumer::HandleTranslationUnit(clang::ASTContext &Ctx) {
   if (!MainTUOnly)

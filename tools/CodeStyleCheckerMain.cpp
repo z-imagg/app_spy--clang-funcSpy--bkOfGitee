@@ -1,4 +1,5 @@
-#include "CodeStyleChecker.h"
+
+#include "CodeStyleChecker/CscASTConsumer.h"
 
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendPluginRegistry.h"
