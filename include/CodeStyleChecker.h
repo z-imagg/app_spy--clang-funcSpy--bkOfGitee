@@ -1,12 +1,3 @@
-//==============================================================================
-// FILE:
-//    CodeStyleChecker.h
-//
-// DESCRIPTION:
-//    Declares the CodeStyleChecker visitor
-//
-// License: The Unlicense
-//==============================================================================
 #ifndef CLANG_TUTOR_CSC_H
 #define CLANG_TUTOR_CSC_H
 
@@ -14,9 +5,6 @@
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Basic/SourceManager.h"
 
-//-----------------------------------------------------------------------------
-// RecursiveASTVisitor
-//-----------------------------------------------------------------------------
 class CodeStyleCheckerVisitor
     : public clang::RecursiveASTVisitor<CodeStyleCheckerVisitor> {
 public:
@@ -40,9 +28,6 @@ private:
   void checkNameStartsWithUpperCase(clang::NamedDecl *Decl);
 };
 
-//-----------------------------------------------------------------------------
-// ASTConsumer
-//-----------------------------------------------------------------------------
 class CodeStyleCheckerASTConsumer : public clang::ASTConsumer {
 public:
   explicit CodeStyleCheckerASTConsumer(clang::ASTContext *Context,
