@@ -16,6 +16,9 @@ static cl::opt<bool> MainTuOnly{
              "(e.g. ignore included header files)"),
     cl::init(true), cl::cat(CSCCategory)};
 
+/**
+ * Main的Act类为何不复用.so的Act类?  本类 CSCPluginAction 与 类 CSCASTAction 是 重复的吗？
+ */
 class CSCPluginAction : public PluginASTAction {
 public:
   bool ParseArgs(const CompilerInstance &CI,

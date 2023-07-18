@@ -11,7 +11,9 @@ using namespace clang;
 
 static cl::OptionCategory CodeRefactorCategory("ct-code-refactor options");
 
-
+/**
+ * Main的Act类为何不复用.so的Act类?   本类 CrPluginAction  与 类 CrAddPluginAction 是重复的吗？
+ */
 class CrPluginAction : public PluginASTAction {
 public:
   explicit CrPluginAction(){};
