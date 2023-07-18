@@ -14,21 +14,21 @@ using namespace clang;
 using namespace ast_matchers;
 
 void CrMatcher::run(const MatchFinder::MatchResult &matchResult) {
-  const MemberExpr *MemberAccess =
+  const MemberExpr *memberAccess =
       matchResult.Nodes.getNodeAs<clang::MemberExpr>("MemberAccess");
 
-  if (MemberAccess) {
-    SourceRange CallExprSrcRange = MemberAccess->getMemberLoc();
-    mRewriter.ReplaceText(CallExprSrcRange, mNewName);
+  if (memberAccess) {
+    SourceRange callExprSrcRange = memberAccess->getMemberLoc();
+    mRewriter.ReplaceText(callExprSrcRange, mNewName);
   }
 
-  const NamedDecl *MemberDecl =
+  const NamedDecl *memberDecl =
       matchResult.Nodes.getNodeAs<clang::NamedDecl>("MemberDecl");
 
-  if (MemberDecl) {
-    SourceRange MemberDeclSrcRange = MemberDecl->getLocation();
+  if (memberDecl) {
+    SourceRange memberDeclSrcRange = memberDecl->getLocation();
     mRewriter.ReplaceText(
-            CharSourceRange::getTokenRange(MemberDeclSrcRange), mNewName);
+            CharSourceRange::getTokenRange(memberDeclSrcRange), mNewName);
   }
 }
 
