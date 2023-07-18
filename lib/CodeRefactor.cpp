@@ -41,15 +41,19 @@ void CrMatcher::onEndOfTranslationUnit() {
 
 CrASTConsumer::CrASTConsumer(Rewriter &rewriter )
     : mCrMatcher(rewriter)  {
+  const auto _thisPointerType=thisPointerType(cxxRecordDecl(isSameOrDerivedFrom(hasName(mClassName))));
+  const auto _memberExpr=memberExpr(member(hasName(mOldName))).bind("MemberAccess");
   const auto MatcherForMemberAccess = cxxMemberCallExpr(
-      callee(memberExpr(member(hasName(mOldName))).bind("MemberAccess")),
-      thisPointerType(cxxRecordDecl(isSameOrDerivedFrom(hasName(mClassName)))));
+          callee(_memberExpr),
+          _thisPointerType);
 
   mMatchFinder.addMatcher(MatcherForMemberAccess, &mCrMatcher);
 
+  const auto _isSameOrDerivedFrom=isSameOrDerivedFrom(hasName(mClassName));
+  const auto _decl=decl(namedDecl(hasName(mOldName))).bind("MemberDecl");
   const auto MatcherForMemberDecl = cxxRecordDecl(
-      allOf(isSameOrDerivedFrom(hasName(mClassName)),
-            hasMethod(decl(namedDecl(hasName(mOldName))).bind("MemberDecl"))));
+          allOf(_isSameOrDerivedFrom,
+                hasMethod(_decl)));
 
   mMatchFinder.addMatcher(MatcherForMemberDecl, &mCrMatcher);
 }
