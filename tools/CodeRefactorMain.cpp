@@ -1,4 +1,4 @@
-#include "CodeRefactor.h"
+#include "CodeRefactor/CrASTConsumer.h"
 
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendPluginRegistry.h"
