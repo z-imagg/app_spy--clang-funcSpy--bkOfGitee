@@ -13,7 +13,7 @@ set(ct-code-refactor_SOURCES
  "${CMAKE_CURRENT_SOURCE_DIR}/CodeRefactorMain.cpp"
  "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeRefactor/CrMatcher.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeRefactor/CrASTConsumer.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeRefactor/CodeRefactorAddPluginAction.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeRefactor/CrAddPluginAction.cpp"
 )
 
 set(ct-code-style-checker_SOURCES

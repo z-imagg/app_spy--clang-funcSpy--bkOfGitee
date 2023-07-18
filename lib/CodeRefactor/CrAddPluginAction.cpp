@@ -18,7 +18,7 @@ using namespace ast_matchers;
 //-----------------------------------------------------------------------------
 // FrontendAction
 //-----------------------------------------------------------------------------
-class CodeRefactorAddPluginAction : public PluginASTAction {
+class CrAddPluginAction : public PluginASTAction {
 public:
     bool ParseArgs(const CompilerInstance &CI,
                    const std::vector<std::string> &Args) override {
@@ -45,6 +45,6 @@ private:
 //-----------------------------------------------------------------------------
 // Registration
 //-----------------------------------------------------------------------------
-static FrontendPluginRegistry::Add<CodeRefactorAddPluginAction>
+static FrontendPluginRegistry::Add<CrAddPluginAction>
         X(/*Name=*/"CodeRefactor",
         /*Desc=*/"Change the name of a class method");
