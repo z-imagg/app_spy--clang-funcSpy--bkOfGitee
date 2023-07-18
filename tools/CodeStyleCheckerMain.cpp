@@ -17,7 +17,7 @@ static cl::opt<bool> MainTuOnly{
     cl::init(true), cl::cat(CSCCategory)};
 
 /**
- * Main的Act类为何不复用.so的Act类?  本类 CSCPluginAction 与 类 CSCASTAction 是 重复的吗？
+ * Main的Act类为何不复用.so的Act类?  本类 CSCPluginAction 与 类 CscASTAction 是 重复的吗？
  */
 class CSCPluginAction : public PluginASTAction {
 public:
@@ -28,7 +28,7 @@ public:
 
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef file) override {
-    return std::make_unique<CodeStyleCheckerASTConsumer>(
+    return std::make_unique<CscASTConsumer>(
         &CI.getASTContext(), MainTuOnly, CI.getSourceManager());
   }
 };

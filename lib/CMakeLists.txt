@@ -12,7 +12,7 @@ set(LACommenter_SOURCES
   LACommenter.cpp)
 
 set(CodeStyleChecker_SOURCES
-  CodeStyleChecker/CodeStyleCheckerASTConsumer.cpp CodeStyleChecker/CodeStyleCheckerVisitor.cpp CodeStyleChecker/CSCASTAction.cpp )
+        CodeStyleChecker/CscASTConsumer.cpp CodeStyleChecker/CscVisitor.cpp CodeStyleChecker/CscASTAction.cpp)
 
 set(Obfuscator_SOURCES
   Obfuscator.cpp)

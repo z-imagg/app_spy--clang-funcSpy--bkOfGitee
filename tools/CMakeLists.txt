@@ -18,9 +18,9 @@ set(ct-code-refactor_SOURCES
 
 set(ct-code-style-checker_SOURCES
  "${CMAKE_CURRENT_SOURCE_DIR}/CodeStyleCheckerMain.cpp"
- "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CodeStyleCheckerASTConsumer.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CodeStyleCheckerVisitor.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CSCASTAction.cpp"
+ "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CscASTConsumer.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CscVisitor.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CscASTAction.cpp"
 )
 
 # CONFIGURE THE TOOLS

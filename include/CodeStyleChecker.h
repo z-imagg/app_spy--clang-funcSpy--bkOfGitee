@@ -5,10 +5,10 @@
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Basic/SourceManager.h"
 
-class CodeStyleCheckerVisitor
-    : public clang::RecursiveASTVisitor<CodeStyleCheckerVisitor> {
+class CscVisitor
+    : public clang::RecursiveASTVisitor<CscVisitor> {
 public:
-  explicit CodeStyleCheckerVisitor(clang::ASTContext *Ctx) : Ctx(Ctx) {}
+  explicit CscVisitor(clang::ASTContext *Ctx) : Ctx(Ctx) {}
   bool VisitCXXRecordDecl(clang::CXXRecordDecl *Decl);
   bool VisitFunctionDecl(clang::FunctionDecl *Decl);
   bool VisitVarDecl(clang::VarDecl *Decl);
@@ -28,17 +28,17 @@ private:
   void checkNameStartsWithUpperCase(clang::NamedDecl *Decl);
 };
 
-class CodeStyleCheckerASTConsumer : public clang::ASTConsumer {
+class CscASTConsumer : public clang::ASTConsumer {
 public:
-  explicit CodeStyleCheckerASTConsumer(clang::ASTContext *Context,
-                                       bool MainFileOnly,
-                                       clang::SourceManager &SM)
+  explicit CscASTConsumer(clang::ASTContext *Context,
+                          bool MainFileOnly,
+                          clang::SourceManager &SM)
       : Visitor(Context), SM(SM), MainTUOnly(MainFileOnly) {}
 
   void HandleTranslationUnit(clang::ASTContext &Ctx) ;
 
 private:
-  CodeStyleCheckerVisitor Visitor;
+  CscVisitor Visitor;
   clang::SourceManager &SM;
   // Should this plugin be only run on the main translation unit?
   bool MainTUOnly = true;

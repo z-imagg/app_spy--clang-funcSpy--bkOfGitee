@@ -7,12 +7,12 @@
 
 using namespace clang;
 
-class CSCASTAction : public PluginASTAction {
+class CscASTAction : public PluginASTAction {
 public:
     std::unique_ptr<ASTConsumer>
     CreateASTConsumer(CompilerInstance &Compiler,
                       llvm::StringRef InFile) override {
-      return std::make_unique<CodeStyleCheckerASTConsumer>(
+      return std::make_unique<CscASTConsumer>(
               &Compiler.getASTContext(), MainTuOnly, Compiler.getSourceManager());
     }
 
@@ -39,7 +39,7 @@ private:
     bool MainTuOnly = true;
 };
 
-static clang::FrontendPluginRegistry::Add<CSCASTAction>
+static clang::FrontendPluginRegistry::Add<CscASTAction>
         X(/*Name=*/"CSC",
         /*Description=*/"Checks whether class, variable and function names "
                         "adhere to LLVM's guidelines");

@@ -7,7 +7,7 @@
 
 using namespace clang;
 
-bool CodeStyleCheckerVisitor::VisitCXXRecordDecl(CXXRecordDecl *Decl) {
+bool CscVisitor::VisitCXXRecordDecl(CXXRecordDecl *Decl) {
   // Skip anonymous records, e.g. unions:
   //    * https://en.cppreference.com/w/cpp/language/union
   if (0 == Decl->getNameAsString().size())
@@ -18,7 +18,7 @@ bool CodeStyleCheckerVisitor::VisitCXXRecordDecl(CXXRecordDecl *Decl) {
   return true;
 }
 
-bool CodeStyleCheckerVisitor::VisitFunctionDecl(FunctionDecl *Decl) {
+bool CscVisitor::VisitFunctionDecl(FunctionDecl *Decl) {
   //这里在遍历函数声明，参考： https://stackoverflow.com/questions/39529480/is-there-a-way-to-get-source-code-with-macro-expanded-using-clang-api
   //写出 打印出宏展开后的样子
 //    std::string s;
@@ -38,7 +38,7 @@ bool CodeStyleCheckerVisitor::VisitFunctionDecl(FunctionDecl *Decl) {
   return true;
 }
 
-bool CodeStyleCheckerVisitor::VisitVarDecl(VarDecl *Decl) {
+bool CscVisitor::VisitVarDecl(VarDecl *Decl) {
   // Skip anonymous function parameter declarations
   if (isa<ParmVarDecl>(Decl) && (0 == Decl->getNameAsString().size()))
     return true;
@@ -48,7 +48,7 @@ bool CodeStyleCheckerVisitor::VisitVarDecl(VarDecl *Decl) {
   return true;
 }
 
-bool CodeStyleCheckerVisitor::VisitFieldDecl(FieldDecl *Decl) {
+bool CscVisitor::VisitFieldDecl(FieldDecl *Decl) {
   // Skip anonymous bit-fields:
   //  * https://en.cppreference.com/w/c/language/bit_field
   if (0 == Decl->getNameAsString().size())
@@ -60,7 +60,7 @@ bool CodeStyleCheckerVisitor::VisitFieldDecl(FieldDecl *Decl) {
   return true;
 }
 
-void CodeStyleCheckerVisitor::checkNoUnderscoreInName(NamedDecl *Decl) {
+void CscVisitor::checkNoUnderscoreInName(NamedDecl *Decl) {
   auto Name = Decl->getNameAsString();
   size_t underscorePos = Name.find('_');
 
@@ -84,7 +84,7 @@ void CodeStyleCheckerVisitor::checkNoUnderscoreInName(NamedDecl *Decl) {
   DiagEngine.Report(UnderscoreLoc, DiagID).AddFixItHint(FixItHint);
 }
 
-void CodeStyleCheckerVisitor::checkNameStartsWithLowerCase(NamedDecl *Decl) {
+void CscVisitor::checkNameStartsWithLowerCase(NamedDecl *Decl) {
   auto Name = Decl->getNameAsString();
   char FirstChar = Name[0];
 
@@ -108,7 +108,7 @@ void CodeStyleCheckerVisitor::checkNameStartsWithLowerCase(NamedDecl *Decl) {
   DiagEngine.Report(Decl->getLocation(), DiagID) << FixItHint;
 }
 
-void CodeStyleCheckerVisitor::checkNameStartsWithUpperCase(NamedDecl *Decl) {
+void CscVisitor::checkNameStartsWithUpperCase(NamedDecl *Decl) {
   auto Name = Decl->getNameAsString();
   char FirstChar = Name[0];
 

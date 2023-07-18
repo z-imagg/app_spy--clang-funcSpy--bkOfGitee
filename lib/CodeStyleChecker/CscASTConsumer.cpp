@@ -1,6 +1,6 @@
 #include "CodeStyleChecker.h"
 
-void CodeStyleCheckerASTConsumer::HandleTranslationUnit(clang::ASTContext &Ctx) {
+void CscASTConsumer::HandleTranslationUnit(clang::ASTContext &Ctx) {
   if (!MainTUOnly)
     Visitor.TraverseDecl(Ctx.getTranslationUnitDecl());
   else {
