@@ -1,19 +1,4 @@
-//==============================================================================
-// FILE:
-//    CodeRefactorommenterMain.cpp
-//
-// DESCRIPTION:
-//    A standalone tool that runs the CodeRefactor plugin. See
-//    CodeRefactor.cpp for a complete description.
-//
-// USAGE:
-//    * ct-code-refactor --class-name=<class-in-which-to-rename> '\'
-//      --new-name=<new-method-name> --old-name=<old-method-name> input-file.cpp
-//
-//
-// License: The Unlicense
-//==============================================================================
-#include "CodeRefactor.h"
+#include "CodeRefactor/CrASTConsumer.h"
 
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendPluginRegistry.h"
@@ -24,52 +9,35 @@
 using namespace llvm;
 using namespace clang;
 
-//===----------------------------------------------------------------------===//
-// Command line options
-//===----------------------------------------------------------------------===//
 static cl::OptionCategory CodeRefactorCategory("ct-code-refactor options");
 
-static cl::opt<std::string> ClassNameOpt{
-    "class-name",
-    cl::desc("The name of the class/struct that the method to be renamed "
-             "belongs to"),
-    cl::Required, cl::init(""), cl::cat(CodeRefactorCategory)};
-static cl::opt<std::string> OldNameOpt{
-    "old-name", cl::desc("The current name of the method to be renamed"),
-    cl::Required, cl::init(""), cl::cat(CodeRefactorCategory)};
-static cl::opt<std::string> NewNameOpt{
-    "new-name", cl::desc("The new name of the method to be renamed"),
-    cl::Required, cl::init(""), cl::cat(CodeRefactorCategory)};
-
-//===----------------------------------------------------------------------===//
-// PluginASTAction
-//===----------------------------------------------------------------------===//
-class CodeRefactorPluginAction : public PluginASTAction {
+/**
+ * Main的Act类为何不复用.so的Act类?   本类 CrPluginAction  与 类 CrAddPluginAction 是重复的吗？
+ */
+class CrPluginAction : public PluginASTAction {
 public:
-  explicit CodeRefactorPluginAction(){};
-  // Not used
+  explicit CrPluginAction(){};
   bool ParseArgs(const CompilerInstance &CI,
                  const std::vector<std::string> &args) override {
     return true;
   }
 
-  // Output the edit buffer for this translation unit
-  // void EndSourceFileAction() override {
-  //   RewriterForCodeRefactor
-  //       .getEditBuffer(RewriterForCodeRefactor.getSourceMgr().getMainFileID())
-  //       .write(llvm::outs());
-  // }
+   void EndSourceFileAction() override {
+//     rewriter
+//         .getEditBuffer(rewriter.getSourceMgr().getMainFileID())
+//         .write(llvm::outs()); //这里输出原始的?
+   }
 
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
-                                                 StringRef file) override {
-    RewriterForCodeRefactor.setSourceMgr(CI.getSourceManager(),
-                                         CI.getLangOpts());
-    return std::make_unique<CodeRefactorASTConsumer>(
-        RewriterForCodeRefactor, ClassNameOpt, OldNameOpt, NewNameOpt);
+                                                 StringRef file) override {//file:"/pubx/clang_plugin_demo/clang-tutor/test/CodeRefactor_Class.cpp"
+    rewriter.setSourceMgr(CI.getSourceManager(),
+                          CI.getLangOpts());
+    return std::make_unique<CrASTConsumer>(
+            rewriter );
   }
 
 private:
-  Rewriter RewriterForCodeRefactor;
+  Rewriter rewriter;
 };
 
 //===----------------------------------------------------------------------===//
@@ -79,15 +47,15 @@ int main(int Argc, const char **Argv) {
   Expected<tooling::CommonOptionsParser> eOptParser =
       clang::tooling::CommonOptionsParser::create(Argc, Argv,
                                                   CodeRefactorCategory);
-  if (auto E = eOptParser.takeError()) {
+  if (auto error = eOptParser.takeError()) {
     errs() << "Problem constructing CommonOptionsParser "
-           << toString(std::move(E)) << '\n';
+           << toString(std::move(error)) << '\n';
     return EXIT_FAILURE;
   }
-  clang::tooling::RefactoringTool Tool(eOptParser->getCompilations(),
+  clang::tooling::RefactoringTool tool(eOptParser->getCompilations(),
                                        eOptParser->getSourcePathList());
 
-  return Tool.runAndSave(
-      clang::tooling::newFrontendActionFactory<CodeRefactorPluginAction>()
+  return tool.runAndSave(
+      clang::tooling::newFrontendActionFactory<CrPluginAction>()
           .get());
 }

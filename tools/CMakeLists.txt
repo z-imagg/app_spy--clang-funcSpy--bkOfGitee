@@ -6,17 +6,23 @@ set(CLANG_TUTOR_TOOLS
 
 set(ct-la-commenter_SOURCES
  "${CMAKE_CURRENT_SOURCE_DIR}/LACommenterMain.cpp"
- "${CMAKE_CURRENT_SOURCE_DIR}/../lib/LACommenter.cpp"
+ "${CMAKE_CURRENT_SOURCE_DIR}/../lib/LACommenter/LACommenterASTConsumer.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/LACommenter/LACommenterMatcher.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/LACommenter/LACPluginAction.cpp"
 )
 
 set(ct-code-refactor_SOURCES
  "${CMAKE_CURRENT_SOURCE_DIR}/CodeRefactorMain.cpp"
- "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeRefactor.cpp"
+ "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeRefactor/CrMatcher.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeRefactor/CrASTConsumer.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeRefactor/CrAddPluginAction.cpp"
 )
 
 set(ct-code-style-checker_SOURCES
  "${CMAKE_CURRENT_SOURCE_DIR}/CodeStyleCheckerMain.cpp"
- "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker.cpp"
+ "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CscASTConsumer.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CscVisitor.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CodeStyleChecker/CscASTAction.cpp"
 )
 
 # CONFIGURE THE TOOLS

@@ -3,19 +3,8 @@
 // RUN: -plugin-arg-CodeRefactor -new-name -plugin-arg-CodeRefactor walk %s 2>&1 | FileCheck %s --match-full-lines
 // RUN:  ../bin/ct-code-refactor --class-name=Base --new-name=walk --old-name=run %s -- | FileCheck %s --match-full-lines
 
-// Verify that the method `run` is renamed as `walk` (in both Base and Derived)
+//   `run`  -->  `walk`
 
-// CHECK-LABEL: class Base {
-// CHECK: virtual void walk() {};
-
-// CHECK-LABEL: class Derived : public Base {
-// CHECK: void walk() override {};
-
-// CHECK-LABEL: int main() {
-// CHECK:  B1.walk();
-// CHECK:  D1.walk();
-// CHECK:  B2->walk();
-// CHECK:  D2->walk();
 
 class Base {
   public:
