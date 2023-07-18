@@ -21,7 +21,7 @@ set(UnusedForLoopVar_SOURCES
   UnusedForLoopVar.cpp)
 
 set(CodeRefactor_SOURCES
-  CodeRefactor.cpp)
+   CodeRefactor/CrMatcher.cpp CodeRefactor/CrASTConsumer.cpp CodeRefactor/CodeRefactorAddPluginAction.cpp)
 
 # CONFIGURE THE PLUGIN LIBRARIES
 # ==============================

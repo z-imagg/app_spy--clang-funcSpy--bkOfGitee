@@ -111,7 +111,8 @@ find `pwd` -name "*.so"
 #(clang-tutor)  file: /pubx/source_code_rewrite/clang_plugin_demo/clang-tutor/test/HelloWorld-basic.cpp
 #(clang-tutor)  count: 3
 
-
+#运行CodeRefactor插件
+/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/bin/clang -cc1 -load   /pubx/clang-tutor/cmake-build-debug/lib/libCodeRefactor.so -plugin CodeRefactor /pubx/clang-tutor/test/CodeRefactor_Class.cpp
 ```
 
 
