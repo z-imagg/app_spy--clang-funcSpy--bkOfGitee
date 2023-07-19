@@ -275,7 +275,7 @@ bool CodeStyleCheckerVisitor::VisitStmt(clang::Stmt *S){
           ExprValueKind::VK_RValue);
   //clang::CK_NoOp
   /////////////插入调用语句 还没写
-
+ 
   // Insert the function call statement as a sibling of the current statement
 //  const Stmt* parentStmt = getParentStmt(S,Ctx);
 //  if (parentStmt) {
