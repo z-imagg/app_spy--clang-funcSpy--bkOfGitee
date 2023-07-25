@@ -325,7 +325,7 @@ bool CTkVst::TraverseIfStmt(IfStmt *ifStmt){
        * ...;//这里是 if的then子语句, 是一个块语句，需要 对 then块中的每条子语句前 插入 时钟调用语句.
        * }
        */
-      TraverseStmt  (thenStmt);
+    return true;//继续遍历子节点
 //    }
     /**否则 if的then子语句 肯定是一个单行语句，无需插入 时钟调用语句.
      * 形如 :
@@ -335,10 +335,10 @@ bool CTkVst::TraverseIfStmt(IfStmt *ifStmt){
   }
 
   if(elseStmt){
-    TraverseStmt(elseStmt);
+    return true;//继续遍历子节点
   }
 
-  return true;
+  return false;//不遍历子节点
 }
 bool CTkVst::TraverseWhileStmt(WhileStmt *whileStmt){
 /////////////////////////对当前节点whileStmt做 自定义处理
@@ -361,7 +361,7 @@ bool CTkVst::TraverseWhileStmt(WhileStmt *whileStmt){
        * ...;//这里是 while的循环体, 是一个块语句，需要 对 循环体中的每条子语句前 插入 时钟调用语句.
        * }
        */
-      TraverseStmt(bodyStmt);
+      return true;//继续遍历子节点
     }
     /**否则 while的循环体 肯定是一个单行语句，无需插入 时钟调用语句.
      * 形如 :
@@ -369,7 +369,7 @@ bool CTkVst::TraverseWhileStmt(WhileStmt *whileStmt){
      *   ...;// 这里是 while的循环体, 是一个单行语句，无需插入 时钟调用语句.
      */
   }
-  return true;
+  return false;//不遍历子节点
 }
 
 bool CTkVst::TraverseForStmt(ForStmt *forStmt) {
@@ -383,12 +383,12 @@ bool CTkVst::TraverseForStmt(ForStmt *forStmt) {
   Stmt *bodyStmt = forStmt->getBody();
   if(bodyStmt){
     Stmt::StmtClass bodyStmtClass = bodyStmt->getStmtClass();
-//    if(bodyStmtClass==Stmt::StmtClass::CompoundStmtClass){
+//    if(bodyStmtClass==Stmt::StmtClass::CompoundStmtClass){//即使for的body不是组合语句 ，还是要继续遍历。 比如 'for(...) if {...}' , for的子结点是if, 但if的子结点是组合语句. 若不遍历for的子结点if, 则if的子结点不可能被遍历.
       //这一段可以替代shouldInsert
-      TraverseStmt(bodyStmt);
+      return true;//继续遍历子节点
 //    }
   }
-  return true;
+  return false;//不遍历子节点
 }
 
 bool CTkVst::TraverseCXXTryStmt(CXXTryStmt *cxxTryStmt) {
@@ -407,9 +407,9 @@ bool CTkVst::TraverseCXXTryStmt(CXXTryStmt *cxxTryStmt) {
     Stmt::StmtClass tryBlockCompoundStmtClass = tryBlockCompoundStmt->getStmtClass();
     assert(tryBlockCompoundStmtClass==Stmt::StmtClass::CompoundStmtClass) ;//C++Try的尝试体一定是块语句
 
-    TraverseStmt(tryBlockCompoundStmt);
+    return true;//继续遍历子节点
   }
-  return true;
+  return false;//不遍历子节点
 }
 
 
@@ -425,9 +425,9 @@ bool CTkVst::TraverseCXXCatchStmt(CXXCatchStmt *cxxCatchStmt) {
     Stmt::StmtClass handlerBlockStmtClass = handlerBlockStmt->getStmtClass();
     assert(handlerBlockStmtClass==Stmt::StmtClass::CompoundStmtClass) ;//C++Catch的捕捉体一定是块语句
 
-    TraverseStmt(handlerBlockStmt);
+    return true;//继续遍历子节点
   }
-  return true;
+  return false;//不遍历子节点
 }
 
 bool CTkVst::TraverseDoStmt(DoStmt *doStmt) {
@@ -444,10 +444,10 @@ bool CTkVst::TraverseDoStmt(DoStmt *doStmt) {
     Stmt::StmtClass bodyStmtClass = body->getStmtClass();
     if(bodyStmtClass==Stmt::StmtClass::CompoundStmtClass){
       //这一段可以替代shouldInsert
-      TraverseStmt(body);
+      return true;//继续遍历子节点
     }
   }
-  return true;
+  return false;//不遍历子节点
 }
 
 bool CTkVst::TraverseSwitchStmt(SwitchStmt *switchStmt) {
@@ -494,10 +494,10 @@ bool CTkVst::TraverseCaseStmt(CaseStmt *caseStmt) {
     Stmt::StmtClass bodyStmtClass = body->getStmtClass();
     if(bodyStmtClass==Stmt::StmtClass::CompoundStmtClass){
       //这一段可以替代shouldInsert
-      TraverseStmt(body);
+      return true;//继续遍历子节点
     }
   }
-  return true;
+  return false;//不遍历子节点
 }
 
 
@@ -510,7 +510,7 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *functionDecl) {
   //default修饰举例: 'void func( ) = default;' (普通函数的default修饰，貌似没找到例子)
   bool hasDefault = functionDecl->isDefaulted();
   if(hasDefault){
-    return true;
+    return false;//不遍历子节点
   }
 
   bool _isConstexpr = functionDecl->isConstexpr();
@@ -526,7 +526,7 @@ bool CTkVst::TraverseCXXConstructorDecl(CXXConstructorDecl* cxxConstructorDecl){
   //default修饰举例: 'RuleMatcher( ) = default;'
   bool hasDefault = cxxConstructorDecl->isDefaulted();
   if(hasDefault){
-    return true;
+    return false;//不遍历子节点
   }
 
   bool _isConstexpr = cxxConstructorDecl->isConstexpr();
@@ -542,7 +542,7 @@ bool CTkVst::TraverseCXXMethodDecl(CXXMethodDecl* cxxMethodDecl){
   //default修饰举例: 'RuleMatcher &operator=(RuleMatcher &&Other) = default;'
   bool hasDefault = cxxMethodDecl->isDefaulted();
   if(hasDefault){
-    return true;
+    return false;//不遍历子节点
   }
 
   bool _isConstexpr = cxxMethodDecl->isConstexpr();
@@ -578,11 +578,11 @@ bool CTkVst::_Traverse_Func(
     //若此函数 有 constexpr 修饰，则拒绝 粘接直接子节点到递归链条 ，这样该函数体 无法   经过 TraverseStmt(函数体) ---...--->TraverseCompoundStmt(函数体) 转交， 即   不可能 有  TraverseCompoundStmt(该函数体) ， 即  该该函数体中的每条子语句前都 不会 有机会 被  插入 时钟调用语句.
     //    由此 变相实现了  constexpr_func_ls标记, 因此 constexpr_func_ls标记可以删除了.
     if(body){
-      TraverseStmt(body);
+      return true;//继续遍历子节点
     }
   }
 
-  return true;
+  return false;//不遍历子节点
 
 }
 
