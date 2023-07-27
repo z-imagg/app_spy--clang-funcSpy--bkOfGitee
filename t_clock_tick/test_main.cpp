@@ -1,14 +1,22 @@
+#include "t_clock_tick.h"
 
 #define LLVM_FALLTHROUGH [[gnu::fallthrough]]
 
-char topOutFunc000(float f1, double d2){
-  int diff;
-  int arr[]={8,0,-1,99};
-  for(int p:arr)
+char topOutFunc000(float f1, double d2){X__funcEnter(/*函入*/);//TraverseFunctionDecl
+
+  X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int diff;
+  X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int arr[]={8,0,-1,99};
+  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+for(int p:arr)
   for(int j:arr){
-    int zz;
-  }
-  if(true)
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int zz;
+  X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}
+  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+if(true)
   for(int q: arr)
 //  for(int q=0; q< 8 ; q++)
     if (q>0)//if1
@@ -19,11 +27,13 @@ char topOutFunc000(float f1, double d2){
         arr[q]++;
       else//else2
       if(false){//if4
-        arr[0]-=diff;
+        X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+arr[0]-=diff;
       }else//else3
         arr[diff]*=7;
 
 
+X__t_clock_tick(/*栈生*/0, /*栈死*/2, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
 }
 
 
@@ -32,7 +42,8 @@ namespace myNs1{
     namespace myNs2{
 
 
-        constexpr int func0(int z){
+        constexpr int func0(int z){X__funcEnter(/*函入*/);//TraverseFunctionDecl
+
           int a[]={};
           for(int i:a)
             i=z;
@@ -42,45 +53,67 @@ namespace myNs1{
 
         class Product{
         public:
-            Product(){
+            Product(){X__funcEnter(/*函入*/);//TraverseCXXConstructorDecl
+
 
             }
             Product(int id, bool ok, char cate='Z')
                     :id(id),ok(ok),cate(cate),owner_id(-1)
-            {
-              int thanks,memory=100;
-              while(true){
-                bool err=false;
-                if(err){
-                  break;
+            {X__funcEnter(/*函入*/);//TraverseCXXConstructorDecl
+
+              X__t_clock_tick(/*栈生*/2, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int thanks,memory=100;
+              X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+while(true){
+                X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+bool err=false;
+                X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+if(err){
+                  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+break;
                 }
-              }
-            }
+              X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}
+            X__t_clock_tick(/*栈生*/0, /*栈死*/2, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}
             Product(Product &&Other) = default;
             Product &operator=(Product &&Other) = default;
 
-            void switch_demo_func(){
-              int z;
+            void switch_demo_func(){X__funcEnter(/*函入*/);//TraverseCXXConstructorDecl
 
-              switch(z)
+              X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int z;
+
+              X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+switch(z)
               {//switch身体开始
 
                 case 1://case 1
                 {
-                  int idea; float aa,bb,cc=0.9; double sex;
-                  z=z*98+z/3;//倒数第二条语句右是宏周边，位置不准。 但倒数第二条语句左不是宏周边，位置是准的。
+                  X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int idea; X__t_clock_tick(/*栈生*/3, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+float aa,bb,cc=0.9; X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+double sex;
+                  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/5, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+z=z*98+z/3;//倒数第二条语句右是宏周边，位置不准。 但倒数第二条语句左不是宏周边，位置是准的。
                   LLVM_FALLTHROUGH;//宏周边位置不准
                 }
 
                 case 2:
                 {//case 2 身体 开始
-                  bool valid;
-                  if(valid){
-                    break;
+                  X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+bool valid;
+                  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+if(valid){
+                    X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+break;
                   }else{
-                    valid=true;
+                    X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+valid=true;
                   }
-                }//case 2 身体 结尾
+                X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}//case 2 身体 结尾
 
                 default:
                 {//switch的default 身体 开始
@@ -90,7 +123,8 @@ namespace myNs1{
 
               }//switch(z) 结尾
 
-            }//switch_demo_func函数 结尾
+            X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}//switch_demo_func函数 结尾
 
         private:
             int id;
@@ -100,11 +134,15 @@ namespace myNs1{
         };
 
         struct User{
-            constexpr int func1(){
+            constexpr int func1(){X__funcEnter(/*函入*/);//TraverseCXXConstructorDecl
+
               return 1;//func1: 在结构体定义处实现函数体
             }
-            int func2(){
-              return  func1();//func2: 在结构体定义处实现函数体
+            int func2(){X__funcEnter(/*函入*/);//TraverseCXXConstructorDecl
+
+              X__funcReturn(/*函出*/);//TraverseReturnStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+return  func1();//func2: 在结构体定义处实现函数体
             }
 
             int funOutImpl();
@@ -114,72 +152,128 @@ namespace myNs1{
 
 }
 
-int myNs1::myNs2::User::funOutImpl() {
-  char ch,sex='m';//命名空间内的 函数 funOutImpl: 在结构体定义外实现函数体
-  ch++;
-  while(ch!='a'){
-    int num,sum=0;
-    char flag;
-    float delta=0.9, alpha, ZERO=0.0, PI=3.14, DIFF;
-    ch--;
+int myNs1::myNs2::User::funOutImpl() {X__funcEnter(/*函入*/);//TraverseCXXConstructorDecl
+X__funcEnter(/*函入*/);//TraverseCXXConstructorDecl
+
+  X__t_clock_tick(/*栈生*/2, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+char ch,sex='m';//命名空间内的 函数 funOutImpl: 在结构体定义外实现函数体
+  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+ch++;
+  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+while(ch!='a'){
+    X__t_clock_tick(/*栈生*/2, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int num,sum=0;
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+char flag;
+    X__t_clock_tick(/*栈生*/5, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+float delta=0.9, alpha, ZERO=0.0, PI=3.14, DIFF;
+    X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+ch--;
     //此块末尾 应该释放8个变量, 而不是3个变量。
-  }
-  return ch;
+  X__t_clock_tick(/*栈生*/0, /*栈死*/8, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}
+  X__funcReturn(/*函出*/);//TraverseReturnStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/2, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+return ch;
 }
 
 
-char topOutFunc(float f1, double d2){
-  int arr[]={8,0,-1,99};
-  for(int x: arr){
-    bool ok=x%2==0;
-    if(ok) break;
-  }
+char topOutFunc(float f1, double d2){X__funcEnter(/*函入*/);//TraverseFunctionDecl
 
-  {
-    double sum;
-    {
-      short fix;
-    }
-  }
-  if(f1<d2){
-    int age;//CompoundStmt举例: 第1层CompoundStmt
-    float xx;
-    xx=age*10;
-    {
-      char tv;//CompoundStmt举例: 第2层CompoundStmt
-      if(tv=='b'){
-        tv*=4;
-        return tv+4;//CompoundStmt举例: 第3层CompoundStmt
+  X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int arr[]={8,0,-1,99};
+  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+for(int x: arr){
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+bool ok=x%2==0;
+    X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+if(ok) break;
+  X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}
+
+  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+{
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+double sum;
+    X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+{
+      X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+short fix;
+    X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}
+  X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}
+  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+if(f1<d2){
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int age;//CompoundStmt举例: 第1层CompoundStmt
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+float xx;
+    X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+xx=age*10;
+    X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+{
+      X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+char tv;//CompoundStmt举例: 第2层CompoundStmt
+      X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+if(tv=='b'){
+        X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+tv*=4;
+        X__funcReturn(/*函出*/);//TraverseReturnStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+return tv+4;//CompoundStmt举例: 第3层CompoundStmt
       }
-    }
-    return 'x';
+    X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}
+    X__funcReturn(/*函出*/);//TraverseReturnStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/2, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+return 'x';
   }
-  int k;
-  char c=f1>0 && d2<0?'a':'b';//无命名空间 的 顶层函数实现.
-  return c;
+  X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int k;
+  X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+char c=f1>0 && d2<0?'a':'b';//无命名空间 的 顶层函数实现.
+  X__funcReturn(/*函出*/);//TraverseReturnStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+X__t_clock_tick(/*栈生*/0, /*栈死*/3, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+return c;
 }
 
 #include <exception>
 #include <iostream>
 
-static void* staticFunc(int* arg){
-  char (*funcPtr)(int, char, short)=0;
-  try{
-    int num=*arg;
-    char ch='A';
-    short shrt=(short)num/10;
-    try{
-      char result=funcPtr(num,ch,shrt);
-      if(!result)
+static void* staticFunc(int* arg){X__funcEnter(/*函入*/);//TraverseFunctionDecl
+
+  X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+char (*funcPtr)(int, char, short)=0;
+  X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+try{
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+int num=*arg;
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+char ch='A';
+    X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+short shrt=(short)num/10;
+    X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+try{
+      X__t_clock_tick(/*栈生*/1, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+char result=funcPtr(num,ch,shrt);
+      X__t_clock_tick(/*栈生*/0, /*栈死*/0, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+if(!result)
         throw "err02";
-    }catch (std::exception& exception){
+    X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}catch (std::exception& exception){
       std::cout<< exception.what() << std::endl;
     }
-  }catch (const char* errmsg){
+  X__t_clock_tick(/*栈生*/0, /*栈死*/3, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
+}catch (const char* errmsg){
     std::cout<< errmsg << std::endl;
   }catch(std::exception & e){
     std::cout<< e.what() << std::endl;
   }catch (...){
     throw "other exception";
   }
+X__t_clock_tick(/*栈生*/0, /*栈死*/1, /*堆生*/0, /*堆死*/0);//TraverseCompoundStmt
 }
