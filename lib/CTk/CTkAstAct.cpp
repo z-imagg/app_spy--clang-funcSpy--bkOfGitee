@@ -20,6 +20,9 @@ public:
       SourceManager &SM = CI.getSourceManager();
       LangOptions &langOptions = CI.getLangOpts();
       ASTContext &astContext = CI.getASTContext();
+
+      CI.getDiagnostics().setSourceManager(&SM);
+      
       //Rewriter:2:  Rewriter构造完，在Action.CreateASTConsumer方法中 调用mRewriter.setSourceMgr后即可正常使用
       mRewriter_ptr->setSourceMgr(SM, langOptions);//A
       /**

@@ -21,6 +21,7 @@ using namespace clang;
 // ASTConsumer
 //-----------------------------------------------------------------------------
 
+/*
 class MyDiagnosticConsumer : public DiagnosticConsumer {
 public:
     explicit MyDiagnosticConsumer(SourceManager &sm) : SM(sm) {
@@ -35,8 +36,11 @@ public:
 //          std::cout << ": " << Info << std::endl;
         } else {
 //          std::cout << "Error: " << Info.getMessage() << std::endl;
+          std::cout << "错误3"  << std::endl;
         }
       }
+
+      std::cout << "消息4"  << std::endl;
     }
 
     void BeginSourceFile(const LangOptions &LangOpts, const Preprocessor *PP) override {
@@ -46,6 +50,7 @@ public:
 private:
     SourceManager & SM;
 };
+*/
 
 class CTkAstCnsm : public ASTConsumer {
 public:
@@ -57,10 +62,18 @@ public:
             CI(_CI),
             insertVst(_rewriter_ptr, _astContext, _CI, _SM),
             findTCCallROVisitor(_CI, _SM, _langOptions, _astContext),
-            myDiagnosticConsumer(_SM),
+//            myDiagnosticConsumer(_SM),
             SM(_SM)  {
 //      CI.createDiagnostics(new DiagnosticOptions(),&myDiagnosticConsumer);
-      CI.createDiagnostics(new DiagnosticOptions());
+//      DiagnosticsEngine *diagnosticsEngine = CI.createDiagnostics(new DiagnosticOptions()).get();
+//      diagnosticsEngine->setClient(new MyDiagnosticConsumer(SM));
+//      de.setClient(new MyDiagnosticConsumer(SM));
+
+//      DiagnosticsEngine &de = CI.getDiagnostics();
+//      MyDiagnosticConsumer *myDiagnosticConsumer = new MyDiagnosticConsumer(SM);
+//      myDiagnosticConsumer->BeginSourceFile(_langOptions,&CI.getPreprocessor());
+//      de.setClient(myDiagnosticConsumer);
+
       //构造函数
 //      _rewriter_ptr->overwriteChangedFiles();//C'正常.
     }
@@ -131,7 +144,32 @@ public:
       std::cout<< "插入include, 插入 include时钟语句 到文件头部:" << filePath << ",mainFileId:" << mainFileId.getHashValue() << std::endl;
 
 //////////////////4.应用修改到源文件
+//      DiagnosticsEngine &DiagEngine = Ctx.getDiagnostics();
+//      unsigned int diagID = DiagEngine.getCustomDiagID(DiagnosticsEngine::Error, "错误2");
+//      DiagEngine.Report(diagID);
 
+//////////
+      if (CI.getDiagnostics().hasErrorOccurred()
+      ||CI.getDiagnostics().hasUncompilableErrorOccurred()
+      || CI.getDiagnostics().hasFatalErrorOccurred()) {
+        std::cout<< "错误8" << std::endl;
+        // 打印具体错误位置
+        const auto& diagClient = CI.getDiagnosticClient();
+/*        for (const auto& diag : diagClient->getDiagnostics()) {
+          if (diag.getLevel() >= DiagnosticsEngine::Error) {
+            SourceLocation loc = diag.getLocation();
+            if (loc.isValid()) {
+              std::cout << "Error at ";
+              loc.print(std::cout, CI.getSourceManager());
+              std::cout << ": " << diag.getMessage() << std::endl;
+            } else {
+              std::cout << "Error: " << diag.getDefaultDiagnosticString() << std::endl;
+            }
+          }
+        }*/
+      }
+
+/////////
         //不在这里写出修改，而是到 函数 EndSourceFileAction 中去 写出修改
       insertVst.mRewriter_ptr->overwriteChangedFiles();//C''处崩溃, 即使没有对源文件有任何修改 C''处也崩溃
 
@@ -145,7 +183,7 @@ public:
     CTkVst insertVst;
     FndCTkClROVst findTCCallROVisitor;
     SourceManager &SM;
-    MyDiagnosticConsumer myDiagnosticConsumer;
+//    MyDiagnosticConsumer myDiagnosticConsumer;
     //两次HandleTranslationUnit的ASTConsumer只能每次新建，又期望第二次不要发生，只能让标志字段mainFileProcessed写成static
     static bool mainFileProcessed;
 };
