@@ -150,19 +150,27 @@ public:
 
 //////////
       DiagnosticsEngine &diagnostics = CI.getDiagnostics();
+      //gdb : 会发现 diagnostics.DiagStatesByLoc 中有大量的诊断信息,
+      // 但是貌似不太知道代码要怎么 接触到他
+      diagnostics.dump();//这里方法 CI.getDiagnostics().dump()会输出 大量诊断信息，对于 此次编译 Parallel.cpp，诊断信息有120MB这么大。
+      const DiagnosticsEngine::diag_mapping_range &diagMappingRange = diagnostics.getDiagnosticMappings();//这个看起来只拿到了一个?
+/*      for(auto k:diagMappingRange){//
+        unsigned int &zz = k.getFirst();
+        DiagnosticMapping &dMappingK = k.second;
+      }*/
+      const auto& diagClient = CI.getDiagnosticClient();
       if (diagnostics.hasErrorOccurred()
       ||diagnostics.hasUncompilableErrorOccurred()
       || diagnostics.hasFatalErrorOccurred()) {
-        std::cout<< "错误8" << std::endl;
+        std::cout<< "错误8" << std::endl; //到不了这里
         // 打印具体错误位置
-        const auto& diagClient = CI.getDiagnosticClient();
 /*        for (const auto& diag : diagClient->getDiagnostics()) {
           if (diag.getLevel() >= DiagnosticsEngine::Error) {
             SourceLocation loc = diag.getLocation();
             if (loc.isValid()) {
               std::cout << "Error at ";
               loc.print(std::cout, CI.getSourceManager());
-              std::cout << ": " << diag.getMessage() << std::endl;
+              std::cout << ": " << diag.getMessage() << std::endl;//这里是老clang api , 方法getMessage已经没有了
             } else {
               std::cout << "Error: " << diag.getDefaultDiagnosticString() << std::endl;
             }
