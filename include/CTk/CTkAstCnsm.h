@@ -149,9 +149,10 @@ public:
 //      DiagEngine.Report(diagID);
 
 //////////
-      if (CI.getDiagnostics().hasErrorOccurred()
-      ||CI.getDiagnostics().hasUncompilableErrorOccurred()
-      || CI.getDiagnostics().hasFatalErrorOccurred()) {
+      DiagnosticsEngine &diagnostics = CI.getDiagnostics();
+      if (diagnostics.hasErrorOccurred()
+      ||diagnostics.hasUncompilableErrorOccurred()
+      || diagnostics.hasFatalErrorOccurred()) {
         std::cout<< "错误8" << std::endl;
         // 打印具体错误位置
         const auto& diagClient = CI.getDiagnosticClient();
