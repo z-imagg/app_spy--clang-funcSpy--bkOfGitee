@@ -21,7 +21,31 @@ using namespace clang;
 // ASTConsumer
 //-----------------------------------------------------------------------------
 
+class MyDiagnosticConsumer : public DiagnosticConsumer {
+public:
+    explicit MyDiagnosticConsumer(SourceManager &sm) : SM(sm) {
 
+    }
+
+    void HandleDiagnostic(DiagnosticsEngine::Level DiagLevel, const Diagnostic &Info) override {
+      if (DiagLevel >= DiagnosticsEngine::Error) {
+        SourceLocation Loc = Info.getLocation();
+        if (Loc.isValid()) {
+          std::cout << "诊断错误在位置: " << Loc.printToString(SM);
+//          std::cout << ": " << Info << std::endl;
+        } else {
+//          std::cout << "Error: " << Info.getMessage() << std::endl;
+        }
+      }
+    }
+
+    void BeginSourceFile(const LangOptions &LangOpts, const Preprocessor *PP) override {
+//      SM = &PP->getSourceManager();
+    }
+
+private:
+    SourceManager & SM;
+};
 
 class CTkAstCnsm : public ASTConsumer {
 public:
@@ -33,7 +57,10 @@ public:
             CI(_CI),
             insertVst(_rewriter_ptr, _astContext, _CI, _SM),
             findTCCallROVisitor(_CI, _SM, _langOptions, _astContext),
+            myDiagnosticConsumer(_SM),
             SM(_SM)  {
+//      CI.createDiagnostics(new DiagnosticOptions(),&myDiagnosticConsumer);
+      CI.createDiagnostics(new DiagnosticOptions());
       //构造函数
 //      _rewriter_ptr->overwriteChangedFiles();//C'正常.
     }
@@ -118,6 +145,7 @@ public:
     CTkVst insertVst;
     FndCTkClROVst findTCCallROVisitor;
     SourceManager &SM;
+    MyDiagnosticConsumer myDiagnosticConsumer;
     //两次HandleTranslationUnit的ASTConsumer只能每次新建，又期望第二次不要发生，只能让标志字段mainFileProcessed写成static
     static bool mainFileProcessed;
 };
