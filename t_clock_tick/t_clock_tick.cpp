@@ -342,6 +342,7 @@ void X__funcEnter( ){
 }
 void X__funcReturn( ){
   //释放本函数已经分配的全部栈变量，但不增加滴答。因为时刻贡献已经由X__t_clock_tick完成了。
-  I__t_clock_tick(false,0,topFuncSVarCnt,0,0);
+//  I__t_clock_tick(false,0,topFuncSVarCnt,0,0);
+  sVarCnt-=topFuncSVarCnt;
   topFuncSVarCnt=0;
 }
