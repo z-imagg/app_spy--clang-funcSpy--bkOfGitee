@@ -64,6 +64,14 @@ thread_local int tg_hVarC=0;//当前堆对象数目（冗余）tg_hVarC: current
 thread_local int tg_FEntCnter=0;
 //endregion
 
+//region  当前栈帧。
+// 调用栈的栈顶：所有帧中最顶端的一帧。 即执行流处于的当前函数。
+//注意初始值NULL是必须要设置的，这是链条结束标记
+//PrevFrameAncestor：祖先帧的前一个帧：即 链条结束标记
+#define PrevFrameAncestor NULL
+thread_local struct _XFuncFrame* tg_topFramePtr=PrevFrameAncestor;
+//endregion
+
 //region 工具
 bool I__fileExists(const std::string& filePath) {
   std::ifstream file(filePath);
@@ -388,15 +396,46 @@ void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,char * funcNa
   pFuncFrame->funcLine=funcLine;
   pFuncFrame->funcCol=funcCol;
 }
-void X__funcEnter( XFuncFrame*  pFuncFrame){
 
+/**计算调用栈深度
+ * 获得栈深度方案：
+ * 方案1： 计算调用栈深度，
+ *            有点浪费计算量，但 不需要 冗余变量 参与危险代码，且出现死循环 很容易发现（本次调用返回循环最大限度9999），
+ *            因此使用此方案
+ *
+ * 方案2：冗余变量表达栈深度
+ * 这是更高效但更危险的实现：
+ * 通过设置冗余变量 tg_frameDepth，
+ *      在 tg_topFramePtr 被操作时 一同操作该冗余变量tg_frameDepth，形成计算栈深度的效果，
+ *      这样便可以随时拿到栈深度，
+ *      不过这样更麻烦 、危险代码更多、 且如果 出现死循环 不易察觉，因此不用此方案
+ * @return
+ */
+#define CntLimitLoopFrameStack 9999
+int I__frameDepth(){
+  int k=CntLimitLoopFrameStack;
+  XFuncFrame * ptrK=tg_topFramePtr;
+  while(k-- > 0 && (ptrK=ptrK->prevFrame)!=PrevFrameAncestor)
+    ;
+  return k;
+}
+void X__funcEnter( XFuncFrame*  pFuncFrame){
+  //region 当前栈帧
+  //接通链条：接通 帧 之间的 链条
+  pFuncFrame->prevFrame=tg_topFramePtr;
+  //设置 当前栈帧 为进入的函数
+  tg_topFramePtr=pFuncFrame;
+  //endregion
+
+  //region 函数进入id产生
   //制作函数进入id
   pFuncFrame->funcEnterId=tg_FEntCnter;
-
   //函数进入计数器更新
   tg_FEntCnter++;
+  //endregion
 }
 void X__funcReturn(XFuncFrame*  pFuncFrame ){
+  //region 栈变量
   tg_sVarFC+=(pFuncFrame->rTSVarC);
   tg_sVarC-= (pFuncFrame->rTSVarC);
   Tick tick(tg_t,
@@ -405,4 +444,11 @@ void X__funcReturn(XFuncFrame*  pFuncFrame ){
   tickCache.saveWrap(tick);
 
   (pFuncFrame->rTSVarC)=0;
+  //endregion
+
+
+  //region 当前栈帧
+  //设置 当前栈帧 为进入的函数 的前一个函数
+  tg_topFramePtr=pFuncFrame->prevFrame;
+  //endregion
 }

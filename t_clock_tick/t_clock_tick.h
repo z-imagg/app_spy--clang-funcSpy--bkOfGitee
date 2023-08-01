@@ -23,6 +23,12 @@ struct _XFuncFrame{
      * rT:realTime
      */
     int rTSVarC;
+
+    /**
+     * 调用者函数栈帧
+     * prev:previous:前一个
+     */
+    struct _XFuncFrame* prevFrame;
 };
 typedef struct _XFuncFrame XFuncFrame;
 
