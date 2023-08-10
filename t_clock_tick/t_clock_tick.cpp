@@ -8,6 +8,9 @@
 #include <filesystem>
 #include "t_clock_tick.h"
 
+#define TRUE 1
+#define FALSE 0
+
 /**名称约定
  * I__:即internal__:表示本源文件内部使用的函数
  * X__:表示被外部调用的函数
@@ -51,6 +54,7 @@ int I__curThreadId(){
 //FC:Free Count:释放的变量数目
 //C:Count:净变量数目， 即 分配-释放
 thread_local int tg_t;//时钟
+thread_local XFuncFrame* tg_curFunc=NULL;//当前正在执行的函数, 作用:描绘调用链条
 thread_local int tg_sVarAC=0;//当前栈变量分配数目 tg_sVarAC: currentStackVarAllocCnt
 thread_local int tg_sVarFC=0;//当前栈变量释放数目 tg_sVarFC: currentStackVarFreeCnt
 thread_local int tg_sVarC=0;//当前栈变量数目（冗余） tg_sVarC: currentStackVarCnt
@@ -167,6 +171,12 @@ public:
      */
     int funcEnterId;
 
+    //region 从当前函数 即栈顶 看 向栈底 的 函数调用链条
+    short hasFuncCallChain;
+    int *funcEnterIdSeq;
+    int funcEnterIdSeqLen;
+    //endregion
+
     /**实时栈变量净数目。 即  直到当前tick，栈变量净数目。
      * rT:realTime
      */
@@ -202,6 +212,11 @@ public:
             funcCol(funcCol),
             funcName(funcName),
             funcEnterId(funcEnterId),
+            //region 默认无调用链条
+            hasFuncCallChain(FALSE),
+            funcEnterIdSeq(NULL),
+            funcEnterIdSeqLen(0),
+            //endregion
             rTSVarC(_rTSVarC),
             dSVarAC(dSVarAC),
             dSVarFC(dSVarFC),
@@ -219,6 +234,12 @@ public:
 
     Tick( ){
       return;
+    }
+
+    void fillFuncCallChain(int* funcEnterIdSeq, int funcEnterIdSeqLen){
+      this->hasFuncCallChain=TRUE;
+      this->funcEnterIdSeq=funcEnterIdSeq;
+      this->funcEnterIdSeqLen=funcEnterIdSeqLen;
     }
 
     void toString(std::string & line){
@@ -368,6 +389,29 @@ thread_local TickCache tickCache;
 const std::string TickCache::tick_data_home("/tick_data_home");
 //endregion
 
+//region 获取当前调用链条
+// 从当前函数 即栈顶 看 向栈底 的 函数调用链条
+// 注意 每个函数中的XFuncFrame都是该函数中的局部变量，
+//  因此 只有在 该函数调用还存活   时 ，即 该函数调用还在调用栈中 时，即 从栈顶看向栈底 时，  此局部变量才有效，指向此局部变量的指针才实际能用，
+//  也即 只能是 从栈顶看向栈底  才能拿到调用链条。
+//  任何试图 从栈底看向栈顶 的做法 都不对，因为此时 栈顶函数调用中的局部变量XFuncFrame已经被释放，不能再访问该局部变量了。
+#define FUNC_CALL_CHAIN_LIMIT 999
+void I__funcCallChain(XFuncFrame* pCurFFrm,int* funcEnterIdSeq,int* depth){
+  if(funcEnterIdSeq==NULL|| depth==NULL){
+    return;
+  }
+  XFuncFrame *k=pCurFFrm;
+  int j=0;
+  while(k!=NULL && j < FUNC_CALL_CHAIN_LIMIT){
+    j++;
+    funcEnterIdSeq[j]=k->funcEnterId;
+    k=k->prevFunc;
+  }
+
+  (*depth)=j;
+  return;
+}
+//endregion
 
 /**
  *
@@ -383,6 +427,11 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
   (pFuncFrame->funcLocalClock)++;
   //线程级时钟滴答一下
   tg_t++;
+  //endregion
+
+  //region 调用链条:  当前函数指针tg_curFunc可能并非指向本函数，因此罗嗦地再指向本函数。
+  // 若当前函数调用了另一函数B，而函数B的return没加X__return即没缩回tg_curFunc，从函数B返回后 当前函数指针tg_curFunc 并不指向本函数，因此 此时 可修补。
+  tg_curFunc=pFuncFrame;
   //endregion
 
   //更新 当前栈变量分配数目
@@ -450,6 +499,17 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
   tg_t++;
   //endregion
 
+  //region 调用链条: 链条延伸一节点
+  pFuncFrame->prevFunc=tg_curFunc;
+  tg_curFunc=pFuncFrame;
+  //endregion
+
+  //region 记录调用链条
+  int funcEnterIdSeq[FUNC_CALL_CHAIN_LIMIT];
+  int depth;
+  I__funcCallChain(pFuncFrame,funcEnterIdSeq,&depth);
+  //endregion
+
   //region 函数进入id
   //制作函数进入id
   pFuncFrame->funcEnterId=tg_FEntCnter;
@@ -465,6 +525,7 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
             pFuncFrame->funcEnterId, pFuncFrame->rTSVarC,
             0, 0, 0, 0,
             tg_sVarAC, tg_sVarFC, tg_sVarC, tg_hVarAC, tg_hVarFC, tg_hVarC);
+  tick.fillFuncCallChain(funcEnterIdSeq,depth);
   tickCache.saveWrap(tick);
   //endregion
 }
@@ -474,6 +535,10 @@ void X__funcReturn(XFuncFrame*  pFuncFrame ){
   (pFuncFrame->funcLocalClock)++;
   //线程级时钟滴答一下
   tg_t++;
+  //endregion
+
+  //region 调用链条: 当前函数缩回到前一个被调用函数
+  tg_curFunc=pFuncFrame->prevFunc;
   //endregion
 
   //region 紧挨着返回前, 滴答一下 携带了 残余栈变量数 , 并写滴答。

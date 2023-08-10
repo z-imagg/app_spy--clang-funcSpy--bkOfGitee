@@ -11,6 +11,10 @@ struct _XFuncFrame{
     int funcLocalClock;
     //endregion
 
+    //region 前一个被调用的函数
+    struct _XFuncFrame* prevFunc;
+    //endregion
+
     /**
      *  该函数定位信息, 等同于该函数id
      */
