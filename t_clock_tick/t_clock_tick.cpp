@@ -240,10 +240,24 @@ public:
       this->funcEnterIdSeqLen=funcEnterIdSeqLen;
     }
 
+    //此段写出单行格式，需要与 标题行 my_init::title  保持一致，否则csv解析有问题
     void toString(std::string & line){
       std::ostringstream  oss;
       oss << t << "," << funcLocalClock << ",";
-      oss << tickKind << "," << funcEnterId << ","  << rTSVarC << ","  ;
+      oss << tickKind << "," ;
+      oss << funcEnterId << ",";
+      if(hasFuncCallChain){
+        oss << funcEnterIdSeqLen << ",";
+        oss << "'";
+        for(int i=0; i <funcEnterIdSeqLen; i++){
+          oss << funcEnterIdSeq[i] << ",";
+        }
+        oss << "'";
+        oss << ",";
+      }else{
+        oss <<   ",'',";
+      }
+      oss << rTSVarC << ","  ;
       oss << dSVarAC << "," << dSVarFC << ","  << dHVarAC << ","  << dHVarFC << ","  ;
       oss << sVarAC << "," << sVarFC << ","  << sVarC << ","  << hVarAC << ","  << hVarFC << ","  << hVarC << ","  ;
       oss << "'"<<srcFile<<"'" << "," << funcLine << ","  << funcCol << ","  << "'"<<funcName<<"'"   << "\n"  ;
@@ -319,7 +333,7 @@ public:
         fWriter.open(filePath);
 
         //刚打开文件时，写入标题行
-        std::string title("滴答,funcLocalClock,tickKind,funcEnterId,rTSVarC,d栈生,d栈死,d堆生,d堆死,栈生,栈死,栈净,堆生,堆死,堆净,srcFile,funcLine,funcCol,funcName\n");
+        std::string title("滴答,funcLocalClock,tickKind,funcEnterId,funcEnterIdSeqLen,funcEnterIdSeq,rTSVarC,d栈生,d栈死,d堆生,d堆死,栈生,栈死,栈净,堆生,堆死,堆净,srcFile,funcLine,funcCol,funcName\n");
         fWriter << title ;
       }
       return;
