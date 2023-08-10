@@ -54,6 +54,7 @@ int I__curThreadId(){
 thread_local int tg_t;//时钟
 //region 描绘调用链条
 thread_local XFuncFrame* tg_curFunc=NULL;//当前正在执行的函数
+thread_local XFuncFrame* tg_rootFunc=NULL;//根函数
 thread_local int tg_curChainLen=0;//当前调用链条长度, 开发定位问题用
 //endregion
 thread_local int tg_sVarAC=0;//当前栈变量分配数目 tg_sVarAC: currentStackVarAllocCnt
@@ -444,6 +445,7 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
 
   //region 调用链条:  当前函数指针tg_curFunc可能并非指向本函数，因此罗嗦地再指向本函数。
   // 若当前函数调用了另一函数B，而函数B的return没加X__return即没缩回tg_curFunc，从函数B返回后 当前函数指针tg_curFunc 并不指向本函数，因此 此时 可修补。
+  //本方案暂时称为 栈顶方案
   //  函数f1的return无X_return  ，这种  出现 后，  tg_curFunc依然指向的f1的XFuncFrame，而此时f1的XFuncFrame已经释放了.
   //     因此 tg_curFunc->prevFunc字段所占区域会被分配给别的变量，从而tg_curFunc->prevFunc被破坏，于是 tg_curFunc 的 prevFunc 链条断裂 。
   //     此后  首次出现的 X_tick 中 ，持有 链条 的 端点 tg_curFunc 即 栈顶， 但 链条的 端点 tg_curFunc 已经烂了 无法使用，
@@ -452,9 +454,30 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
   // 简单点说：
   //   问题: 栈顶释放频繁，容易面临栈顶被释放没跟住，具体：
   //     持有调用链条 的栈顶端点  要求 不遗漏地跟踪每一个return语句，若少跟踪一个return则在该调用返回后持有的栈顶端点已被释放时刻会烂，从而链条栈顶端点失效，但持有方却不知道失效了，继续使用显然陷入错乱。
-  //   解决：栈底释放十分稀少，因此应该持有栈底，变更内容：
+  // 原方案（栈顶方案） 问题演示如下:
+  //   fA-->fB-->fC--->fD        : 实际调用链, 时刻1
+  //   fA-->fB-->fC--->fD^       : 记录调用链, 时刻1, ^表示持有的指针所指向的节点
+  //                   fD的return缺少X__return,  当fD返回后 fD内的XFuncFrame被释放。
+  //   fA-->fB-->fC              : 实际调用链, 时刻2
+  //   fA-->fB-->fC--->fD^       : 记录调用链, 时刻2
+  //           注意链条末尾的fD节点实际是已经返回了的， fD不应该在此链条上 ,该节点fD中的XFuncFrame被释放已经被释放 无法使用，
+  //           ^指向了已经被释放的XFuncFrame，因此从^根本无法在链条上移动，即 链条失效了。
+
+  //   解决1（栈底方案）：栈底释放十分稀少，因此应该持有栈底，变更内容：
   //      更换指针方向 prevFunc改为nextFunc
   //      持有点tg_curFunc改为tg_rootFunc
+  //解决1（栈底方案） 还是有问题，  问题演示如下:
+  //   栈底----------->栈顶
+  //   fA-->fB-->fC--->fD        : 实际调用链, 时刻1
+  //  ^fA-->fB-->fC--->fD        : 记录调用链, 时刻1, ^表示持有的指针所指向的节点
+  //                   fD的return缺少X__return,  当fD返回后 fD内的XFuncFrame被释放。
+  //   fA-->fB-->fC              : 实际调用链, 时刻2
+  //  ^fA-->fB-->fC--->fD        : 记录调用链, 时刻2
+  //                   fD返回后, fC又调用了fE
+  //   fA-->fB-->fC--->fE        : 实际调用链, 时刻3
+  //  ^fA-->fB-->fC--->fD-->fE   : 记录调用链, 时刻3.
+  //           注意链条中间有个fD节点实际是已经返回了的， fD不应该在此链条上 ,该节点fD中的XFuncFrame被释放已经被释放 无法使用，
+  //           虽然从^可以沿着链条向栈顶节点移动，但无法判断中间的某个节点fD是不是已经被释放了，因此此链条还是无法使用。
   if(tg_curFunc!=pFuncFrame){
     tg_curChainLen--;
     tg_curFunc=pFuncFrame;
@@ -510,6 +533,7 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
 void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,int funcCol,char * funcName){
   pFuncFrame->funcLocalClock=0;
   pFuncFrame->prevFunc=NULL;
+  pFuncFrame->nextFunc=NULL;
 
   pFuncFrame->L_srcFile=srcFile;
   pFuncFrame->L_funcLine=funcLine;
@@ -530,10 +554,24 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
   //endregion
 
   //region 调用链条: 链条延伸一节点
+  //链表尾插法
   pFuncFrame->prevFunc=tg_curFunc;
   tg_curFunc=pFuncFrame;
   tg_curChainLen++;
   //endregion
+
+  if(NULL==tg_rootFunc){
+    tg_rootFunc=pFuncFrame;
+  }else{
+    XFuncFrame*k=pFuncFrame;XFuncFrame*kPrev=NULL;
+    while(k=k->nextFunc){
+      kPrev=k;
+    }
+    //找到链条尾, 当前函数作为链条的新尾节点
+    XFuncFrame*tail=kPrev;
+    tail->nextFunc=pFuncFrame;
+  }
+
 
 
   //region 函数进入id

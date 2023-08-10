@@ -15,6 +15,10 @@ struct _XFuncFrame{
     struct _XFuncFrame* prevFunc;
     //endregion
 
+
+    struct _XFuncFrame* nextFunc;
+    //指向
+
     /**
      *  该函数定位信息, 等同于该函数id
      */
