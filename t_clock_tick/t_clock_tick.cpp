@@ -8,8 +8,6 @@
 #include <filesystem>
 #include "t_clock_tick.h"
 
-#define TRUE 1
-#define FALSE 0
 
 /**名称约定
  * I__:即internal__:表示本源文件内部使用的函数
@@ -172,7 +170,7 @@ public:
     int funcEnterId;
 
     //region 从当前函数 即栈顶 看 向栈底 的 函数调用链条
-    short hasFuncCallChain;
+    bool hasFuncCallChain;
     int *funcEnterIdSeq;
     int funcEnterIdSeqLen;
     //endregion
@@ -213,7 +211,7 @@ public:
             funcName(funcName),
             funcEnterId(funcEnterId),
             //region 默认无调用链条
-            hasFuncCallChain(FALSE),
+            hasFuncCallChain(false),
             funcEnterIdSeq(NULL),
             funcEnterIdSeqLen(0),
             //endregion
@@ -237,7 +235,7 @@ public:
     }
 
     void fillFuncCallChain(int* funcEnterIdSeq, int funcEnterIdSeqLen){
-      this->hasFuncCallChain=TRUE;
+      this->hasFuncCallChain=true;
       this->funcEnterIdSeq=funcEnterIdSeq;
       this->funcEnterIdSeqLen=funcEnterIdSeqLen;
     }
