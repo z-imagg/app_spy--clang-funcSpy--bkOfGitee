@@ -52,7 +52,10 @@ int I__curThreadId(){
 //FC:Free Count:释放的变量数目
 //C:Count:净变量数目， 即 分配-释放
 thread_local int tg_t;//时钟
-thread_local XFuncFrame* tg_curFunc=NULL;//当前正在执行的函数, 作用:描绘调用链条
+//region 描绘调用链条
+thread_local XFuncFrame* tg_curFunc=NULL;//当前正在执行的函数
+thread_local int tg_curChainLen=0;//当前调用链条长度, 开发定位问题用
+//endregion
 thread_local int tg_sVarAC=0;//当前栈变量分配数目 tg_sVarAC: currentStackVarAllocCnt
 thread_local int tg_sVarFC=0;//当前栈变量释放数目 tg_sVarFC: currentStackVarFreeCnt
 thread_local int tg_sVarC=0;//当前栈变量数目（冗余） tg_sVarC: currentStackVarCnt
@@ -441,7 +444,10 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
 
   //region 调用链条:  当前函数指针tg_curFunc可能并非指向本函数，因此罗嗦地再指向本函数。
   // 若当前函数调用了另一函数B，而函数B的return没加X__return即没缩回tg_curFunc，从函数B返回后 当前函数指针tg_curFunc 并不指向本函数，因此 此时 可修补。
-  tg_curFunc=pFuncFrame;
+  if(tg_curFunc!=pFuncFrame){
+    tg_curChainLen--;
+    tg_curFunc=pFuncFrame;
+  }
   //endregion
 
   //更新 当前栈变量分配数目
@@ -512,6 +518,7 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
   //region 调用链条: 链条延伸一节点
   pFuncFrame->prevFunc=tg_curFunc;
   tg_curFunc=pFuncFrame;
+  tg_curChainLen++;
   //endregion
 
   //region 记录调用链条
@@ -549,6 +556,7 @@ void X__funcReturn(XFuncFrame*  pFuncFrame ){
 
   //region 调用链条: 当前函数缩回到前一个被调用函数
   tg_curFunc=pFuncFrame->prevFunc;
+  tg_curChainLen--;
   //endregion
 
   //region 紧挨着返回前, 滴答一下 携带了 残余栈变量数 , 并写滴答。
