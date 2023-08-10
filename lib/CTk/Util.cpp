@@ -354,18 +354,42 @@ int Util::varCntInVarDecl(DeclStmt* declStmt) {
   if(declStmt==NULL){
     return 0;
   }
-//  if(declStmt){
-    Decl *decl0 = *(declStmt->decl_begin());
-    if(decl0 && decl0->getKind()==Decl::Kind::Var){
-      //如果当前语句是声明语句, 且第一个子声明是变量声明语句,则栈变量分配个数填写1
-      //  有可能是这种样子: int n,m,u,v=0;  应该取 declStmt->decls() 的size
-      const DeclStmt::decl_range &declRange = declStmt->decls();
-      // 取 declStmt->decls() 的size
-      long declCnt = std::distance(declRange.begin(), declRange.end());
-      return declCnt;
+
+
+  int varDeclCnt=0;
+  for (const auto* decl : declStmt->decls()) {
+    // 判断是否为变量声明
+    if (const auto* varDecl = clang::dyn_cast<clang::VarDecl>(decl)) {
+      varDeclCnt++;
+      // 获取变量类型
+      const clang::QualType qualType = varDecl->getType();
+      const clang::Type* type = qualType.getTypePtr();
+      const std::string typeName = qualType.getAsString();
+
+      // 获取变量名
+      const std::string varName = varDecl->getNameAsString();
+      bool conditionBreakPoint=varName=="varName888";
+
+      std::cout << fmt::format("变量类型:{},变量名:{}",typeName,varName)  << std::endl;//这里加条件断点, 条件为: conditionBreakPoint
+      //变量类型:std::string,变量名:varName888
     }
+  }
+
+  Decl *decl0 = *(declStmt->decl_begin());
+  if(decl0 && decl0->getKind()==Decl::Kind::Var){
+    //如果当前语句是声明语句, 且第一个子声明是变量声明语句,则栈变量分配个数填写1
+    //  有可能是这种样子: int n,m,u,v=0;  应该取 declStmt->decls() 的size
+    const DeclStmt::decl_range &declRange = declStmt->decls();
+    // 取 declStmt->decls() 的size
+    long declCnt = std::distance(declRange.begin(), declRange.end());
+    if(declCnt!=varDeclCnt){
+      //发现 声明语句 中 第一个定义是变量，但后续定义 并不全是变量声明 的情况，打印源码，以供发现
+//    Util::printStmt(Ctx,)
+    }
+  }
+
+
     return 0;
-//  }
 }
 void Util::insertIncludeToFileStartByLoc(StringRef includeStmtText,SourceLocation Loc, SourceManager &SM, const std::shared_ptr<Rewriter> mRewriter_ptr){
   FileID fileId = SM.getFileID(Loc);
