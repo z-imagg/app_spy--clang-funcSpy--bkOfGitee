@@ -408,7 +408,7 @@ const std::string TickCache::tick_data_home("/tick_data_home");
 //  因此 只有在 该函数调用还存活   时 ，即 该函数调用还在调用栈中 时，即 从栈顶看向栈底 时，  此局部变量才有效，指向此局部变量的指针才实际能用，
 //  也即 只能是 从栈顶看向栈底  才能拿到调用链条。
 //  任何试图 从栈底看向栈顶 的做法 都不对，因为此时 栈顶函数调用中的局部变量XFuncFrame已经被释放，不能再访问该局部变量了。
-#define FUNC_CALL_CHAIN_LIMIT 999
+#define FUNC_CALL_CHAIN_LIMIT 200
 void I__funcCallChain(XFuncFrame* pCurFFrm,int* funcEnterIdSeq,int* depth){
   if(funcEnterIdSeq==NULL|| depth==NULL){
     return;
