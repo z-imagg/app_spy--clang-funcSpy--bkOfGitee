@@ -241,15 +241,13 @@ public:
     }
 
     void toString(std::string & line){
-      char buf[512];
-      sprintf(buf, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,'%s',%d,%d,'%s'\n",
-              t,funcLocalClock,
-              tickKind,funcEnterId,rTSVarC,
-              dSVarAC, dSVarFC, dHVarAC, dHVarFC,
-              sVarAC, sVarFC, sVarC, hVarAC, hVarFC, hVarC,
-              srcFile, funcLine, funcCol, funcName
-              );
-      line.append(buf);
+      std::ostringstream  oss;
+      oss << t << "," << funcLocalClock << ",";
+      oss << tickKind << "," << funcEnterId << ","  << rTSVarC << ","  ;
+      oss << dSVarAC << "," << dSVarFC << ","  << dHVarAC << ","  << dHVarFC << ","  ;
+      oss << sVarAC << "," << sVarFC << ","  << sVarC << ","  << hVarAC << ","  << hVarFC << ","  << hVarC << ","  ;
+      oss << "'"<<srcFile<<"'" << "," << funcLine << ","  << funcCol << ","  << "'"<<funcName<<"'"   << "\n"  ;
+      line=oss.str();
       return;
     }
 };
