@@ -44,7 +44,7 @@ void GetCurrentThreadIdAsString(std::string& curThreadIdStr){
 }
 
 void thread1_func(int arg1, char & arg2){
-  std::string thread1IdStr;
+  std::string thread1IdStr,varName888,varName888B,varName888C;
   GetCurrentThreadIdAsString(thread1IdStr);
   printf("thread1 线程id:%s\n", thread1IdStr.c_str());
 
