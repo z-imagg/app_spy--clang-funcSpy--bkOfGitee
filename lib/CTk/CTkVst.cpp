@@ -816,6 +816,18 @@ bool CTkVst::TraverseLambdaExpr(LambdaExpr *lambdaExpr) {
   //跳过 无函数体
   //跳过 constexpr
 
+  //如果一个lambda函数, 捕捉了全部外部变量，则不对其进行任何操作。
+  // 因为此时lambda内外都有xFuncFrame变量，感觉有点奇怪。
+  for (const auto& capture : lambdaExpr->captures()) {
+    if (
+//        capture.getCaptureKind() != clang::LCK_This ||
+        capture.getCaptureKind() == clang::LCK_ByCopy ||
+        capture.getCaptureKind() == clang::LCK_ByRef
+    ) {
+      return false;
+    }
+  }
+
   //获得 函数体、左右花括号
 //  Stmt* body  = funcDecl->getBody();
   CompoundStmt* compoundStmt = lambdaExpr->getCompoundStmtBody();
