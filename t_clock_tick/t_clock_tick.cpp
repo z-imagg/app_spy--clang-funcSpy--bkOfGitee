@@ -444,6 +444,17 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
 
   //region 调用链条:  当前函数指针tg_curFunc可能并非指向本函数，因此罗嗦地再指向本函数。
   // 若当前函数调用了另一函数B，而函数B的return没加X__return即没缩回tg_curFunc，从函数B返回后 当前函数指针tg_curFunc 并不指向本函数，因此 此时 可修补。
+  //  函数f1的return无X_return  ，这种  出现 后，  tg_curFunc依然指向的f1的XFuncFrame，而此时f1的XFuncFrame已经释放了.
+  //     因此 tg_curFunc->prevFunc字段所占区域会被分配给别的变量，从而tg_curFunc->prevFunc被破坏，于是 tg_curFunc 的 prevFunc 链条断裂 。
+  //     此后  首次出现的 X_tick 中 ，持有 链条 的 端点 tg_curFunc 即 栈顶， 但 链条的 端点 tg_curFunc 已经烂了 无法使用，
+  //     但假设 首次出现的 X_tick 中 ，持有 链条的 另一个端点 即 栈底， 则 从 底部 沿着 链条 是可以  找到当前函数中的局部变量XFuncFrame的，找到后 斩断链条后烂掉的节点们  即 重新恢复了链条  即 修复了链条
+  //          注：底部 此时是有效的 没有被释放，
+  // 简单点说：
+  //   问题: 栈顶释放频繁，容易面临栈顶被释放没跟住，具体：
+  //     持有调用链条 的栈顶端点  要求 不遗漏地跟踪每一个return语句，若少跟踪一个return则在该调用返回后持有的栈顶端点已被释放时刻会烂，从而链条栈顶端点失效，但持有方却不知道失效了，继续使用显然陷入错乱。
+  //   解决：栈底释放十分稀少，因此应该持有栈底，变更内容：
+  //      更换指针方向 prevFunc改为nextFunc
+  //      持有点tg_curFunc改为tg_rootFunc
   if(tg_curFunc!=pFuncFrame){
     tg_curChainLen--;
     tg_curFunc=pFuncFrame;
