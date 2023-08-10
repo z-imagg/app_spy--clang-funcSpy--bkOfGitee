@@ -444,6 +444,46 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
 
   //region 调用链条:  当前函数指针tg_curFunc可能并非指向本函数，因此罗嗦地再指向本函数。
   // 若当前函数调用了另一函数B，而函数B的return没加X__return即没缩回tg_curFunc，从函数B返回后 当前函数指针tg_curFunc 并不指向本函数，因此 此时 可修补。
+  //本方案暂时称为 栈顶方案
+  //  函数f1的return无X_return  ，这种  出现 后，  tg_curFunc依然指向的f1的XFuncFrame，而此时f1的XFuncFrame已经释放了.
+  //     因此 tg_curFunc->prevFunc字段所占区域会被分配给别的变量，从而tg_curFunc->prevFunc被破坏，于是 tg_curFunc 的 prevFunc 链条断裂 。
+  //     此后  首次出现的 X_tick 中 ，持有 链条 的 端点 tg_curFunc 即 栈顶， 但 链条的 端点 tg_curFunc 已经烂了 无法使用，
+  //     但假设 首次出现的 X_tick 中 ，持有 链条的 另一个端点 即 栈底， 则 从 底部 沿着 链条 是可以  找到当前函数中的局部变量XFuncFrame的，找到后 斩断链条后烂掉的节点们  即 重新恢复了链条  即 修复了链条
+  //          注：底部 此时是有效的 没有被释放，
+  // 简单点说：
+  //   问题: 栈顶释放频繁，容易面临栈顶被释放没跟住，具体：
+  //     持有调用链条 的栈顶端点  要求 不遗漏地跟踪每一个return语句，若少跟踪一个return则在该调用返回后持有的栈顶端点已被释放时刻会烂，从而链条栈顶端点失效，但持有方却不知道失效了，继续使用显然陷入错乱。
+  // 原方案（栈顶方案） 问题演示如下:
+  //   fA-->fB-->fC--->fD        : 实际调用链, 时刻1
+  //   fA-->fB-->fC--->fD^       : 记录调用链, 时刻1, ^表示持有的指针所指向的节点
+  //                   fD的return缺少X__return,  当fD返回后 fD内的XFuncFrame被释放。
+  //   fA-->fB-->fC              : 实际调用链, 时刻2
+  //   fA-->fB-->fC--->fD^       : 记录调用链, 时刻2
+  //           注意链条末尾的fD节点实际是已经返回了的， fD不应该在此链条上 ,该节点fD中的XFuncFrame被释放已经被释放 无法使用，
+  //           ^指向了已经被释放的XFuncFrame，因此从^根本无法在链条上移动，即 链条失效了。
+
+  //   解决1（栈底方案）：栈底释放十分稀少，因此应该持有栈底，变更内容：
+  //      更换指针方向 prevFunc改为nextFunc
+  //      持有点tg_curFunc改为tg_rootFunc
+  //解决1（栈底方案） 还是有问题，  问题演示如下:
+  //   栈底----------->栈顶
+  //   fA-->fB-->fC--->fD        : 实际调用链, 时刻1
+  //  ^fA-->fB-->fC--->fD        : 记录调用链, 时刻1, ^表示持有的指针所指向的节点
+  //                   fD的return缺少X__return,  当fD返回后 fD内的XFuncFrame被释放。
+  //   fA-->fB-->fC              : 实际调用链, 时刻2
+  //  ^fA-->fB-->fC--->fD        : 记录调用链, 时刻2
+  //                   fD返回后, fC又调用了fE
+  //   fA-->fB-->fC--->fE        : 实际调用链, 时刻3
+  //  ^fA-->fB-->fC--->fD-->fE   : 记录调用链, 时刻3.
+  //           注意链条中间有个fD节点实际是已经返回了的， fD不应该在此链条上 ,该节点fD中的XFuncFrame被释放已经被释放 无法使用，
+  //           虽然从^可以沿着链条向栈顶节点移动，但无法判断中间的某个节点fD是不是已经被释放了，因此此链条还是无法使用。
+
+  //   解决2（c++方案）: 放弃自制函数调用链条的想法，把 C语言struct XFuncFrame 改为 c++语言class XFuncFrame, 利用c++ class的构造函数、析构函数分别在分配时调用、释放时调用的特点，以构造、析构  间接的描绘调用链条，从而降低难度
+  //目前还没仔细考虑过方案2（c++方案）有没有问题
+  // main.c引用了tick.cpp:
+  // tick.h中可以 extern "C++" class  XFuncFrame{ 这里写构造函数、析构函数}
+  // 但链接main.o时, 估计:  要么用g++  要么用gcc并指定libstdc++
+
   if(tg_curFunc!=pFuncFrame){
     tg_curChainLen--;
     tg_curFunc=pFuncFrame;
