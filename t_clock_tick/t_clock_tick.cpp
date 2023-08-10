@@ -497,6 +497,9 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
  * @param funcCol
  */
 void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,int funcCol,char * funcName){
+  pFuncFrame->funcLocalClock=0;
+  pFuncFrame->prevFunc=NULL;
+
   pFuncFrame->L_srcFile=srcFile;
   pFuncFrame->L_funcLine=funcLine;
   pFuncFrame->L_funcCol=funcCol;
