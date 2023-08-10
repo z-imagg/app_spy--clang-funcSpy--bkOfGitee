@@ -84,8 +84,10 @@ thread_local int tg_curChainLen=0;
   //栈变量分配数目、栈变量释放数目、栈变量净分配数目
 //栈变量分配数目 全称: thread global _currentStackVarAllocCnt
 thread_local int tg_sVarAC=0;
-thread_local int tg_sVarFC=0;//当前栈变量释放数目 tg_sVarFC: currentStackVarFreeCnt
-thread_local int tg_sVarC=0;//当前栈变量数目（冗余） tg_sVarC: currentStackVarCnt
+//栈变量释放数目 全称: thread global _currentStackVarFreeCnt
+thread_local int tg_sVarFC=0;
+//栈变量净分配数目（冗余） thread global _currentStackVarCnt
+thread_local int tg_sVarC=0;
 //endregion
 thread_local int tg_hVarAC=0;//当前堆对象分配数目 tg_hVarAC: currentHeapObjAllocCnt, var即obj
 thread_local int tg_hVarFC=0;//当前堆对象释放数目 tg_hVarFC: currentHeapObjcFreeCnt, var即obj
