@@ -151,6 +151,9 @@ class Tick{
 public:
     TickKind tickKind;
 
+    int t;//时钟
+    int funcLocalClock;//函数的本地时钟
+
     /**
      *  该函数定位信息, 等同于该函数id
      */
@@ -172,7 +175,6 @@ public:
 //AC:Allocate Count:分配的变量数目
 //FC:Free Count:释放的变量数目
 //C:Count:净变量数目， 即 分配-释放
-    int t;//时钟
     int sVarAC=0;//当前栈变量分配数目 tg_sVarAC: currentStackVarAllocCnt
     int sVarFC=0;//当前栈变量释放数目 tg_sVarFC: currentStackVarFreeCnt
     int sVarC=0;//当前栈变量数目（冗余） tg_sVarC: currentStackVarCnt
@@ -186,14 +188,15 @@ public:
     int dHVarAC;//单滴答内堆变量分配数目
     int dHVarFC;//单滴答内堆变量分配数目
 public:
-    Tick(TickKind tickKind,int _t, char * srcFile,int funcLine,int funcCol,char * funcName,
-         int funcEnterId,int _rTSVarC,
+    Tick(TickKind tickKind, int _t, int _funcLocalClock, char * srcFile, int funcLine, int funcCol, char * funcName,
+         int funcEnterId, int _rTSVarC,
          int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC,
          int sVarAC, int sVarFC, int sVarCnt, int hVarAC, int hVarFC, int hVarC
  )
     :
             tickKind(tickKind),
             t(_t),
+            funcLocalClock(_funcLocalClock),
             srcFile(srcFile),
             funcLine(funcLine),
             funcCol(funcCol),
@@ -220,8 +223,8 @@ public:
 
     void toString(std::string & line){
       char buf[512];
-      sprintf(buf, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,'%s',%d,%d,'%s'\n",
-              t,
+      sprintf(buf, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,'%s',%d,%d,'%s'\n",
+              t,funcLocalClock,
               tickKind,funcEnterId,rTSVarC,
               dSVarAC, dSVarFC, dHVarAC, dHVarFC,
               sVarAC, sVarFC, sVarC, hVarAC, hVarFC, hVarC,
@@ -299,7 +302,7 @@ public:
         fWriter.open(filePath);
 
         //刚打开文件时，写入标题行
-        std::string title("滴答,tickKind,funcEnterId,rTSVarC,d栈生,d栈死,d堆生,d堆死,栈生,栈死,栈净,堆生,堆死,堆净,srcFile,funcLine,funcCol,funcName\n");
+        std::string title("滴答,funcLocalClock,tickKind,funcEnterId,rTSVarC,d栈生,d栈死,d堆生,d堆死,栈生,栈死,栈净,堆生,堆死,堆净,srcFile,funcLine,funcCol,funcName\n");
         fWriter << title ;
       }
       return;
@@ -375,8 +378,12 @@ const std::string TickCache::tick_data_home("/tick_data_home");
  */
 void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFrame* pFuncFrame){
 
-  //时钟滴答一下
+  //region 时钟滴答一下
+  //函数本地时钟滴答一下
+  (pFuncFrame->funcLocalClock)++;
+  //线程级时钟滴答一下
   tg_t++;
+  //endregion
 
   //更新 当前栈变量分配数目
   tg_sVarAC+=dSVarAC;
@@ -405,8 +412,8 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
 
   //如果有设置环境变量tick_save,则保存当前滴答
   Tick tick(NormalTick,
-          tg_t,pFuncFrame->L_srcFile,pFuncFrame->L_funcLine,pFuncFrame->L_funcCol,pFuncFrame->L_funcName,
-            pFuncFrame->funcEnterId,pFuncFrame->rTSVarC,
+            tg_t, pFuncFrame->funcLocalClock, pFuncFrame->L_srcFile, pFuncFrame->L_funcLine, pFuncFrame->L_funcCol, pFuncFrame->L_funcName,
+            pFuncFrame->funcEnterId, pFuncFrame->rTSVarC,
             dSVarAC, dSVarFC, dHVarAC, dHVarFC,
             tg_sVarAC, tg_sVarFC, tg_sVarC, tg_hVarAC, tg_hVarFC, tg_hVarC
   );
@@ -436,6 +443,12 @@ void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,
   pFuncFrame->rTSVarC=0;
 }
 void X__funcEnter( XFuncFrame*  pFuncFrame){
+  //region 时钟滴答一下
+  //函数本地时钟滴答一下
+  (pFuncFrame->funcLocalClock)++;
+  //线程级时钟滴答一下
+  tg_t++;
+  //endregion
 
   //region 函数进入id
   //制作函数进入id
@@ -447,23 +460,27 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
   //region 写tick。   使得 函数进入 成为一个正常滴答 ，从而能出现在作图上 : 不分配、不释放，分配总数不变、释放总数不变。
   //                       即 函数进入 相当于一个无贡献的普通语句。
   //函数进入滴答 可作为 和 函数返回滴答 做比对，看哪里少插入了X__funcReturn。
-  tg_t++;
   Tick tick(FuncEnter,
-          tg_t,pFuncFrame->L_srcFile,pFuncFrame->L_funcLine,pFuncFrame->L_funcCol,pFuncFrame->L_funcName,
-            pFuncFrame->funcEnterId,pFuncFrame->rTSVarC,
+            tg_t, pFuncFrame->funcLocalClock, pFuncFrame->L_srcFile, pFuncFrame->L_funcLine, pFuncFrame->L_funcCol, pFuncFrame->L_funcName,
+            pFuncFrame->funcEnterId, pFuncFrame->rTSVarC,
             0, 0, 0, 0,
             tg_sVarAC, tg_sVarFC, tg_sVarC, tg_hVarAC, tg_hVarFC, tg_hVarC);
   tickCache.saveWrap(tick);
   //endregion
 }
 void X__funcReturn(XFuncFrame*  pFuncFrame ){
+  //region 时钟滴答一下
+  //函数本地时钟滴答一下
+  (pFuncFrame->funcLocalClock)++;
+  //线程级时钟滴答一下
+  tg_t++;
+  //endregion
 
   //region 紧挨着返回前, 滴答一下 携带了 残余栈变量数 , 并写滴答。
   //函数进入滴答 可作为 和 函数返回滴答 做比对，看哪里少插入了X__funcReturn。
-  tg_t++;
   Tick tick(FuncReturn,
-            tg_t,pFuncFrame->L_srcFile,pFuncFrame->L_funcLine,pFuncFrame->L_funcCol,pFuncFrame->L_funcName,
-            pFuncFrame->funcEnterId,pFuncFrame->rTSVarC,
+            tg_t, pFuncFrame->funcLocalClock, pFuncFrame->L_srcFile, pFuncFrame->L_funcLine, pFuncFrame->L_funcCol, pFuncFrame->L_funcName,
+            pFuncFrame->funcEnterId, pFuncFrame->rTSVarC,
             0, (pFuncFrame->rTSVarC)/*残余栈变量数*/, 0, 0,
             tg_sVarAC, tg_sVarFC, tg_sVarC, tg_hVarAC, tg_hVarFC, tg_hVarC);
   tickCache.saveWrap(tick);
