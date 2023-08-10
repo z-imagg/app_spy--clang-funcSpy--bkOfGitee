@@ -8,26 +8,31 @@
 #include <filesystem>
 #include "t_clock_tick.h"
 
-
-/**名称约定
- * I__:即internal__:表示本源文件内部使用的函数
- * X__:表示被外部调用的函数
+//region 名称约定
+/**
+I__:即internal__:表示本源文件内部使用的函数
+X__:表示被外部调用的函数
  */
+//endregion
 
+//region 实现自定义进程内全时间唯一线程id ： 线程安全的全局线程id计数器、  thread_local实现的线程id
 
-//region 自定义线程id实现
-//I__this_thread__get_id:只用作比对，没有业务意义
+  //region I__this_thread__get_id: c++ std自带的线程id 在 进程内当前活着的线程们 中唯一，可能与 死去线程id重复 。 只用作比对，不会使用他，没有业务意义
 std::string I__this_thread__get_id(){
-
   std::thread::id curThreadId = std::this_thread::get_id();
   std::ostringstream outStrStream;
   outStrStream << curThreadId;
   std::string curThreadIdStr = outStrStream.str();
   return curThreadIdStr;
 }
-// static std::atomic<int> 用作全局线程id计数器、  thread_local 线程id：  实现自定义进程内全时间唯一线程id
+//endregion
+
+  //region 全局线程id计数器。 所有线程访问的是同一个计数器变量 ，因此需要std::atomic<>以实现线程安全
 #define FirstThreadId 0
+//全局线程id计数器
 static std::atomic<int> globalThreadIdCounter(FirstThreadId);
+
+//从 全局线程id计数器 获得下一个线程id
 int I__nextThreadId(){
   globalThreadIdCounter++;
   int new_tid=globalThreadIdCounter;
@@ -36,29 +41,52 @@ int I__nextThreadId(){
   printf("I__nextThreadId:: new_tid:%d,curThreadIdStr:%s\n", new_tid,curThreadIdStr.c_str());
   return new_tid;
 }
+//endregion
+
+  //region 当前线程id, 每个线程一份
 #define ThreadIdInitVal -1
-thread_local int currentThreadId=ThreadIdInitVal;//当前线程id
+//当前线程id
+//初始值设定为特定值，是为了判定是否初始化了。
+thread_local int currentThreadId=ThreadIdInitVal;
 int I__curThreadId(){
+  //依据特定的初始值，判定是否初始化了。
   if(currentThreadId==ThreadIdInitVal){
+    //若没有初始化，才问 全局线程id计数器 要一个线程id
     currentThreadId= I__nextThreadId();
   }
+  //如果已经初始化了，说明之前已经获得了线程id，直接返回即可。
   return currentThreadId;
 }
 //endregion
 
-//region 本线程当前变量数目累积值
+//endregion
+
+//region 线程级全局变量
+// ，本线程当前变量数目累积值
+
+  //region 用词说明
 //tg_:thread global:线程级全局变量.
 //AC:Allocate Count:分配的变量数目
 //FC:Free Count:释放的变量数目
 //C:Count:净变量数目， 即 分配-释放
-thread_local int tg_t;//时钟
-//region 描绘调用链条
-thread_local XFuncFrame* tg_curFunc=NULL;//当前正在执行的函数
-thread_local int tg_curChainLen=0;//当前调用链条长度, 开发定位问题用
 //endregion
-thread_local int tg_sVarAC=0;//当前栈变量分配数目 tg_sVarAC: currentStackVarAllocCnt
+
+//线程级 全局时钟
+thread_local int tg_t;
+  //region 描绘调用链条
+//当前正在执行的函数, 等同于 调用栈的栈顶
+thread_local XFuncFrame* tg_curFunc=NULL;
+//当前调用链条长度, 开发定位问题用
+thread_local int tg_curChainLen=0;
+//endregion
+
+  //region 栈变量实时数目
+  //栈变量分配数目、栈变量释放数目、栈变量净分配数目
+//栈变量分配数目 全称: thread global _currentStackVarAllocCnt
+thread_local int tg_sVarAC=0;
 thread_local int tg_sVarFC=0;//当前栈变量释放数目 tg_sVarFC: currentStackVarFreeCnt
 thread_local int tg_sVarC=0;//当前栈变量数目（冗余） tg_sVarC: currentStackVarCnt
+//endregion
 thread_local int tg_hVarAC=0;//当前堆对象分配数目 tg_hVarAC: currentHeapObjAllocCnt, var即obj
 thread_local int tg_hVarFC=0;//当前堆对象释放数目 tg_hVarFC: currentHeapObjcFreeCnt, var即obj
 thread_local int tg_hVarC=0;//当前堆对象数目（冗余）tg_hVarC: currentHeapObjCnt, var即obj
