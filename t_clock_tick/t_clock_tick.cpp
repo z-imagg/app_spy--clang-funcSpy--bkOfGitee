@@ -8,8 +8,6 @@
 #include <filesystem>
 #include "t_clock_tick.h"
 
-#define TRUE 1
-#define FALSE 0
 
 /**名称约定
  * I__:即internal__:表示本源文件内部使用的函数
@@ -172,7 +170,7 @@ public:
     int funcEnterId;
 
     //region 从当前函数 即栈顶 看 向栈底 的 函数调用链条
-    short hasFuncCallChain;
+    bool hasFuncCallChain;
     int *funcEnterIdSeq;
     int funcEnterIdSeqLen;
     //endregion
@@ -213,7 +211,7 @@ public:
             funcName(funcName),
             funcEnterId(funcEnterId),
             //region 默认无调用链条
-            hasFuncCallChain(FALSE),
+            hasFuncCallChain(false),
             funcEnterIdSeq(NULL),
             funcEnterIdSeqLen(0),
             //endregion
@@ -237,21 +235,33 @@ public:
     }
 
     void fillFuncCallChain(int* funcEnterIdSeq, int funcEnterIdSeqLen){
-      this->hasFuncCallChain=TRUE;
+      this->hasFuncCallChain=true;
       this->funcEnterIdSeq=funcEnterIdSeq;
       this->funcEnterIdSeqLen=funcEnterIdSeqLen;
     }
 
+    //此段写出单行格式，需要与 标题行 my_init::title  保持一致，否则csv解析有问题
     void toString(std::string & line){
-      char buf[512];
-      sprintf(buf, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,'%s',%d,%d,'%s'\n",
-              t,funcLocalClock,
-              tickKind,funcEnterId,rTSVarC,
-              dSVarAC, dSVarFC, dHVarAC, dHVarFC,
-              sVarAC, sVarFC, sVarC, hVarAC, hVarFC, hVarC,
-              srcFile, funcLine, funcCol, funcName
-              );
-      line.append(buf);
+      std::ostringstream  oss;
+      oss << t << "," << funcLocalClock << ",";
+      oss << tickKind << "," ;
+      oss << funcEnterId << ",";
+      if(hasFuncCallChain){
+        oss << funcEnterIdSeqLen << ",";
+        oss << "'";
+        for(int i=0; i <funcEnterIdSeqLen; i++){
+          oss << funcEnterIdSeq[i] << ",";
+        }
+        oss << "'";
+        oss << ",";
+      }else{
+        oss <<   ",'',";
+      }
+      oss << rTSVarC << ","  ;
+      oss << dSVarAC << "," << dSVarFC << ","  << dHVarAC << ","  << dHVarFC << ","  ;
+      oss << sVarAC << "," << sVarFC << ","  << sVarC << ","  << hVarAC << ","  << hVarFC << ","  << hVarC << ","  ;
+      oss << "'"<<srcFile<<"'" << "," << funcLine << ","  << funcCol << ","  << "'"<<funcName<<"'"   << "\n"  ;
+      line=oss.str();
       return;
     }
 };
@@ -323,7 +333,7 @@ public:
         fWriter.open(filePath);
 
         //刚打开文件时，写入标题行
-        std::string title("滴答,funcLocalClock,tickKind,funcEnterId,rTSVarC,d栈生,d栈死,d堆生,d堆死,栈生,栈死,栈净,堆生,堆死,堆净,srcFile,funcLine,funcCol,funcName\n");
+        std::string title("滴答,funcLocalClock,tickKind,funcEnterId,funcEnterIdSeqLen,funcEnterIdSeq,rTSVarC,d栈生,d栈死,d堆生,d堆死,栈生,栈死,栈净,堆生,堆死,堆净,srcFile,funcLine,funcCol,funcName\n");
         fWriter << title ;
       }
       return;
