@@ -522,7 +522,7 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
   //endregion
 
   //region 记录调用链条
-  int funcEnterIdSeq[FUNC_CALL_CHAIN_LIMIT];
+  int *funcEnterIdSeq=new int[tg_curChainLen+50];//50是派脑袋的安全间隔。使用完后必须释放.
   int depth;
   I__funcCallChain(pFuncFrame,funcEnterIdSeq,&depth);
   //endregion
@@ -543,7 +543,8 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
             0, 0, 0, 0,
             tg_sVarAC, tg_sVarFC, tg_sVarC, tg_hVarAC, tg_hVarFC, tg_hVarC);
   tick.fillFuncCallChain(funcEnterIdSeq,depth);
-  tickCache.saveWrap(tick);
+  tickCache.saveWrap(tick);//这句话会将调用链条写入磁盘文件
+  delete[] funcEnterIdSeq;//调用链条已写入磁盘文件，此时必须释放。
   //endregion
 }
 void X__funcReturn(XFuncFrame*  pFuncFrame ){
