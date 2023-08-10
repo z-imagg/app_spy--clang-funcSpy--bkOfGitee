@@ -20,6 +20,7 @@
 #include "clang/Basic/SourceManager.h"
 #include "CTk/FuncDesc.h"
 #include "CTk/LocId.h"
+#include "CTk/Var.h"
 
 
 #include <sstream>
@@ -133,7 +134,7 @@ public:
      * @param stmt
      * @return
      */
-    static int varCntInVarDecl(DeclStmt* stmt);
+    static int varCntInVarDecl(DeclStmt* stmt,std::list<Var>& list);
     static void insertIncludeToFileStart(StringRef includeStmtText,FileID fileId, SourceManager &SM, const std::shared_ptr<Rewriter> rewriter_ptr,bool& insertResult);
     static void insertIncludeToFileStartByLoc(StringRef includeStmtText,SourceLocation Loc, SourceManager &SM, const std::shared_ptr<Rewriter> rewriter_ptr);
     static bool getSourceFilePathAtLoc(SourceLocation Loc, const SourceManager &SM,StringRef& fn);

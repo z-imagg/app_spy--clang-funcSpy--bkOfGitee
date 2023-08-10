@@ -235,6 +235,7 @@ bool CTkVst::processStmt(Stmt *stmt,const char* whoInserted){
 
   //region 此时才对当前语句前插入tick语句, 并结束本函数
     int stackVarAllocCnt=0;
+  std::list<Var> stackVarList;
     int stackVarFreeCnt=0;
     int heapObjAllocCnt=0;
     int heapObjcFreeCnt=0;
@@ -243,7 +244,7 @@ bool CTkVst::processStmt(Stmt *stmt,const char* whoInserted){
       if (DeclStmt *declStmt = dyn_cast<DeclStmt>(stmt)) {//判断271
 //        DeclStmt *declStmt = static_cast<DeclStmt *>(stmt);
         //取得声明语句declStmt 中声明的变量个数. 比如 声明语句"int x=0,y;"中声明了2个变量
-        stackVarAllocCnt=Util::varCntInVarDecl(declStmt);
+        stackVarAllocCnt=Util::varCntInVarDecl(declStmt, stackVarList);
       }
     }
   bool insertResult=insertBefore_X__tick(
@@ -297,7 +298,8 @@ bool CTkVst::TraverseCompoundStmt(CompoundStmt *compoundStmt  ){
     if(Stmt::DeclStmtClass == subStmtClass){
       DeclStmt* declStmt=static_cast<DeclStmt*> (subStmt);
       //取得声明语句subDeclStmt 中声明的变量个数. 比如 声明语句"int x=0,y;"中声明了2个变量
-      declStmtCnt+=Util::varCntInVarDecl(declStmt);
+      std::list<Var> varList;
+      declStmtCnt+=Util::varCntInVarDecl(declStmt,varList);
     }
 //    Util::printStmt(*Ctx,CI,"查看组合语句内子语句类型","",subStmt,true);
   }

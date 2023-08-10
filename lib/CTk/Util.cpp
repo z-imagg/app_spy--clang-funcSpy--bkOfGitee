@@ -7,6 +7,7 @@
 #include "clang/Basic/SourceManager.h"
 #include "clang/Frontend/FrontendPluginRegistry.h"
 #include "CTk/FuncDesc.h"
+#include "CTk/Var.h"
 #include <clang/AST/ParentMapContext.h>
 
 #include <string>
@@ -338,16 +339,7 @@ bool Util::parentKindIsSame(ASTContext *Ctx, const Stmt* stmt, const ASTNodeKind
   return false;
 }
 
-class Var{
-public:
-    std::string varType;
-    std::string varName;
 
-    Var(const std::string &varType, const std::string &varName) : varType(varType), varName(varName) {
-
-    }
-
-};
 
 /**取得声明语句中声明的变量个数
  * 在声明语句 中 声明的变量个数
@@ -359,24 +351,23 @@ public:
  * @param stmt
  * @return
  */
-int Util::varCntInVarDecl(DeclStmt* declStmt) {
+int Util::varCntInVarDecl(DeclStmt* declStmt,std::list<Var>& list) {
 //  DeclStmt *declStmt = static_cast<DeclStmt *>(stmt);
   if(declStmt==NULL){
     return 0;
   }
-  std::list<Var> list;
 
-  int varDeclCnt=0;
 
   const DeclStmt::decl_range &declRange = declStmt->decls();
 
+  //过滤: 留下变量声明
   std::list<const Decl* > varDeclLs;
   std::copy_if(declRange.begin(), declRange.end(), std::back_inserter(varDeclLs), [](const Decl* declK) {
       const VarDecl* varDecl = clang::dyn_cast<clang::VarDecl>(declK);
       return varDecl;
   });
 
-  varDeclCnt=std::distance(varDeclLs.begin(),varDeclLs.end());
+  //转换:取变量声明中 类型、名字
   std::transform(
           varDeclLs.begin(),
           varDeclLs.end(),
@@ -400,7 +391,8 @@ std::back_inserter(list),
     }
   );
 
-
+  int varDeclCnt=varDeclLs.size();
+  //无关业务的检测
   Decl *decl0 = *(declStmt->decl_begin());
   if(decl0 && decl0->getKind()==Decl::Kind::Var){
     //如果当前语句是声明语句, 且第一个子声明是变量声明语句,则栈变量分配个数填写1
@@ -415,7 +407,7 @@ std::back_inserter(list),
   }
 
 
-    return 0;
+    return varDeclCnt;
 }
 void Util::insertIncludeToFileStartByLoc(StringRef includeStmtText,SourceLocation Loc, SourceManager &SM, const std::shared_ptr<Rewriter> mRewriter_ptr){
   FileID fileId = SM.getFileID(Loc);
