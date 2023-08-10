@@ -338,12 +338,12 @@ bool Util::parentKindIsSame(ASTContext *Ctx, const Stmt* stmt, const ASTNodeKind
   return false;
 }
 
-class Item{
+class Var{
 public:
     std::string varType;
     std::string varName;
 
-    Item(const std::string &varType, const std::string &varName) : varType(varType), varName(varName) {
+    Var(const std::string &varType, const std::string &varName) : varType(varType), varName(varName) {
 
     }
 
@@ -364,7 +364,7 @@ int Util::varCntInVarDecl(DeclStmt* declStmt) {
   if(declStmt==NULL){
     return 0;
   }
-  std::list<Item> list;
+  std::list<Var> list;
 
   int varDeclCnt=0;
 
@@ -372,17 +372,18 @@ int Util::varCntInVarDecl(DeclStmt* declStmt) {
 
   std::list<const Decl* > varDeclLs;
   std::copy_if(declRange.begin(), declRange.end(), std::back_inserter(varDeclLs), [](const Decl* declK) {
-      const auto* varDecl = clang::dyn_cast<clang::VarDecl>(declK);
+      const VarDecl* varDecl = clang::dyn_cast<clang::VarDecl>(declK);
       return varDecl;
   });
 
+  varDeclCnt=std::distance(varDeclLs.begin(),varDeclLs.end());
   std::transform(
-  declRange.begin(),
-  declRange.end(),
+          varDeclLs.begin(),
+          varDeclLs.end(),
 std::back_inserter(list),
-[&varDeclCnt](const Decl* declK){
-    if (const auto* varDecl = clang::dyn_cast<clang::VarDecl>(declK)) {
-      varDeclCnt++;
+[](const Decl* declK){
+    const VarDecl* varDecl = clang::dyn_cast<clang::VarDecl>(declK);
+    assert(varDecl);
       // 获取变量类型
       const clang::QualType qualType = varDecl->getType();
       const clang::Type* type = qualType.getTypePtr();
@@ -394,29 +395,11 @@ std::back_inserter(list),
 
       std::cout << fmt::format("变量类型:{},变量名:{}",typeName,varName)  << std::endl;//这里加条件断点, 条件为: conditionBreakPoint
       //变量类型:std::string,变量名:varName888
-    }
 
-      return Item();
+      return Var(typeName, varName);
     }
   );
 
-  for (const auto* decl : declStmt->decls()) {
-    // 判断是否为变量声明
-    if (const auto* varDecl = clang::dyn_cast<clang::VarDecl>(decl)) {
-      varDeclCnt++;
-      // 获取变量类型
-      const clang::QualType qualType = varDecl->getType();
-      const clang::Type* type = qualType.getTypePtr();
-      const std::string typeName = qualType.getAsString();
-
-      // 获取变量名
-      const std::string varName = varDecl->getNameAsString();
-      bool conditionBreakPoint=varName=="varName888";
-
-      std::cout << fmt::format("变量类型:{},变量名:{}",typeName,varName)  << std::endl;//这里加条件断点, 条件为: conditionBreakPoint
-      //变量类型:std::string,变量名:varName888
-    }
-  }
 
   Decl *decl0 = *(declStmt->decl_begin());
   if(decl0 && decl0->getKind()==Decl::Kind::Var){
