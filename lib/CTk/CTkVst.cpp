@@ -807,6 +807,10 @@ bool CTkVst::I__TraverseCXXMethodDecl(CXXMethodDecl* cxxMethDecl,const char* who
 
 
 bool CTkVst::TraverseLambdaExpr(LambdaExpr *lambdaExpr) {
+  if(sizeof(lambdaExpr)<9999999){//以这样一句话暂时跳过lambda
+    return false;
+  }
+
   //跳过非MainFile
   bool _LocFileIDEqMainFileID=Util::LocFileIDEqMainFileID(SM,lambdaExpr->getBeginLoc());
   if(!_LocFileIDEqMainFileID){
