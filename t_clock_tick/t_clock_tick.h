@@ -2,15 +2,37 @@
 #ifndef _T_CLOCK_TICK_H
 #define _T_CLOCK_TICK_H
 
+class XFuncFrame;
+void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,int funcCol,char * funcName);
+
+/////函数X__funcEnter、X__funcReturn用于:  return语句 应该释放 本函数当前已经申请的所有栈变量。
+/**
+ * 函数X__funcEnter插入在函数第一句话之前
+ */
+void X__funcEnter(XFuncFrame*  pFuncFrame );
+
+/**
+ * 函数X__funcReturn插入在函数的每条return语句之前，以及void函数的末尾之前
+ */
+void X__funcReturn(XFuncFrame* pFuncFrame );
 /**
  *  函数一次调用 所持有的局部变量们、本次函数调用唯一编号；该函数定位信息
  */
 class XFuncFrame{
 public:
 
-    explicit XFuncFrame(int funcLocalClock) : funcLocalClock(funcLocalClock) {}
+    explicit XFuncFrame(char * srcFile,int funcLine,int funcCol,char * funcName)
+    :
+    L_srcFile(srcFile),
+    L_funcLine(funcLine),
+    L_funcCol(funcCol),
+    L_funcName(funcName)
+    {
+      X__FuncFrame_initFLoc(this,srcFile,funcCol,funcCol,funcName);
+      X__funcEnter(this/*函入*/);
+    }
     ~XFuncFrame() {
-
+      X__funcReturn(this/*函出*/);
     }
 
 
@@ -65,15 +87,5 @@ public:
  */
 void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFrame* pFuncFrame);
 
-void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,int funcCol,char * funcName);
 
-/////函数X__funcEnter、X__funcReturn用于:  return语句 应该释放 本函数当前已经申请的所有栈变量。
-/**
- * 函数X__funcEnter插入在函数第一句话之前
- */
-void X__funcEnter(XFuncFrame*  pFuncFrame );
-/**
- * 函数X__funcReturn插入在函数的每条return语句之前，以及void函数的末尾之前
- */
-void X__funcReturn(XFuncFrame* pFuncFrame );
 #endif //_T_CLOCK_TICK_H
