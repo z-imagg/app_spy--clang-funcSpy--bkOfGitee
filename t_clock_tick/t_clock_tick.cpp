@@ -6,6 +6,7 @@
 #include <atomic>
 #include <fstream>
 #include <filesystem>
+#include <cassert>
 #include "t_clock_tick.h"
 
 
@@ -484,10 +485,11 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
   // tick.h中可以 extern "C++" class  XFuncFrame{ 这里写构造函数、析构函数}
   // 但链接main.o时, 估计:  要么用g++  要么用gcc并指定libstdc++
 
-  if(tg_curFunc!=pFuncFrame){
-    tg_curChainLen--;
-    tg_curFunc=pFuncFrame;
-  }
+  assert(tg_curFunc==pFuncFrame);
+//  if(tg_curFunc!=pFuncFrame){
+//    tg_curChainLen--;
+//    tg_curFunc=pFuncFrame;
+//  }
   //endregion
 
   //更新 当前栈变量分配数目
