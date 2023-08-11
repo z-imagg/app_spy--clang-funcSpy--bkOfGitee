@@ -163,10 +163,12 @@ public:
     /**
      *  该函数定位信息, 等同于该函数id
      */
-    char * srcFile;
+    //日志不是立即写入的，而是缓存了一段时间批量写入的。因此tick对象中的字段不能引用快速被释放的内存区域。所以不能用char* ，应该要string
+    std::string srcFile;
     int funcLine;
     int funcCol;
-    char * funcName;
+    //日志不是立即写入的，而是缓存了一段时间批量写入的。因此tick对象中的字段不能引用快速被释放的内存区域。所以不能用char* ，应该要string
+    std::string funcName;
     /**
      * 本次函数调用唯一编号
      * int足够吗？(差不多吧). 用得着long?
@@ -211,9 +213,11 @@ public:
             tickKind(tickKind),
             t(_t),
             funcLocalClock(_funcLocalClock),
+            //日志不是立即写入的，而是缓存了一段时间批量写入的。因此tick对象中的字段不能引用快速被释放的内存区域。所以要从短命的char*复制到string字段
             srcFile(srcFile),
             funcLine(funcLine),
             funcCol(funcCol),
+            //日志不是立即写入的，而是缓存了一段时间批量写入的。因此tick对象中的字段不能引用快速被释放的内存区域。所以要从短命的char*复制到string字段
             funcName(funcName),
             funcEnterId(funcEnterId),
             //region 默认无调用链条
