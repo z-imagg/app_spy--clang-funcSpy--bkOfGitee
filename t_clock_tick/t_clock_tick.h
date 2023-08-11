@@ -2,7 +2,7 @@
 #ifndef _T_CLOCK_TICK_H
 #define _T_CLOCK_TICK_H
 
-extern "C++" class XFuncFrame;
+class XFuncFrame;
 void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,int funcCol,char * funcName);
 
 /////函数X__funcEnter、X__funcReturn用于:  return语句 应该释放 本函数当前已经申请的所有栈变量。
@@ -18,7 +18,7 @@ void X__funcReturn(XFuncFrame* pFuncFrame );
 /**
  *  函数一次调用 所持有的局部变量们、本次函数调用唯一编号；该函数定位信息
  */
-extern "C++" class XFuncFrame{
+class XFuncFrame{
 public:
 
     explicit XFuncFrame(char * srcFile,int funcLine,int funcCol,char * funcName)
@@ -70,10 +70,6 @@ public:
 
 };
 
-#ifndef __cplusplus
-//如果当前是.c文件包含了此.h,  则强制使用#函数名到c++名字
-#define X__t_clock_tick  _Z15X__t_clock_tickiiiiP11_XFuncFrame
-#endif
 
 /**
  *
