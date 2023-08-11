@@ -175,7 +175,9 @@ public:
 
     //region 从当前函数 即栈顶 看 向栈底 的 函数调用链条
     bool hasFuncCallChain;
-    int *funcEnterIdSeq;
+    //funcEnterIdSeq必须是字符串，不能是外面给的很快被释放的new int[]
+    //  因为tick是被缓存的, 写盘并不是立即的, 必须等到写盘时刻还没被释放.
+    std::string funcEnterIdSeq;
     int funcEnterIdSeqLen;
     //endregion
 
@@ -216,7 +218,7 @@ public:
             funcEnterId(funcEnterId),
             //region 默认无调用链条
             hasFuncCallChain(false),
-            funcEnterIdSeq(NULL),
+            funcEnterIdSeq(""),
             funcEnterIdSeqLen(0),
             //endregion
             rTSVarC(_rTSVarC),
@@ -238,11 +240,6 @@ public:
       return;
     }
 
-    void fillFuncCallChain(int* funcEnterIdSeq, int funcEnterIdSeqLen){
-      this->hasFuncCallChain=true;
-      this->funcEnterIdSeq=funcEnterIdSeq;
-      this->funcEnterIdSeqLen=funcEnterIdSeqLen;
-    }
 
     //此段写出单行格式，需要与 标题行 my_init::title  保持一致，否则csv解析有问题
     void toString(std::string & line){
@@ -250,17 +247,11 @@ public:
       oss << t << "," << funcLocalClock << ",";
       oss << tickKind << "," ;
       oss << funcEnterId << ",";
-      if(hasFuncCallChain){
+
+        oss << hasFuncCallChain << ",";
         oss << funcEnterIdSeqLen << ",";
-        oss << "'";
-        for(int i=0; i <funcEnterIdSeqLen; i++){
-          oss << funcEnterIdSeq[i] << "#";
-        }
-        oss << "'";
-        oss << ",";
-      }else{
-        oss <<   ",'',";
-      }
+        oss << "'" << funcEnterIdSeq << "'" << ",";
+
       oss << rTSVarC << ","  ;
       oss << dSVarAC << "," << dSVarFC << ","  << dHVarAC << ","  << dHVarFC << ","  ;
       oss << sVarAC << "," << sVarFC << ","  << sVarC << ","  << hVarAC << ","  << hVarFC << ","  << hVarC << ","  ;
@@ -337,7 +328,7 @@ public:
         fWriter.open(filePath);
 
         //刚打开文件时，写入标题行
-        std::string title("滴答,funcLocalClock,tickKind,funcEnterId,funcEnterIdSeqLen,funcEnterIdSeq,rTSVarC,d栈生,d栈死,d堆生,d堆死,栈生,栈死,栈净,堆生,堆死,堆净,srcFile,funcLine,funcCol,funcName\n");
+        std::string title("滴答,funcLocalClock,tickKind,funcEnterId,hasFuncCallChain,funcEnterIdSeqLen,funcEnterIdSeq,rTSVarC,d栈生,d栈死,d堆生,d堆死,栈生,栈死,栈净,堆生,堆死,堆净,srcFile,funcLine,funcCol,funcName\n");
         fWriter << title ;
       }
       return;
@@ -391,6 +382,9 @@ public:
       _flushIf(full);
 
       /////当前请求进缓存
+      //注意这里实际上调用了默认复制构造函数, 所以即使当真实写盘时,右侧tick早已经释放了, 依然不会有问题。
+      //  写盘时，用的时cache[k]中的Tick复制件, 所以没问题.
+      //  默认复制构造函数 只是简单的字段互相赋值.
       cache[curEndIdx]=tick;
       ++curEndIdx;
 
@@ -552,6 +546,17 @@ void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,
 
   pFuncFrame->rTSVarC=0;
 }
+void I__int_join(int* funcEnterIdSeq,int arrSize,int funcEnterIdSeqLen,std::string& out){
+  assert(arrSize>=funcEnterIdSeqLen);
+  std::ostringstream  oss;
+  oss << "'";
+  for(int i=0; i <funcEnterIdSeqLen; i++){
+    oss << funcEnterIdSeq[i] << "#";
+  }
+  oss << "'";
+  out=oss.str();
+  return;
+}
 void X__funcEnter( XFuncFrame*  pFuncFrame){
   //region 时钟滴答一下
   //函数本地时钟滴答一下
@@ -585,15 +590,21 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
 
   //region 记录调用链条
   int *funcEnterIdSeq=NULL;
-  int depth=0;
+  int funcEnterIdSeqLen=0;
   bool 链条短吗=tg_curChainLen<FUNC_CALL_CHAIN_LIMIT;
   if(链条短吗){
     #define 派脑袋的安全间隔 50
     //new出来的使用完后必须释放. 这里最好不要占用调用栈中大量空间，因为递归调用链条会很长，可能会栈溢出。
-    funcEnterIdSeq=new int[tg_curChainLen+派脑袋的安全间隔];
-    I__funcCallChain(pFuncFrame,funcEnterIdSeq,&depth);
+    int ArraySize=tg_curChainLen+派脑袋的安全间隔;
+    funcEnterIdSeq=new int[ArraySize];
+    //获取调用链条
+    I__funcCallChain(pFuncFrame,funcEnterIdSeq,&funcEnterIdSeqLen);
 
-    tick.fillFuncCallChain(funcEnterIdSeq,depth);
+    //填充调用链条, 注意 不要长期使用这里的短暂的new int[], 而是转为std::string放在tick中, 一直到写盘时真正才用该string
+    I__int_join(funcEnterIdSeq,ArraySize,funcEnterIdSeqLen,tick.funcEnterIdSeq);
+    tick.hasFuncCallChain=true;
+    tick.funcEnterIdSeqLen=funcEnterIdSeqLen;
+
   }
   //endregion
 
