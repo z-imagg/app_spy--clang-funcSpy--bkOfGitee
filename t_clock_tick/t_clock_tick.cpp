@@ -254,7 +254,7 @@ public:
         oss << funcEnterIdSeqLen << ",";
         oss << "'";
         for(int i=0; i <funcEnterIdSeqLen; i++){
-          oss << funcEnterIdSeq[i] << ",";
+          oss << funcEnterIdSeq[i] << "#";
         }
         oss << "'";
         oss << ",";
