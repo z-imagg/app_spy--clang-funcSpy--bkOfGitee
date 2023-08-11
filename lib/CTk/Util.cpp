@@ -18,6 +18,13 @@
 using namespace llvm;
 using namespace clang;
 
+bool Util::endsWith(const std::string& str, const std::string& suffix) {
+  if (str.length() < suffix.length()) {
+    return false;
+  }
+  return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+}
+
 bool Util::LocIdSetNotContains(std::unordered_set<LocId,LocId>& _set, LocId locId){
   bool contains=(_set.count(locId) <= 0);
   return contains;

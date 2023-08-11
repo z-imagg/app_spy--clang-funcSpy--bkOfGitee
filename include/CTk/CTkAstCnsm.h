@@ -50,6 +50,10 @@ public:
       FileID mainFileId;
       std::string filePath;
       Util::getMainFileIDMainFilePath(SM,mainFileId,filePath);
+      if(Util::endsWith(filePath,".c")){
+        std::cout << fmt::format("忽略c语言源码文件，文件路径:{}\n",filePath)  ;
+        return ;
+      }
 
       //若是系统文件 或 tick文件则跳过
       if(Util::isSysSrcFile(filePath)  || Util::isTickSrcFile(filePath)){

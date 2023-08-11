@@ -32,6 +32,8 @@ using namespace clang;
 
 class Util {
 public:
+    static bool endsWith(const std::string& str, const std::string& suffix);
+
     static bool LocIdSetNotContains(std::unordered_set<LocId,LocId>& _set, LocId locId);
     static void getMainFileIDMainFilePath(SourceManager& SM,FileID& mainFileId,std::string& mainFilePath);
     static int childrenCntOfCompoundStmt(CompoundStmt* stmt);
