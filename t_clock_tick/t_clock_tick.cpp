@@ -204,7 +204,7 @@ public:
     int dHVarAC;//单滴答内堆变量分配数目
     int dHVarFC;//单滴答内堆变量分配数目
 public:
-    Tick(TickKind tickKind, int _t, int _funcLocalClock, char * srcFile, int funcLine, int funcCol, char * funcName,
+    Tick(TickKind tickKind, int _t, int _funcLocalClock, std::string srcFile, int funcLine, int funcCol, std::string funcName,
          int funcEnterId, int _rTSVarC,
          int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC,
          int sVarAC, int sVarFC, int sVarCnt, int hVarAC, int hVarFC, int hVarC
@@ -536,7 +536,7 @@ void X__t_clock_tick(int dSVarAC, int dSVarFC, int dHVarAC, int dHVarFC, XFuncFr
  * @param funcLine
  * @param funcCol
  */
-void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,int funcCol,char * funcName){
+void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,std::string srcFile,int funcLine,int funcCol,std::string funcName){
   pFuncFrame->funcLocalClock=0;
   pFuncFrame->prevFunc=NULL;
 

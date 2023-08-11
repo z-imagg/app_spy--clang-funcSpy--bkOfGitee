@@ -1,9 +1,10 @@
 // cp /pubx/clang-ctk/t_clock_tick/t_clock_tick.h /pubx/llvm-project/llvm/include/t_clock_tick.h
 #ifndef _T_CLOCK_TICK_H
 #define _T_CLOCK_TICK_H
+#include <string>
 
 class XFuncFrame;
-void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,char * srcFile,int funcLine,int funcCol,char * funcName);
+void X__FuncFrame_initFLoc( XFuncFrame*  pFuncFrame,std::string srcFile,int funcLine,int funcCol,std::string funcName);
 
 /////函数X__funcEnter、X__funcReturn用于:  return语句 应该释放 本函数当前已经申请的所有栈变量。
 /**
@@ -21,7 +22,7 @@ void X__funcReturn(XFuncFrame* pFuncFrame );
 class XFuncFrame{
 public:
 
-    explicit XFuncFrame(char * srcFile,int funcLine,int funcCol,char * funcName)
+    explicit XFuncFrame(std::string srcFile,int funcLine,int funcCol,std::string funcName)
     :
     L_srcFile(srcFile),
     L_funcLine(funcLine),
@@ -49,10 +50,10 @@ public:
     /**
      *  该函数定位信息, 等同于该函数id
      */
-    char * L_srcFile;
+    std::string L_srcFile;
     int L_funcLine;
     int L_funcCol;
-    char * L_funcName;
+    std::string L_funcName;
 
     /**
      * 本次函数调用唯一编号
