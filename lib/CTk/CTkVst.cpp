@@ -93,7 +93,7 @@ bool CTkVst::insert_X__funcReturn(bool before, LocId funcBodyRBraceLocId, Source
   //region 构造插入语句
   Util::emptyStrIfNullStr(whoInserted);
   std::string cStr_inserted=fmt::format(
-          "X__funcReturn(&xFuncFrame/*函出*/);/*{}*/",
+          "/*局部变量xFuncFrame超出作用域后,析构函数自动被调用以完成 函出,无需手工调用X__funcReturn. {}*/",
           //如果有提供，插入者信息，则放在注释中.
           whoInserted
   );
@@ -116,7 +116,7 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, Sour
   Util::emptyStrIfNullStr(whoInserted);
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
-          "XFuncFrame xFuncFrame; X__FuncFrame_initFLoc(&xFuncFrame,\"{}\",{},{},\"{}\"); X__funcEnter(&xFuncFrame/*函入*/);/*{}*/",
+          "XFuncFrame xFuncFrame(/*函入*/\"{}\",{},{},\"{}\");/*{}*/",
           funcLocId.filePath,funcLocId.line,funcLocId.column,funcName,
           //如果有提供，插入者信息，则放在注释中.
           whoInserted

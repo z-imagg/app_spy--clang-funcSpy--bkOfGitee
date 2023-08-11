@@ -5,7 +5,16 @@
 /**
  *  函数一次调用 所持有的局部变量们、本次函数调用唯一编号；该函数定位信息
  */
-struct _XFuncFrame{
+class XFuncFrame{
+public:
+
+    explicit XFuncFrame(int funcLocalClock) : funcLocalClock(funcLocalClock) {}
+    ~XFuncFrame() {
+
+    }
+
+
+public:
     //region 本次函数调用内的局部时钟，主要用途 衡量本函数执行语句数目.
     //函数的本地时钟
     int funcLocalClock;
@@ -36,8 +45,8 @@ struct _XFuncFrame{
      * rT:realTime
      */
     int rTSVarC;
+
 };
-typedef struct _XFuncFrame XFuncFrame;
 
 #ifndef __cplusplus
 //如果当前是.c文件包含了此.h,  则强制使用#函数名到c++名字
