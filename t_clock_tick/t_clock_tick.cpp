@@ -593,14 +593,13 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
             tg_sVarAC, tg_sVarFC, tg_sVarC, tg_hVarAC, tg_hVarFC, tg_hVarC);
 
   //region 记录调用链条
-  int *funcEnterIdSeq=NULL;
   int funcEnterIdSeqLen=0;
   bool 链条短吗=tg_curChainLen<FUNC_CALL_CHAIN_LIMIT;
   if(链条短吗){
     #define 派脑袋的安全间隔 50
     //new出来的使用完后必须释放. 这里最好不要占用调用栈中大量空间，因为递归调用链条会很长，可能会栈溢出。
     int ArraySize=tg_curChainLen+派脑袋的安全间隔;
-    funcEnterIdSeq=new int[ArraySize];
+    int funcEnterIdSeq[ArraySize];
     //获取调用链条
     I__funcCallChain(pFuncFrame,funcEnterIdSeq,&funcEnterIdSeqLen);
 
@@ -613,9 +612,6 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
   //endregion
 
   tickCache.saveWrap(tick);//这句话会将调用链条写入磁盘文件
-  if(链条短吗 && funcEnterIdSeq){
-    delete[] funcEnterIdSeq;//调用链条已写入磁盘文件，此时必须释放刚new出来的数组， 否则没机会了。
-  }
   //endregion
 }
 void X__funcReturn(XFuncFrame*  pFuncFrame ){
