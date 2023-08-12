@@ -596,10 +596,8 @@ void X__funcEnter( XFuncFrame*  pFuncFrame){
   int funcEnterIdSeqLen=0;
   bool 链条短吗=tg_curChainLen<FUNC_CALL_CHAIN_LIMIT;
   if(链条短吗){
-    #define 派脑袋的安全间隔 50
-    //new出来的使用完后必须释放. 这里最好不要占用调用栈中大量空间，因为递归调用链条会很长，可能会栈溢出。
-    int ArraySize=tg_curChainLen+派脑袋的安全间隔;
-    int funcEnterIdSeq[ArraySize];
+    int ArraySize=FUNC_CALL_CHAIN_LIMIT;
+    int funcEnterIdSeq[FUNC_CALL_CHAIN_LIMIT];
     //获取调用链条
     I__funcCallChain(pFuncFrame,funcEnterIdSeq,&funcEnterIdSeqLen);
 
