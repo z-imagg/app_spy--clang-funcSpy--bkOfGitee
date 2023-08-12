@@ -420,7 +420,7 @@ void I__funcCallChain(XFuncFrame* pCurFFrm,int* funcEnterIdSeq,int* depth){
     k=k->prevFunc;
   }
 
-  (*depth)=j;
+  (*depth)=j<=0?0:j-1;
   return;
 }
 //endregion
