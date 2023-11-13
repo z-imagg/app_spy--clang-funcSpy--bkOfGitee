@@ -76,8 +76,11 @@ public:
       //时钟函数只插入一次，不重复插入：
       //若已经有时钟函数调用，则标记为已处理，且直接返回，不做任何处理。
       {
-      assert(CollectIncMacro_PPCb::HasIncFuncIdBaseHInited);//断言：进入 本函数HandleTranslationUnit 时，预处理回调CollectIncMacro_PPCb 必须已经被调用
-      if(CollectIncMacro_PPCb::HasIncFuncIdBaseHInited && CollectIncMacro_PPCb::HasIncFuncIdBaseH){
+      //此时想要使用方法CollectIncMacro_PPCb::PragmaMessage的计算结果pragma_message_set，因此必须断言方法CollectIncMacro_PPCb::PragmaMessage必须已经被调用过
+      assert(CollectIncMacro_PPCb::PragmaMessageCalled);
+
+      bool hasPragmaMsg = CollectIncMacro_PPCb::pragma_message_set.find(c.NameSpace_funcIdAsmIns) != CollectIncMacro_PPCb::pragma_message_set.end();
+      if(hasPragmaMsg){
           //若已经有#include "funcIdBase.h"，则标记为已处理，且直接返回，不做任何处理。
         std::cout << fmt::format("跳过，因为此文件已经被处理, 文件路径:{} 已经包含头文件 {}\n",filePath,c.funcIdBaseH) ;
         return;
@@ -113,7 +116,7 @@ public:
 //////////////////3.插入包含语句
 
       bool insertResult;
-      Util::insertIncludeToFileStart(c.IncStmt_funcIdBaseH, mainFileId, SM, insertVst.mRewriter_ptr,insertResult);//此时  insertVst.mRewriter.getRewriteBufferFor(mainFileId)  != NULL， 可以做插入
+      Util::insertIncludeToFileStart(c.PrgMsgStmt_funcIdAsmIns, mainFileId, SM, insertVst.mRewriter_ptr,insertResult);//此时  insertVst.mRewriter.getRewriteBufferFor(mainFileId)  != NULL， 可以做插入
       std::string msg=fmt::format("插入include到文件{},对mainFileId:{},结果:{}\n",filePath,mainFileId.getHashValue(),insertResult);
       std::cout<< msg ;
 

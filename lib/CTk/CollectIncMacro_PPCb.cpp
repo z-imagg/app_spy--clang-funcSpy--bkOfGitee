@@ -10,41 +10,45 @@
 #include "CTk/Constant.h"
 
 
+
 using namespace clang;
 
-    //预处理回调收集#includee 以判断case起止范围内 有无#i
-    void CollectIncMacro_PPCb::InclusionDirective(SourceLocation HashLoc, const Token &IncludeTok, StringRef FileName, bool IsAngled,
-                            CharSourceRange FilenameRange, Optional<FileEntryRef> File, StringRef SearchPath,
-                            StringRef RelativePath, const Module *Imported,
-                            SrcMgr::CharacteristicKind FileType)   {
-      //region 方便变量
-      SourceManager &SM = CI.getSourceManager();
-      //endregion
+    void CollectIncMacro_PPCb::PragmaMessage(SourceLocation Loc, StringRef namespaceSR, PPCallbacks::PragmaMessageKind msgKind, StringRef msgSR) {
+        //region 方便变量
+        SourceManager &SM = CI.getSourceManager();
+        //endregion
 
-      //region 获取主文件ID,文件路径
-      FileID mainFileId;
-      std::string filePath;
-      Util::getMainFileIDMainFilePath(SM,mainFileId,filePath);
-      //endregion
+        //region 获取主文件ID,文件路径
+        FileID mainFileId;
+        std::string filePath;
+        Util::getMainFileIDMainFilePath(SM,mainFileId,filePath);
+        //endregion
 
-      //region 跳过非主文件
-      if(!SM.isWrittenInMainFile(HashLoc)){
-        return;
-      }
-      //endregion
-
-      Constant c;
-      //region 收集 #include指令 位置
-        HasIncFuncIdBaseHInited=true;
-//        std::cout << "Include指令:" << FileName.str() <<  "," << IncludeTok.getName() << std::endl;//开发打印日志
-        if(!HasIncFuncIdBaseH){//防止其他#include xxx.h 破坏已经发现了其实有#include funcIdBase.h的正向结果了
-            HasIncFuncIdBaseH = (c.funcIdBaseH == FileName);
+        //region 跳过非主文件
+        if(!SM.isWrittenInMainFile(Loc)){
+            return;
         }
-      //endregion
+        //endregion
+
+        if(PPCallbacks::PragmaMessageKind::PMK_Message != msgKind){
+            return;
+        }
+
+        //region 收集  #pragma message
+        PragmaMessageCalled=true;
+        auto msg=msgSR.str();
+        auto namespac=namespaceSR.str();
+
+        auto msgFull=CollectIncMacro_PPCb::pragmaMsgFull(namespac,msg);
+
+        pragma_message_set.insert(msgFull);
+        std::cout << fmt::format("namespaceSR:{} , msgSR:{}, msgKind:{}, msgFull:{}\n", namespaceSR.str(), msgSR.str() , (int)msgKind, msgFull) ;
+
+        //endregion
     }
 
+bool CollectIncMacro_PPCb::PragmaMessageCalled= false;
+
+std::set<std::string> CollectIncMacro_PPCb::pragma_message_set;
 
 
-
-bool CollectIncMacro_PPCb::HasIncFuncIdBaseHInited= false;
-bool CollectIncMacro_PPCb::HasIncFuncIdBaseH;

@@ -14,21 +14,35 @@ class CollectIncMacro_PPCb : public clang::PPCallbacks {
 public:
     CompilerInstance &CI;
 
-    static bool HasIncFuncIdBaseHInited;
-    static bool HasIncFuncIdBaseH;
+
+
 
     explicit CollectIncMacro_PPCb(CompilerInstance &_CI) : CI(_CI) {
 
     }
 
-    //预处理回调收集#includee 以判断case起止范围内 有无#i
-    void InclusionDirective(SourceLocation HashLoc, const Token &IncludeTok, StringRef FileName, bool IsAngled,
-                            CharSourceRange FilenameRange, Optional<FileEntryRef> File, StringRef SearchPath,
-                            StringRef RelativePath, const Module *Imported,
-                            SrcMgr::CharacteristicKind FileType) override;
+    /**
+     * PragmaMessageCalled: 方法PragmaMessage是否被回调过
+     */
+    static bool PragmaMessageCalled;
+    void PragmaMessage(SourceLocation Loc, StringRef namespaceSR, PPCallbacks::PragmaMessageKind msgKind, StringRef msgSR) ;
 
+    /** pragma_message_set 是 方法PragmaMessage 被回调后的结果
+     * 必须要在 方法PragmaMessage 被回调后，才应该使用 pragma_message_set
+     */
+    static std::set<std::string> pragma_message_set;
 
-    static bool hasInclusionDirective(SourceManager& SM, SourceRange range);
+    /**
+     * pragmaMsgFull决定了Constant::NameSpace_funcIdAsmIns的值的样式是 "命名空间:pragmaMessgae"
+     * @param namespac
+     * @param pragmaMessage
+     * @return
+     */
+    static std::string pragmaMsgFull(std::string namespac, std::string pragmaMessage){
+        auto msgFull=fmt::format("{}:{}",namespac,pragmaMessage);
+        return msgFull;
+    }
+
 };
 
 
