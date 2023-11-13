@@ -24,11 +24,11 @@ public:
 
     std::string to_string();
 public:
-//    Decl::Kind declKind;
-//    Stmt::StmtClass stmtClass;
+    std::string filePath;
+    int srcFileId;
+
     int line;
     int column;
-    std::string filePath;
     /* locationId 与 <filePath,line,column> 一一对应 */
     int locationId;
 
@@ -38,7 +38,7 @@ public:
     LocId( ){};
     LocId(
 //            Decl::Kind declKind, Stmt::StmtClass stmtClass,
-            std::string filePath,int line, int column);
+            std::string filePath,int srcFileId, int line, int column);
 
 
     // 重写哈希函数

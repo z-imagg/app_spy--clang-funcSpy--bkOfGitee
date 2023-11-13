@@ -15,6 +15,7 @@ set(CTkAlone_SOURCES
 "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CTk/CTkAstAct.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CTk/CTkAstCnsm.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/../lib/CTk/CollectIncMacro_PPCb.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../lib/CTk/SrcFileIdAdmin.cpp"
 )
 
     # Create a library corresponding to 'plugin'

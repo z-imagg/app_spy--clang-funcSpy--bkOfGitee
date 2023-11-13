@@ -11,7 +11,7 @@ using namespace clang;
 #include <iostream>
 #include <clang/AST/ParentMapContext.h>
 #include <fmt/core.h>
-
+#include <CTk/SrcFileIdAdmin.h>
 
 using namespace llvm;
 using namespace clang;
@@ -142,7 +142,6 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
 
   //按照左右花括号，构建位置id，防止重复插入
   LocId funcBodyLBraceLocId=LocId::buildFor(filePath, funcBodyLBraceLoc, SM);
-  LocId funcBodyRBraceLocId=LocId::buildFor(filePath, funcBodyRBraceLoc, SM);
 
   //获取返回类型
   const QualType funcReturnType = funcDecl->getReturnType();

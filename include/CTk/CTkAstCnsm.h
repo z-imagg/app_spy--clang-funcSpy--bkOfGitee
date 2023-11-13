@@ -103,10 +103,6 @@ public:
           continue;
         }
 
-        FileID fileId = SM.getFileID(declJ->getLocation());
-
-//        Util::printDecl(Ctx,CI, "查看", "TranslationUnitDecl.decls.j", declJ, false);
-
 
         insertVst.TraverseDecl(declJ);
       }
