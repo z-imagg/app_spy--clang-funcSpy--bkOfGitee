@@ -102,4 +102,4 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 #===============================================================================
 add_subdirectory(lib)
 add_subdirectory(tools)
-add_subdirectory(t_clock_tick)
+add_subdirectory(funcIdBase)

@@ -91,7 +91,7 @@ int main(int Argc, const char **Argv) {
 
   // 设置文件名
   const char* FileName=Argv[1];
-  //FileName ==  Argv[1] == "/pubx/analyze_code/clang-ctk/t_clock_tick/test_main.cpp";
+  //FileName ==  Argv[1] == "/pubx/analyze_code/clang-ctk/funcIdBase/test_main.cpp";
 
   clang::FileID MainFileID = CI.getSourceManager().getOrCreateFileID(
           CI.getFileManager().getVirtualFile(FileName, /*Size=*/0, /*ModificationTime=*/0),
