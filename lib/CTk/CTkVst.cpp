@@ -56,14 +56,11 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 
 
 
-bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc , const char* whoInserted){
-  Util::emptyStrIfNullStr(whoInserted);
+bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc ){
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
           "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*filePath={}, line={}, column={}, funcName={}*/",
-          funcLocId.locationId,funcLocId.filePath,funcLocId.line,funcLocId.column,funcName,
-          //如果有提供，插入者信息，则放在注释中.
-          whoInserted
+          funcLocId.locationId,funcLocId.filePath,funcLocId.line,funcLocId.column,funcName
   );
   llvm::StringRef strRef(cStr_inserted);
   //endregion
@@ -155,9 +152,7 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
       funcBodyRBraceLoc,
       funcBodyLBraceLocId,funcBodyRBraceLocId,
       compoundStmt,
-      funcQualifiedName.c_str(),
-      "TraverseFunctionDecl",
-      "TraverseFunctionDecl:void函数尾非return"
+      funcQualifiedName.c_str()
       );
 }
 
@@ -181,14 +176,10 @@ bool CTkVst::_Traverse_Func(
 //  bool hasBody,
 //  int64_t funcDeclID,
 //  Stmt *funcBodyStmt,
-  const char* funcName,
-  const char *whoInsertedFuncEnter,
-  const char *whoInsertedFuncReturn)
+  const char* funcName)
 {
 
 /////////////////////////对当前节点cxxMethodDecl|functionDecl做 自定义处理
-  Util::emptyStrIfNullStr(whoInsertedFuncEnter);
-  Util::emptyStrIfNullStr(whoInsertedFuncReturn);
 
 
     //region 插入 函数进入语句
@@ -197,7 +188,7 @@ bool CTkVst::_Traverse_Func(
         //用funcEnterLocIdSet的尺寸作为LocationId的计数器
           funcBodyLBraceLocId.locationId=funcEnterLocIdSet.size();
         //若 本函数还 没有 插入 函数进入语句，才插入。
-        insertAfter_X__funcEnter(funcBodyLBraceLocId,funcName, funcBodyLBraceLoc, whoInsertedFuncEnter);
+        insertAfter_X__funcEnter(funcBodyLBraceLocId,funcName, funcBodyLBraceLoc);
       }
 //    }
     //endregion

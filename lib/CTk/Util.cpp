@@ -91,7 +91,6 @@ bool Util::cxxConstructorIsDefault(CXXConstructorDecl *cxxCnstrDecl){
 }
 
 void Util::emptyStrIfNullStr(const char* &cstr){
-//  whoInserted=(whoInserted==NULL?"":whoInserted);
   cstr=(cstr==NULL?"":cstr);
 }
 

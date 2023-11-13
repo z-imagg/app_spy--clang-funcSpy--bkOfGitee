@@ -47,7 +47,7 @@ public:
     static const std::string IncludeStmt_TCTk ; // = "#include \"t_clock_tick.h\"\n";
 
 
-    bool insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc , const char* whoInserted);
+    bool insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc );
 
 
     virtual bool TraverseFunctionDecl(FunctionDecl* funcDecl);
@@ -69,18 +69,9 @@ public:
     LocId funcBodyLBraceLocId,
     LocId funcBodyRBraceLocId,
     CompoundStmt* compoundStmt,
-    const char* funcName,
-    const char *whoInsertedFuncEnter,
-    const char *whoInsertedFuncReturn);
+    const char* funcName);
 
 
-    /** 函数入口  前 插入 检查语句: 检查 上一个返回的 是否 释放栈中其已分配变量 ，如果没 则要打印出错误消息，以方便排查问题。
-     *
-     * @param funcBody
-     * @param functionDeclID
-     * @param whoInserted
-     */
-    void __wrap_insertAfter_X__funcEnter(Stmt *funcBody,int64_t functionDeclID , const char* whoInserted);
 
 
 
