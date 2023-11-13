@@ -119,8 +119,6 @@ bool Util::isSysSrcFile(StringRef fn) {
 bool Util::isTickSrcFile(StringRef fn) {
   bool isTick =
           fn.endswith("t_clock_tick.h")
-          || fn.endswith("t_clock_tick.c")
-          || fn.endswith("t_clock_tick.cpp")
   ;
   return isTick;
 }
