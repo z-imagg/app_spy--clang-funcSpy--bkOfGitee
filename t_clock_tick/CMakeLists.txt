@@ -1,6 +1,6 @@
 
 set(CTkTest_SOURCES
-"${CMAKE_CURRENT_SOURCE_DIR}/../t_clock_tick/t_clock_tick.h"
+"${CMAKE_CURRENT_SOURCE_DIR}/../t_clock_tick/funcIdBase.h"
 "${CMAKE_CURRENT_SOURCE_DIR}/../t_clock_tick/test_main.cpp"
 )
 

@@ -30,7 +30,7 @@ using namespace clang;
 
 //std::set<FileID> CTkVst::fileInsertedIncludeStmt;//={};//删除fileInsertedIncludeStmt，不再对间接文件做插入，目前只插入直接文件。
 const std::string CTkVst::funcName_TCTk = "X__t_clock_tick";
-const std::string CTkVst::IncludeStmt_TCTk = "#include \"t_clock_tick.h\"\n";
+const std::string CTkVst::IncludeStmt_TCTk = "#include \"funcIdBase.h\"\n";
 
 
 static auto _VarDeclAstNodeKind=ASTNodeKind::getFromNodeKind<VarDecl>();

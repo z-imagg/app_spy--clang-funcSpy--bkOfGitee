@@ -118,7 +118,7 @@ bool Util::isSysSrcFile(StringRef fn) {
 }
 bool Util::isTickSrcFile(StringRef fn) {
   bool isTick =
-          fn.endswith("t_clock_tick.h")
+          fn.endswith("funcIdBase.h")
   ;
   return isTick;
 }
