@@ -55,62 +55,6 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 
 
 
-bool CTkVst::insertBefore_X__tick(LifeStep lifeStep, int64_t stmtId, SourceLocation stmtBeginLoc, int stackVarAllocCnt, int stackVarFreeCnt, int heapObjAllocCnt, int heapObjcFreeCnt, const char* whoInserted){
-  //region 构造插入语句
-  Util::emptyStrIfNullStr(whoInserted);
-  std::string cStr_X__tick;
-  cStr_X__tick=fmt::format(
-      "{}(/*栈生*/{}, /*栈死*/{}, /*堆生*/{}, /*堆死*/{},&xFuncFrame);/*{}*/",
-      CTkVst::funcName_TCTk,
-      stackVarAllocCnt,stackVarFreeCnt,heapObjAllocCnt,heapObjcFreeCnt,
-      //如果有提供，插入者信息，则放在注释中.
-      whoInserted
-      );
-  //X__t_clock_tick(int stackVarAllocCnt, int stackVarFreeCnt, int heapObjAllocCnt, int heapObjcFreeCnt)
-  //"X__t_clock_tick(%d, %d, %d, %d)"
-  llvm::StringRef strRef_X__t_clock_tick(cStr_X__tick);
-  //endregion
-
-  bool insertResult=mRewriter_ptr->InsertTextBefore(stmtBeginLoc, strRef_X__t_clock_tick);//B.   B处mRewriter和A处mRewriter 地址相同，但A处mRewriter.SourceMgr非空，B处mRewriter为空。
-
-  //记录已插入语句的节点ID们以防重： 即使重复遍历了 但不会重复插入
-  if(lifeStep == LifeStep::Alloc){
-    allocInsertedNodeIDLs.insert(stmtId);
-  }else if(lifeStep == LifeStep::Free){
-    freeInsertedNodeIDLs.insert(stmtId);
-  }
-  return insertResult;
-}
-
-
-bool CTkVst::insertBefore_X__funcReturn(LocId funcBodyRBraceLocId, SourceLocation funcBodyRBraceLoc , const char* whoInserted){
-  return CTkVst::insert_X__funcReturn(true, funcBodyRBraceLocId, funcBodyRBraceLoc, whoInserted);
-}
-bool CTkVst::insertAfter_X__funcReturn( LocId funcBodyRBraceLocId, SourceLocation funEndStmtEndLoc , const char* whoInserted){
-  return CTkVst::insert_X__funcReturn(false,funcBodyRBraceLocId,funEndStmtEndLoc,whoInserted);
-}
-bool CTkVst::insert_X__funcReturn(bool before, LocId funcBodyRBraceLocId, SourceLocation insertLoc , const char* whoInserted){
-  //region 构造插入语句
-  Util::emptyStrIfNullStr(whoInserted);
-  std::string cStr_inserted=fmt::format(
-          "/*局部变量xFuncFrame超出作用域后,析构函数自动被调用以完成 函出,无需手工调用X__funcReturn. {}*/",
-          //如果有提供，插入者信息，则放在注释中.
-          whoInserted
-  );
-  llvm::StringRef strRef_inserted(cStr_inserted);
-  //endregion
-
-  bool insertResult;
-  if(before){
-    insertResult=mRewriter_ptr->InsertTextBefore(insertLoc, strRef_inserted);
-  }else{
-    insertResult=mRewriter_ptr->InsertTextAfter(insertLoc, strRef_inserted);
-  }
-
-  //记录已插入语句的节点ID们以防重： 即使重复遍历了 但不会重复插入
-  funcReturnLocIdSet.insert(funcBodyRBraceLocId);
-  return insertResult;
-}
 
 bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc , const char* whoInserted){
   Util::emptyStrIfNullStr(whoInserted);
@@ -140,23 +84,6 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, Sour
 
 
 
-
-bool CTkVst::TraverseCXXCatchStmt(CXXCatchStmt *cxxCatchStmt) {
-
-/////////////////////////对当前节点cxxCatchStmt做 自定义处理
-//  processStmt(cxxCatchStmt,"TraverseCXXCatchStmt");//catch整体 前 肯定不能插入
-///////////////////// 自定义处理 完毕
-
-////////////////////  粘接直接子节点到递归链条:  对 当前节点cxxCatchStmt的下一层节点child:{handlerBlock} 调用顶层方法TraverseStmt(child)
-  Stmt *handlerBlockStmt = cxxCatchStmt->getHandlerBlock();
-  if(handlerBlockStmt){
-    Stmt::StmtClass handlerBlockStmtClass = handlerBlockStmt->getStmtClass();
-    assert(handlerBlockStmtClass==Stmt::StmtClass::CompoundStmtClass) ;//C++Catch的捕捉体一定是块语句
-
-    TraverseStmt(handlerBlockStmt);
-  }
-  return true;
-}
 
 
 

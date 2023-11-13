@@ -48,61 +48,7 @@ public:
 
 
     bool insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc , const char* whoInserted);
-    bool insertBefore_X__funcReturn(LocId funcBodyRBraceLocId, SourceLocation funcBodyRBraceLoc , const char* whoInserted);
-    bool insertAfter_X__funcReturn( LocId funcBodyRBraceLocId, SourceLocation funEndStmtEndLoc , const char* whoInserted);
-    bool insert_X__funcReturn(bool before, LocId funcBodyRBraceLocId, SourceLocation insertLoc , const char* whoInserted);
-    bool insertBefore_X__tick(LifeStep lifeStep, int64_t stmtId, SourceLocation stmtBeginLoc, int stackVarAllocCnt, int stackVarFreeCnt, int heapObjAllocCnt, int heapObjcFreeCnt, const char* whoInserted=NULL);
 
-    /**遍历语句
-     *
-     * @param stmt
-     * @return
-     */
-//    bool VisitStmt(Stmt *S) { return true; } : grep '(Stmt'  /llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/include/clang/AST/RecursiveASTVisitor.h
-//    DEF_TRAVERSE_STMT(CallExpr      : grep '(CallExpr'  /llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/include/clang/AST/RecursiveASTVisitor.h
-//    virtual bool VisitCallExpr(CallExpr *callExpr);
-
-    //DEF_TRAVERSE_STMT(CompoundStmt  : grep '(CompoundStmt'  /llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/include/clang/AST/RecursiveASTVisitor.h
-    /**
-     * 1. if语句整体 前 插入 时钟调用语句
-     * 2. 粘接直接子节点到递归链
-     * 不直接处理if语句内的子语句
-     *
-     * 当if语句的子语句 child:[then, else]中 只有是块语句的情况下, 子语句内才需要 插入 时钟调用语句, 这是经转交 TraverseStmt(child) ---...---> TraverseCompoundStmt(child) 后，由TraverseCompoundStmt(child)对该块语句child中的每条语句前 插入 时钟调用语句
-     * 如果if语句的子语句 中 不是块语句的 不需要 插入 时钟调用语句, 因此也就没有 形如 processThenStmt、processElseStmt 之类的自定义处理了。
-     *
-     * 举例如下:
-     * if(...)
-     *    ...; //这里是if的then子语句， 该then子语句 不是 块语句，不需要插入 时钟调用语句.
-     * else {//这里是if的else子语句， 该else子语句 是 块语句， 会经过 转交: TraverseStmt(child) ---...---> TraverseCompoundStmt(child) , 最终在 TraverseCompoundStmt中 对 该else子语句中的每条语句前插入 时钟调用语句.
-     *  ...;
-     * }
-     * @param ifStmt
-     * @return
-     */
-    virtual bool TraverseCXXCatchStmt(CXXCatchStmt *cxxCatchStmt);
-    /* for、while、doWhile很相似 */
-    /**
-     * 1. doWhile语句整体 前 插入 时钟调用语句
-     * 2. 粘接直接子节点到递归链
-     * 不直接处理doWhile语句内的子语句
-     *
-     * 当doWhile语句的子语句 child:[body即循环体]  循环体是块语句的情况下, 循环体内才需要 插入 时钟调用语句, 这是经转交 TraverseStmt(循环体) ---...---> TraverseCompoundStmt(循环体) 后，由TraverseCompoundStmt(循环体)对该循环体中的每条语句前 插入 时钟调用语句.
-     * 如果doWhile语句的循环体 是一个单行语句 即不是块语句，  则 不需要 在该单行语句前 插入 时钟调用语句。
-     *
-     * 举例如下:
-     * do
-     * ...;    //这里是doWhile的循环体， 该循环体 不是 块语句，故而 该 循环体前 不需要插入 时钟调用语句.
-     * while(...);
-     *
-     * do
-     * {
-     *    ...; //这里是doWhile的循环体， 该循环体 是 块语句，会经过 转交: TraverseStmt(循环体) ---...---> TraverseCompoundStmt(循环体) , 最终在 TraverseCompoundStmt中 对 该循环体中的每条语句前插入 时钟调用语句.
-     * }
-     * while(...);
-     * @param doStmt
-     * @return
-     */
 
     /////////constexpr
     virtual bool TraverseFunctionDecl(FunctionDecl* funcDecl);
