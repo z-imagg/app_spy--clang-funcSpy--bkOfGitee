@@ -65,9 +65,7 @@ public:
     bool isaCXXConstructorDecl,
     Stmt *endStmtOfFuncBody,
     SourceLocation funcBodyLBraceLoc,
-    SourceLocation funcBodyRBraceLoc,
     LocId funcBodyLBraceLocId,
-    LocId funcBodyRBraceLocId,
     CompoundStmt* compoundStmt,
     const char* funcName);
 

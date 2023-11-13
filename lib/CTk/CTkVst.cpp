@@ -149,8 +149,7 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
       false,
       endStmtOfFuncBody,
       funcBodyLBraceLoc,
-      funcBodyRBraceLoc,
-      funcBodyLBraceLocId,funcBodyRBraceLocId,
+      funcBodyLBraceLocId,
       compoundStmt,
       funcQualifiedName.c_str()
       );
@@ -168,9 +167,7 @@ bool CTkVst::_Traverse_Func(
   bool isaCXXConstructorDecl,
   Stmt *endStmtOfFuncBody,
   SourceLocation funcBodyLBraceLoc,
-  SourceLocation funcBodyRBraceLoc,
   LocId funcBodyLBraceLocId,
-  LocId funcBodyRBraceLocId,
   CompoundStmt* compoundStmt,
 //  bool funcIsConstexpr,
 //  bool hasBody,
