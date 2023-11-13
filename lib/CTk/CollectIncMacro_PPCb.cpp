@@ -12,7 +12,7 @@
 
 
 using namespace clang;
-
+//如果本源文件中根本没有#pragma ，则方法PragmaMessage不会被调用
     void CollectIncMacro_PPCb::PragmaMessage(SourceLocation Loc, StringRef namespaceSR, PPCallbacks::PragmaMessageKind msgKind, StringRef msgSR) {
         //region 方便变量
         SourceManager &SM = CI.getSourceManager();
@@ -35,7 +35,6 @@ using namespace clang;
         }
 
         //region 收集  #pragma message
-        PragmaMessageCalled=true;
         auto msg=msgSR.str();
         auto namespac=namespaceSR.str();
 
@@ -47,7 +46,6 @@ using namespace clang;
         //endregion
     }
 
-bool CollectIncMacro_PPCb::PragmaMessageCalled= false;
 
 std::set<std::string> CollectIncMacro_PPCb::pragma_message_set;
 

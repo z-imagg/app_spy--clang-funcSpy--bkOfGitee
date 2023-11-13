@@ -21,14 +21,9 @@ public:
 
     }
 
-    /**
-     * PragmaMessageCalled: 方法PragmaMessage是否被回调过
-     */
-    static bool PragmaMessageCalled;
     void PragmaMessage(SourceLocation Loc, StringRef namespaceSR, PPCallbacks::PragmaMessageKind msgKind, StringRef msgSR) ;
 
     /** pragma_message_set 是 方法PragmaMessage 被回调后的结果
-     * 必须要在 方法PragmaMessage 被回调后，才应该使用 pragma_message_set
      */
     static std::set<std::string> pragma_message_set;
 

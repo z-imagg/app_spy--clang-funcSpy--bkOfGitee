@@ -72,12 +72,10 @@ public:
 
         Constant c;
 
-//////////////////1. 若已插入 ，则不用处理
+//////////////////1. 若已插入'#pragma 消息' ，则不用处理
       //时钟函数只插入一次，不重复插入：
       //若已经有时钟函数调用，则标记为已处理，且直接返回，不做任何处理。
       {
-      //此时想要使用方法CollectIncMacro_PPCb::PragmaMessage的计算结果pragma_message_set，因此必须断言方法CollectIncMacro_PPCb::PragmaMessage必须已经被调用过
-      assert(CollectIncMacro_PPCb::PragmaMessageCalled);
 
       bool hasPragmaMsg = CollectIncMacro_PPCb::pragma_message_set.find(c.NameSpace_funcIdAsmIns) != CollectIncMacro_PPCb::pragma_message_set.end();
       if(hasPragmaMsg){
@@ -113,11 +111,11 @@ public:
         insertVst.TraverseDecl(declJ);
       }
       //}
-//////////////////3.插入包含语句
+//////////////////3.插入'#pragma 消息'语句
 
       bool insertResult;
       Util::insertIncludeToFileStart(c.PrgMsgStmt_funcIdAsmIns, mainFileId, SM, insertVst.mRewriter_ptr,insertResult);//此时  insertVst.mRewriter.getRewriteBufferFor(mainFileId)  != NULL， 可以做插入
-      std::string msg=fmt::format("插入include到文件{},对mainFileId:{},结果:{}\n",filePath,mainFileId.getHashValue(),insertResult);
+      std::string msg=fmt::format("插入'#pragma 消息'到文件{},对mainFileId:{},结果:{}\n",filePath,mainFileId.getHashValue(),insertResult);
       std::cout<< msg ;
 
 //////////////////4.应用修改到源文件
