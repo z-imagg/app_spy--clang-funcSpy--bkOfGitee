@@ -30,7 +30,8 @@ LocId:: LocId(
 //    stmtClass(stmtClass),
       filePath(filePath),
       line(line),
-    column(column)
+    column(column),
+    locationId(-1)
     {
 
     }

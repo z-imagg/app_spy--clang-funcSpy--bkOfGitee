@@ -28,6 +28,8 @@ public:
     int line;
     int column;
     std::string filePath;
+    /* locationId 与 <filePath,line,column> 一一对应 */
+    int locationId;
 
     LocId( ){};
     LocId(
