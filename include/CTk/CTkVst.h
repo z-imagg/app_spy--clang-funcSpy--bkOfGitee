@@ -43,7 +43,9 @@ public:
       ofs_funcIdDescLs("funcIdDescLs.txt.csv",std::ios::app)
     {
         assert (ofs_funcIdDescLs.is_open()) ;
-        ofs_funcIdDescLs<<LocId::csv_field_ls<<"\n";
+
+        //每个clang编译是一个进程，只能首个进程写入csv头，判断有点麻烦，暂时不写csv头
+//        ofs_funcIdDescLs<<LocId::csv_field_ls<<"\n";
     }
 
     ~CTkVst(){
