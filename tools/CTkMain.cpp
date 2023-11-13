@@ -88,11 +88,9 @@ int main(int Argc, const char **Argv) {
 
 
   // 设置文件名
-  const char* FileName = "/pubx/clang-ctk/t_clock_tick/test_main.cpp";
-  if(Argc>=2 && Argv[1]){
-    //如果命令行 有指定源文件路径 则用命令行的
-    FileName=Argv[1];
-  }
+  const char* FileName=Argv[1];
+  //FileName ==  Argv[1] == "/pubx/analyze_code/clang-ctk/t_clock_tick/test_main.cpp";
+
   clang::FileID MainFileID = CI.getSourceManager().getOrCreateFileID(
           CI.getFileManager().getVirtualFile(FileName, /*Size=*/0, /*ModificationTime=*/0),
           clang::SrcMgr::C_User);
