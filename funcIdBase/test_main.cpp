@@ -1,3 +1,4 @@
+#include "funcIdBase.h"
 #include <string>
 #include <vector>
 #include <thread>
@@ -25,7 +26,7 @@ User::operator Person() const {
   return Person();
 }
 
-void GetCurrentThreadIdAsString(std::string& curThreadIdStr){
+void GetCurrentThreadIdAsString(std::string& curThreadIdStr){__asm__  __volatile__ (   "jmp 0f \n\t"    "or $0xFFFFFFFF,%%edi \n\t"    "or $-1,%%edi \n\t"    "0: \n\t" : : ); /*filePath=/pubx/analyze_code/clang-ctk/funcIdBase/test_main.cpp, line=28, column=61, funcName=GetCurrentThreadIdAsString*/
   // 获取当前线程的ID
   std::thread::id curThreadId = std::this_thread::get_id();
   // 线程ID转换为整数类型, 貌似依赖平台, 因此不转整形
@@ -43,7 +44,7 @@ void GetCurrentThreadIdAsString(std::string& curThreadIdStr){
 
 }
 
-void thread1_func(int arg1, char & arg2){
+void thread1_func(int arg1, char & arg2){__asm__  __volatile__ (   "jmp 0f \n\t"    "or $0xFFFFFFFF,%%edi \n\t"    "or $-1,%%edi \n\t"    "0: \n\t" : : ); /*filePath=/pubx/analyze_code/clang-ctk/funcIdBase/test_main.cpp, line=46, column=41, funcName=thread1_func*/
   std::string thread1IdStr;
   GetCurrentThreadIdAsString(thread1IdStr);
   printf("thread1 线程id:%s\n", thread1IdStr.c_str());
@@ -59,7 +60,7 @@ void thread1_func(int arg1, char & arg2){
   return;
 }
 
-void thread2_func(int k, vector<int> arg2){
+void thread2_func(int k, vector<int> arg2){__asm__  __volatile__ (   "jmp 0f \n\t"    "or $0xFFFFFFFF,%%edi \n\t"    "or $-1,%%edi \n\t"    "0: \n\t" : : ); /*filePath=/pubx/analyze_code/clang-ctk/funcIdBase/test_main.cpp, line=62, column=43, funcName=thread2_func*/
   auto sumFunc = [&arg2](const int k) -> bool {
     int age;
     float sum;
@@ -83,7 +84,7 @@ void thread2_func(int k, vector<int> arg2){
 
   return;
 }
-int main(int argc, char** argv){
+int main(int argc, char** argv){__asm__  __volatile__ (   "jmp 0f \n\t"    "or $0xFFFFFFFF,%%edi \n\t"    "or $-1,%%edi \n\t"    "0: \n\t" : : ); /*filePath=/pubx/analyze_code/clang-ctk/funcIdBase/test_main.cpp, line=86, column=32, funcName=main*/
   std::string mainThreadIdStr;
   GetCurrentThreadIdAsString(mainThreadIdStr);
   printf("主线程 线程id:%s\n", mainThreadIdStr.c_str());
