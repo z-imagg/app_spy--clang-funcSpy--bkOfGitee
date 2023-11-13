@@ -202,20 +202,9 @@ bool CTkVst::_Traverse_Func(
 //    }
     //endregion
 
-    //region void函数、构造函数 结尾语句若不是return，则在函数尾 插入 函数释放语句
-    if(Util::isVoidFuncOrConstructorThenNoEndReturn(funcReturnType, isaCXXConstructorDecl,endStmtOfFuncBody)){
-      insertBefore_X__funcReturn(funcBodyRBraceLocId,funcBodyRBraceLoc,whoInsertedFuncReturn);
-    }
-    //endregion
-//  }
 
 ///////////////////// 自定义处理 完毕
 
-////////////////////  粘接直接子节点到递归链条:  对 当前节点cxxMethodDecl|functionDecl的下一层节点child:{body} 调用顶层方法TraverseStmt(child)
-    // 粘接直接子节点到递归链条
-    if(compoundStmt){
-      TraverseStmt(compoundStmt);
-    }
 
   return false;
 
