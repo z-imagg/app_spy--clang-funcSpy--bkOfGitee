@@ -9,7 +9,7 @@
 
 using namespace clang;
 
-    const std::string LocId::csv_field_ls="filePath,line,column,locationId,funcName";
+    const std::string LocId::csv_field_ls="filePath,line,column,abs_location_id,funcName,srcFileId,locationId";
     LocId LocId::buildFor(std::string fp, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
 
     int srcFileId=SrcFileIdAdmin::getSrcFileId(fp);
@@ -19,9 +19,17 @@ using namespace clang;
       return LocId(fp,srcFileId,line,column);
     }
 
-    std::string LocId::to_string(){
-      return fmt::format("{},{},{},{},{}",filePath,line,column,locationId,funcName);
+    std::string LocId::to_csv_line(){
+        int abs_location_id=this->abs_location_id();
+      return fmt::format("{},{},{},{},{}",filePath,line,column,abs_location_id,funcName,srcFileId,locationId);
     }
+
+    std::string LocId::to_string(){
+        int abs_location_id=this->abs_location_id();
+        return fmt::format("filePath={},line={},column={},abs_location_id={},funcName={},srcFileId={},locationId={}",
+                                filePath,   line,   column,     abs_location_id,    funcName,   srcFileId,  locationId);
+    }
+
 LocId:: LocId(
             std::string filePath,int srcFileId,int line, int column)
     :

@@ -94,7 +94,6 @@ public:
 
 
 
-    std::unordered_set<LocId,LocId> funcReturnLocIdSet;
     std::unordered_set<LocId,LocId> funcEnterLocIdSet;
 
 

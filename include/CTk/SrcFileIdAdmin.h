@@ -4,12 +4,13 @@
 
 #include <string>
 
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 class SrcFileIdAdmin{
 public:
    static int getSrcFileId(std::string srcFilePath);
-private:
-    static void load();
-    static void save();
+   static json srcFileIdDict;
+   static void save();
 };
 
 #endif //CTk_SrcFileIdLs_H

@@ -54,25 +54,25 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 
 
 bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc ){
+    //用funcEnterLocIdSet的尺寸作为LocationId的计数器
+    funcLocId.locationId=funcEnterLocIdSet.size();
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
-          "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*filePath={}, line={}, column={}, funcName={}*/",
-          funcLocId.locationId,funcLocId.filePath,funcLocId.line,funcLocId.column,funcName
+          "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*{}*/",
+          funcLocId.abs_location_id(), funcLocId.to_string()
   );
   llvm::StringRef strRef(cStr_inserted);
   //endregion
 
   bool insertResult=mRewriter_ptr->InsertTextAfterToken(funcBodyLBraceLoc , strRef);
 
-    //用funcEnterLocIdSet的尺寸作为LocationId的计数器
-    funcLocId.locationId=funcEnterLocIdSet.size();
 
   //记录已插入语句的节点ID们以防重： 即使重复遍历了 但不会重复插入
   funcEnterLocIdSet.insert(funcLocId);
 
   funcLocId.funcName=funcName;
   //写函数id描述行
-  ofs_funcIdDescLs << funcLocId.to_string() << "\n";
+  ofs_funcIdDescLs << funcLocId.to_csv_line() << "\n";
 
   return insertResult;
 }
@@ -184,7 +184,7 @@ bool CTkVst::_Traverse_Func(
 
     //region 插入 函数进入语句
       if(Util::LocIdSetNotContains(funcEnterLocIdSet, funcBodyLBraceLocId)){//若没有
-//        Util::printStmt(*Ctx, CI, fmt::format("差问题:{:x},",reinterpret_cast<uintptr_t> (&funcEnterLocIdSet)), funcBodyLBraceLocId.to_string(), compoundStmt, true);
+//        Util::printStmt(*Ctx, CI, fmt::format("差问题:{:x},",reinterpret_cast<uintptr_t> (&funcEnterLocIdSet)), funcBodyLBraceLocId.to_csv_line(), compoundStmt, true);
 
 
         //若 本函数还 没有 插入 函数进入语句，才插入。
