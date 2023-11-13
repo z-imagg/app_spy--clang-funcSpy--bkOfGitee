@@ -66,7 +66,7 @@ int main(int Argc, const char **Argv) {
   Expected<tooling::CommonOptionsParser> eOptParser =
           tooling::CommonOptionsParser::create(Argc, Argv, CTkAloneCategory);
   if (auto E = eOptParser.takeError()) {
-    errs() << "Problem constructing CommonOptionsParser "
+    errs() << "error when tooling::CommonOptionsParser::create"
            << toString(std::move(E)) << '\n';
     return EXIT_FAILURE;
   }
