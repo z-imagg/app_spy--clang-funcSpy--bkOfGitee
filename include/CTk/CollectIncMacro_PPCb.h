@@ -3,7 +3,7 @@
 #define CollectIncMacro_PPCb_H
 #include "clang/Frontend/FrontendActions.h"
 #include "clang/Frontend/CompilerInstance.h"
-#include "base/LocId.h"
+#include "CTk/LocId.h"
 
 
 #include <unordered_set>
@@ -14,8 +14,8 @@ class CollectIncMacro_PPCb : public clang::PPCallbacks {
 public:
     CompilerInstance &CI;
 
-    static std::unordered_set<LocId,LocId> InclusionDirectiveLocSet;
-    static std::unordered_set<LocId,LocId> MacroDefinedLocSet;
+    static bool HasIncFuncIdBaseHInited;
+    static bool HasIncFuncIdBaseH;
 
     explicit CollectIncMacro_PPCb(CompilerInstance &_CI) : CI(_CI) {
 
@@ -27,12 +27,8 @@ public:
                             StringRef RelativePath, const Module *Imported,
                             SrcMgr::CharacteristicKind FileType) override;
 
-    //预处理回调收集#define 以判断case起止范围内 有无#d
-    virtual void MacroDefined(const clang::Token& MacroNameTok,
-                              const clang::MacroDirective* MD) override;
 
     static bool hasInclusionDirective(SourceManager& SM, SourceRange range);
-    static bool hasMacroDefined(SourceManager& SM, SourceRange range);
 };
 
 

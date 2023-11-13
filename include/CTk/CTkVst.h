@@ -48,8 +48,6 @@ public:
     ~CTkVst(){
         ofs_funcIdDescLs.close();
     }
-    static const std::string funcName_TCTk ;//= "X__t_clock_tick";
-    static const std::string IncludeStmt_TCTk ; // = "#include \"funcIdBase.h\"\n";
 
 
     bool insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc );

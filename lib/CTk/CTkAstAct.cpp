@@ -12,6 +12,8 @@ using namespace clang;
 //-----------------------------------------------------------------------------
 // FrontendAction
 //-----------------------------------------------------------------------------
+
+#include "CTk/CollectIncMacro_PPCb.h"
 class CTkAstAct : public PluginASTAction {
 public:
     std::unique_ptr<ASTConsumer>
@@ -19,6 +21,7 @@ public:
                       llvm::StringRef inFile) override {
       SourceManager &SM = CI.getSourceManager();
       LangOptions &langOptions = CI.getLangOpts();
+        Preprocessor &PP = CI.getPreprocessor();
       ASTContext &astContext = CI.getASTContext();
       //Rewriter:2:  Rewriter构造完，在Action.CreateASTConsumer方法中 调用mRewriter.setSourceMgr后即可正常使用
       CI.getDiagnostics().setSourceManager(&SM);
@@ -33,6 +36,11 @@ public:
 //      const std::shared_ptr<Rewriter> &rewriter_ptr = std::make_shared<Rewriter>();
       //Rewriter:3:  Action将Rewriter传递给Consumer
       //Act中 是 每次都是 新创建 CTkAstCnsm
+
+
+        // Act中 添加 收集#include、#define的 预处理回调
+        PP.addPPCallbacks(std::make_unique<CollectIncMacro_PPCb>(CI));
+
       return std::make_unique<CTkAstCnsm>(CI,mRewriter_ptr,
                                                            &astContext, SM, langOptions);
     }
