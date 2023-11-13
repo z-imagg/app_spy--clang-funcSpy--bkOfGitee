@@ -50,34 +50,7 @@ public:
     bool insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc , const char* whoInserted);
 
 
-    /////////constexpr
     virtual bool TraverseFunctionDecl(FunctionDecl* funcDecl);
-    virtual bool TraverseCXXMethodDecl(CXXMethodDecl* cxxMethDecl);
-    bool I__TraverseCXXMethodDecl(CXXMethodDecl* cxxMethDecl,const char* who);
-    virtual bool TraverseCXXConstructorDecl(CXXConstructorDecl* cxxCnstrDecl);
-    virtual bool TraverseLambdaExpr(LambdaExpr *lambdaExpr);
-    //c++析构函数遍历
-    virtual bool TraverseCXXDestructorDecl(CXXDestructorDecl * cxxDestructorDecl);
-    //遍历c++类型转换操作符号
-    /**
-class Person{
-
-};
-class User{
-public:
-    operator Person() const;
-};
-
-User::operator Person() const {
-    return Person();
-}
-
-void f1(){
-    User u=User();
-    Person p=(Person)u;//类型转换操作符
-}
-     */
-    virtual bool TraverseCXXConversionDecl(CXXConversionDecl * cxxConversionDecl);
 
 
     /** 遍历  FunctionDecl 或 CXXMethodDecl
@@ -124,13 +97,6 @@ public:
     SourceManager& SM;
 
 
-    /**其前已经插入语句的 节点ID 们, 为防止重复遍历导致的重复插入，
-     * 节点ID集合（防重复插入） 应该按 分配、释放 分开，从而互不干扰
-     * 可达到： 即使重复遍历了 但不会重复插入
-     * 如果后面发现ID 不是全局唯一的 可以尝试换成 该节点的开始位置
-     */
-    std::set<int64_t> allocInsertedNodeIDLs;
-    std::set<int64_t> freeInsertedNodeIDLs;
 
 
     std::unordered_set<LocId,LocId> funcReturnLocIdSet;
