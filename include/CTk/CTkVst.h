@@ -59,12 +59,10 @@ public:
      * @return
      */
 //    bool VisitStmt(Stmt *S) { return true; } : grep '(Stmt'  /llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/include/clang/AST/RecursiveASTVisitor.h
-    bool processStmt(Stmt *stmt,const char* whoInserted="");
 //    DEF_TRAVERSE_STMT(CallExpr      : grep '(CallExpr'  /llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/include/clang/AST/RecursiveASTVisitor.h
 //    virtual bool VisitCallExpr(CallExpr *callExpr);
 
     //DEF_TRAVERSE_STMT(CompoundStmt  : grep '(CompoundStmt'  /llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/include/clang/AST/RecursiveASTVisitor.h
-    virtual bool TraverseCompoundStmt(CompoundStmt *compoundStmt );
     /**
      * 1. if语句整体 前 插入 时钟调用语句
      * 2. 粘接直接子节点到递归链
@@ -80,82 +78,6 @@ public:
      *  ...;
      * }
      * @param ifStmt
-     * @return
-     */
-    virtual bool TraverseIfStmt(IfStmt *ifStmt);
-    /* for、while、doWhile很相似 */
-    /**
-     * 1. while语句整体 前 插入 时钟调用语句
-     * 2. 粘接直接子节点到递归链
-     * 不直接处理while语句内的子语句
-     *
-     * 当while语句的子语句 child:[body即循环体]  循环体是块语句的情况下, 循环体内才需要 插入 时钟调用语句, 这是经转交 TraverseStmt(循环体) ---...---> TraverseCompoundStmt(循环体) 后，由TraverseCompoundStmt(循环体)对该循环体中的每条语句前 插入 时钟调用语句.
-     * 如果while语句的循环体 是一个单行语句 即不是块语句，  则 不需要 在该单行语句前 插入 时钟调用语句。
-     *
-     * 举例如下:
-     * while(...)
-     *    ...; //这里是while的循环体， 该循环体 不是 块语句，故而 该 循环体前 不需要插入 时钟调用语句.
-     *
-     * while(...)
-     * {
-     *    ...; //这里是while的循环体， 该循环体 是 块语句，会经过 转交: TraverseStmt(循环体) ---...---> TraverseCompoundStmt(循环体) , 最终在 TraverseCompoundStmt中 对 该循环体中的每条语句前插入 时钟调用语句.
-     * }
-     * @param whileStmt
-     * @return
-     */
-    virtual bool TraverseWhileStmt(WhileStmt *whileStmt);
-    /* for、while、doWhile很相似 */
-    /**
-     * 1. for语句整体 前 插入 时钟调用语句
-     * 2. 粘接直接子节点到递归链
-     * 不直接处理for语句内的子语句
-     *
-     * 当for语句的子语句 child:[body即循环体]  循环体是块语句的情况下, 循环体内才需要 插入 时钟调用语句, 这是经转交 TraverseStmt(body) ---...---> TraverseCompoundStmt(循环体) 后，由TraverseCompoundStmt(循环体)对该循环体中的每条语句前 插入 时钟调用语句.
-     * 如果for语句的循环体 是一个单行语句 即不是块语句，  则 不需要 在该单行语句前 插入 时钟调用语句。
-     *
-     * 举例如下:
-     * for(...)
-     *    ...; //这里是for的循环体， 该循环体 不是 块语句，故而 该 循环体前 不需要插入 时钟调用语句.
-     *
-     * for(...)
-     * {
-     *    ...; //这里是for的循环体， 该循环体 是 块语句，会经过 转交: TraverseStmt(循环体) ---...---> TraverseCompoundStmt(循环体) , 最终在 TraverseCompoundStmt中 对 该循环体中的每条语句前插入 时钟调用语句.
-     * }
-     * @param forStmt
-     * @return
-     */
-    virtual bool TraverseForStmt(ForStmt *forStmt);
-    /**
-     * 1. C++Try语句整体 前 插入 时钟调用语句
-     * 2. 粘接直接子节点到递归链
-     * 不直接处理C++Try语句内的尝试体
-     *
-     * C++Try语句的尝试体 一定是 块语句,   对 尝试体 内  插入 时钟调用语句, 这是经转交 TraverseStmt(尝试体) ---...---> TraverseCompoundStmt(尝试体) 后，由TraverseCompoundStmt(尝试体)对该尝试体中的每条语句前 插入 时钟调用语句.
-     *
-     * 举例如下:
-     *
-     * try
-     * {
-     *    ...; //这里是C++Try的尝试体， 该尝试体  会经过 转交: TraverseStmt(尝试体) ---...---> TraverseCompoundStmt(尝试体) , 最终在 TraverseCompoundStmt中 对 该尝试体中的每条语句前插入 时钟调用语句.
-     * }
-     * @param forStmt
-     * @return
-     */
-    virtual bool TraverseCXXTryStmt(CXXTryStmt *cxxTryStmt);
-    /**
-     * 1. C++Catch语句整体 前 插入 时钟调用语句
-     * 2. 粘接直接子节点到递归链
-     * 不直接处理C++Catch语句内的捕捉体
-     *
-     * C++Catch语句的捕捉体 一定是 块语句,   对 捕捉体 内  插入 时钟调用语句, 这是经转交 TraverseStmt(捕捉体) ---...---> TraverseCompoundStmt(捕捉体) 后，由TraverseCompoundStmt(捕捉体)对该捕捉体中的每条语句前 插入 时钟调用语句.
-     *
-     * 举例如下:
-     * try{...}
-     * catch(...)
-     * {
-     *    ...; //这里是C++Catch的捕捉体， 该捕捉体  会经过 转交: TraverseStmt(捕捉体) ---...---> TraverseCompoundStmt(捕捉体) , 最终在 TraverseCompoundStmt中 对 该捕捉体中的每条语句前插入 时钟调用语句.
-     * }
-     * @param forStmt
      * @return
      */
     virtual bool TraverseCXXCatchStmt(CXXCatchStmt *cxxCatchStmt);
@@ -181,74 +103,6 @@ public:
      * @param doStmt
      * @return
      */
-    virtual bool TraverseDoStmt(DoStmt *doStmt);
-    /**
-     * 1. switch语句整体 前 插入 时钟调用语句
-     * 2. 粘接直接子节点到递归链
-     * 不直接处理switch语句内的子语句
-     *
-     *
-     * switch语句的多情况体 一定是块语句 ，多情况体内的子语句是case语句 ，case语句整体前是不能插入 不需要插入 时钟调用语句.
-     *
-     * 举例如下:
-     * switch(...)
-     * {       //这里是switch的多情况体
-     *
-     * case 1: //这里是多情况体 的 第1个 子语句 case语句1
-     * {
-     * }//case语句1结束
-     *
-     * case 2: //这里是多情况体 的 第2个 子语句 case语句2
-     * break;
-     * //case语句2结束
-     *
-     * case 3: //这里是多情况体 的 第3个 子语句 case语句3
-     * {
-     * ...;
-     * }//case语句3结束
-     *
-     * }//多情况体结束
-     *
-     * @param switchStmt
-     * @return
-     */
-    virtual bool TraverseSwitchStmt(SwitchStmt *switchStmt);
-    /**
-     * 1. case语句整体 前 不插入 时钟调用语句
-     * 2. 粘接直接子节点到递归链
-     * 不直接处理case语句内的子语句
-     *
-     * case语句的子语句 child:[body即单情况体]  单情况体内的子语句是case语句 ，case语句整体前是不能插入 不需要插入 时钟调用语句.
-     *
-     * 当case语句的子语句 child:[body即单情况体]  单情况体是块语句的情况下, 单情况体内才需要 插入 时钟调用语句, 这是经转交 TraverseStmt(单情况体) ---...---> TraverseCompoundStmt(单情况体) 后，由TraverseCompoundStmt(单情况体)对该单情况体中的每条语句前 插入 时钟调用语句.
-     * 如果case语句的单情况体 是一个单行语句 即不是块语句，  则 不需要 在该单行语句前 插入 时钟调用语句。
-     *
-     *
-     * 举例如下:
-     * switch(...)
-     * {//这里是switch语句的多情况体
-     *
-     * case 1: //这里是 case语句1
-     * {  //这里是 case语句1 的  单情况体
-     * ...;
-     * }//case语句1结束
-     *
-     * case 2: //这里是 case语句2
-     * break; ////这里是 case语句2 的  单情况体
-     * //case语句2结束
-     *
-     * case 3: //这里是 case语句3
-     * {  //这里是 case语句3 的  单情况体
-     * ...;
-     * }//case语句3结束
-     *
-     * }//多情况体结束
-     *
-     * @param switchStmt
-     * @return
-     */
-    virtual bool TraverseCaseStmt(CaseStmt *caseStmt);//由于case语句前不能插入 任何语句 ,否则语法错误，因此 case语句不需要自定义处理，只需要对case语句用clang内部的正常递归即可。
-    //这里应该有 所有能带块的语句: if块、while块、else块、for块、switch块、try块、catch块...
 
     /////////constexpr
     virtual bool TraverseFunctionDecl(FunctionDecl* funcDecl);
@@ -309,17 +163,6 @@ void f1(){
      */
     void __wrap_insertAfter_X__funcEnter(Stmt *funcBody,int64_t functionDeclID , const char* whoInserted);
 
-    /**
-     return语句  前 插入 释放栈变量语句： 以释放此时本函数已经分配的全部栈变量，有两个方案：
-     1. 运行时计数：这是简单方案，如下:
-     在运行时 算出  本函数当前已经申请的所有栈变量,
-          可以在栈变量分配时计数，这里目前使用此方案
-
-     2. 编译时解析各级父块栈变量分配： 这是复杂方案，如下：
-     编译源代码时解析语法结构 算出 本函数当前已经申请的所有栈变量 ，即 ：
-               当前块以及当前块的各级父亲块内已经申请的栈变量。
-     */
-    virtual bool TraverseReturnStmt(ReturnStmt *returnStmt);
 
 
 public:
