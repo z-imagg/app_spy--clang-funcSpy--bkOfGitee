@@ -20,7 +20,7 @@ using namespace clang;
     }
 
     std::string LocId::to_string(){
-      return fmt::format("{}:{},{}",filePath,line,column);
+      return fmt::format("{},{},{},{},{}",filePath,line,column,locationId,funcName);
     }
 LocId:: LocId(
 //            Decl::Kind declKind, Stmt::StmtClass stmtClass,

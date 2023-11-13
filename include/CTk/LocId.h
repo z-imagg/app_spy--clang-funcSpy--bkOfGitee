@@ -31,6 +31,9 @@ public:
     /* locationId 与 <filePath,line,column> 一一对应 */
     int locationId;
 
+    //函数名 ： 冗余字段
+    const char* funcName;
+
     LocId( ){};
     LocId(
 //            Decl::Kind declKind, Stmt::StmtClass stmtClass,
@@ -42,7 +45,6 @@ public:
 
     // 重写相等操作符
     bool operator==(const LocId& that) const ;
-
 
 
 

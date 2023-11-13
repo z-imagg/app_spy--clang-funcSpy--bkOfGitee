@@ -6,6 +6,7 @@
 #include <set>
 #include <clang/Frontend/CompilerInstance.h>
 #include <unordered_set>
+#include <fstream>
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/AST/Stmt.h"
@@ -36,13 +37,17 @@ public:
     explicit CTkVst(const std::shared_ptr<Rewriter> rewriter_ptr, ASTContext *Ctx, CompilerInstance &CI, SourceManager& SM)
     //Rewriter:5:  Consumer将Rewriter传递给Visitor, 并由Visitor.mRewriter接收
     : mRewriter_ptr(rewriter_ptr),
-    Ctx(Ctx),
-    CI(CI),
-    SM(SM)
+      Ctx(Ctx),
+      CI(CI),
+      SM(SM),
+      ofs_funcIdDescLs("funcIdDescLs.txt",std::ios::app)
     {
-
+        assert (ofs_funcIdDescLs.is_open()) ;
     }
 
+    ~CTkVst(){
+        ofs_funcIdDescLs.close();
+    }
     static const std::string funcName_TCTk ;//= "X__t_clock_tick";
     static const std::string IncludeStmt_TCTk ; // = "#include \"t_clock_tick.h\"\n";
 
@@ -84,6 +89,8 @@ public:
     ASTContext *Ctx;
     CompilerInstance& CI;
     SourceManager& SM;
+    std::ofstream ofs_funcIdDescLs;
+
 
 
 

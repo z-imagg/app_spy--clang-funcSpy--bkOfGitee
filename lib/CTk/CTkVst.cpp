@@ -15,7 +15,6 @@ using namespace clang;
 
 using namespace llvm;
 using namespace clang;
-
 //-----------------------------------------------------------------------------
 // CTkVst implementation
 //-----------------------------------------------------------------------------
@@ -67,8 +66,15 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, Sour
 
   bool insertResult=mRewriter_ptr->InsertTextAfterToken(funcBodyLBraceLoc , strRef);
 
+    //用funcEnterLocIdSet的尺寸作为LocationId的计数器
+    funcLocId.locationId=funcEnterLocIdSet.size();
+
   //记录已插入语句的节点ID们以防重： 即使重复遍历了 但不会重复插入
   funcEnterLocIdSet.insert(funcLocId);
+
+  funcLocId.funcName=funcName;
+  //写函数id描述行
+  ofs_funcIdDescLs << funcLocId.to_string() << "\n";
 
   return insertResult;
 }
@@ -182,8 +188,8 @@ bool CTkVst::_Traverse_Func(
     //region 插入 函数进入语句
       if(Util::LocIdSetNotContains(funcEnterLocIdSet, funcBodyLBraceLocId)){//若没有
 //        Util::printStmt(*Ctx, CI, fmt::format("差问题:{:x},",reinterpret_cast<uintptr_t> (&funcEnterLocIdSet)), funcBodyLBraceLocId.to_string(), compoundStmt, true);
-        //用funcEnterLocIdSet的尺寸作为LocationId的计数器
-          funcBodyLBraceLocId.locationId=funcEnterLocIdSet.size();
+
+
         //若 本函数还 没有 插入 函数进入语句，才插入。
         insertAfter_X__funcEnter(funcBodyLBraceLocId,funcName, funcBodyLBraceLoc);
       }

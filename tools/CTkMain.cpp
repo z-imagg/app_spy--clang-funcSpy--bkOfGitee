@@ -61,6 +61,8 @@ private:
 
 
 int main(int Argc, const char **Argv) {
+    Util::printCwd();
+
   Expected<tooling::CommonOptionsParser> eOptParser =
           tooling::CommonOptionsParser::create(Argc, Argv, CTkAloneCategory);
   if (auto E = eOptParser.takeError()) {

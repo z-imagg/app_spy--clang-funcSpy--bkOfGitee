@@ -15,8 +15,20 @@
 #include <filesystem>
 
 
+#include <unistd.h>
+#include <iostream>
+
 using namespace llvm;
 using namespace clang;
+
+void Util::printCwd() {
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+        std::cout << "current_work_directory: " << cwd << std::endl;
+    } else {
+        std::cerr << "failed_to_get_current_work_directory" << std::endl;
+    }
+}
 
 bool Util::endsWith(const std::string& str, const std::string& suffix) {
   if (str.length() < suffix.length()) {
