@@ -40,9 +40,10 @@ public:
       Ctx(Ctx),
       CI(CI),
       SM(SM),
-      ofs_funcIdDescLs("funcIdDescLs.txt",std::ios::app)
+      ofs_funcIdDescLs("funcIdDescLs.txt.csv",std::ios::app)
     {
         assert (ofs_funcIdDescLs.is_open()) ;
+        ofs_funcIdDescLs<<LocId::csv_field_ls<<"\n";
     }
 
     ~CTkVst(){

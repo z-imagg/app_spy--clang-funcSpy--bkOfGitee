@@ -19,6 +19,7 @@ std::unordered_set : 无排序,  去重。  这是这里的选择
 
 class LocId{
 public:
+    const static std::string csv_field_ls;
     static LocId buildFor(std::string fp, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM);
 
     std::string to_string();

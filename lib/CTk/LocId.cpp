@@ -8,7 +8,7 @@
 
 using namespace clang;
 
-
+    const std::string LocId::csv_field_ls="filePath,line,column,locationId,funcName";
     LocId LocId::buildFor(std::string fp, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
 //      const SourceLocation &funcDeclBeginLoc = funcDecl->getBeginLoc();
       int line;
