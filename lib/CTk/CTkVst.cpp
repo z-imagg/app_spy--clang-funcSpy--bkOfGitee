@@ -53,7 +53,7 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 
 
 
-bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc ){
+bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
     //用funcEnterLocIdSet的尺寸作为LocationId的计数器
     funcLocId.locationId=funcEnterLocIdSet.size();
   //region 构造插入语句
@@ -70,7 +70,6 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, Sour
   //记录已插入语句的节点ID们以防重： 即使重复遍历了 但不会重复插入
   funcEnterLocIdSet.insert(funcLocId);
 
-  funcLocId.funcName=funcName;
   //写函数id描述行
   ofs_funcIdDescLs << funcLocId.to_csv_line() << "\n";
 
@@ -141,11 +140,10 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
 //  funcDecl->getName();
 
   //按照左右花括号，构建位置id，防止重复插入
-  LocId funcBodyLBraceLocId=LocId::buildFor(filePath, funcBodyLBraceLoc, SM);
+  LocId funcBodyLBraceLocId=LocId::buildFor(filePath,funcQualifiedName, funcBodyLBraceLoc, SM);
 
   //获取返回类型
   const QualType funcReturnType = funcDecl->getReturnType();
-
 
   return this->_Traverse_Func(
       funcReturnType,
@@ -153,8 +151,8 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
       endStmtOfFuncBody,
       funcBodyLBraceLoc,
       funcBodyLBraceLocId,
-      compoundStmt,
-      funcQualifiedName.c_str()
+      compoundStmt
+
       );
 }
 
@@ -171,12 +169,12 @@ bool CTkVst::_Traverse_Func(
   Stmt *endStmtOfFuncBody,
   SourceLocation funcBodyLBraceLoc,
   LocId funcBodyLBraceLocId,
-  CompoundStmt* compoundStmt,
+  CompoundStmt* compoundStmt
 //  bool funcIsConstexpr,
 //  bool hasBody,
 //  int64_t funcDeclID,
 //  Stmt *funcBodyStmt,
-  const char* funcName)
+  )
 {
 
 /////////////////////////对当前节点cxxMethodDecl|functionDecl做 自定义处理
@@ -188,7 +186,7 @@ bool CTkVst::_Traverse_Func(
 
 
         //若 本函数还 没有 插入 函数进入语句，才插入。
-        insertAfter_X__funcEnter(funcBodyLBraceLocId,funcName, funcBodyLBraceLoc);
+        insertAfter_X__funcEnter(funcBodyLBraceLocId, funcBodyLBraceLoc);
       }
 //    }
     //endregion

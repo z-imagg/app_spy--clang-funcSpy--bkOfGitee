@@ -20,7 +20,7 @@ std::unordered_set : 无排序,  去重。  这是这里的选择
 class LocId{
 public:
     const static std::string csv_field_ls;
-    static LocId buildFor(std::string fp, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM);
+    static LocId buildFor(std::string fp, const std::string funcQualifiedName, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM);
 
     std::string to_csv_line();
     std::string to_string();
@@ -34,12 +34,12 @@ public:
     int locationId;
 
     //函数名 ： 冗余字段
-    const char* funcName;
+    const std::string funcName;
 
     LocId( ){};
     LocId(
 //            Decl::Kind declKind, Stmt::StmtClass stmtClass,
-            std::string filePath,int srcFileId, int line, int column);
+            std::string filePath,const std::string funcQualifiedName, int srcFileId, int line, int column);
 
 
     // 重写哈希函数

@@ -10,13 +10,13 @@
 using namespace clang;
 
     const std::string LocId::csv_field_ls="filePath,line,column,abs_location_id,funcName,srcFileId,locationId";
-    LocId LocId::buildFor(std::string fp, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
+    LocId LocId::buildFor(std::string fp, const std::string funcQualifiedName, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
 
     int srcFileId=SrcFileIdAdmin::getSrcFileId(fp);
       int line;
       int column;
       Util::extractLineAndColumn(SM,funcDeclBeginLoc,line,column);
-      return LocId(fp,srcFileId,line,column);
+      return LocId(fp,funcQualifiedName,srcFileId,line,column);
     }
 
     std::string LocId::to_csv_line(){
@@ -31,9 +31,10 @@ using namespace clang;
     }
 
 LocId:: LocId(
-            std::string filePath,int srcFileId,int line, int column)
+            std::string filePath,const std::string funcQualifiedName, int srcFileId,int line, int column)
     :
       filePath(filePath),
+      funcName(funcQualifiedName),
       srcFileId(srcFileId),
       line(line),
     column(column),

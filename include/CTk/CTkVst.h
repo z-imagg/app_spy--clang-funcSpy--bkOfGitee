@@ -53,7 +53,7 @@ public:
     }
 
 
-    bool insertAfter_X__funcEnter(LocId funcLocId,const char* funcName, SourceLocation funcBodyLBraceLoc );
+    bool insertAfter_X__funcEnter(LocId funcLocId,SourceLocation funcBodyLBraceLoc );
 
 
     virtual bool TraverseFunctionDecl(FunctionDecl* funcDecl);
@@ -72,8 +72,8 @@ public:
     Stmt *endStmtOfFuncBody,
     SourceLocation funcBodyLBraceLoc,
     LocId funcBodyLBraceLocId,
-    CompoundStmt* compoundStmt,
-    const char* funcName);
+    CompoundStmt* compoundStmt
+    );
 
 
 
