@@ -15,8 +15,20 @@
 #include <filesystem>
 
 
+#include <unistd.h>
+#include <iostream>
+
 using namespace llvm;
 using namespace clang;
+
+void Util::printCwd() {
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+        std::cout << "current_work_directory: " << cwd << std::endl;
+    } else {
+        std::cerr << "failed_to_get_current_work_directory" << std::endl;
+    }
+}
 
 bool Util::endsWith(const std::string& str, const std::string& suffix) {
   if (str.length() < suffix.length()) {
@@ -91,7 +103,6 @@ bool Util::cxxConstructorIsDefault(CXXConstructorDecl *cxxCnstrDecl){
 }
 
 void Util::emptyStrIfNullStr(const char* &cstr){
-//  whoInserted=(whoInserted==NULL?"":whoInserted);
   cstr=(cstr==NULL?"":cstr);
 }
 
@@ -107,9 +118,7 @@ bool Util::isSysSrcFile(StringRef fn) {
 }
 bool Util::isTickSrcFile(StringRef fn) {
   bool isTick =
-          fn.endswith("t_clock_tick.h")
-          || fn.endswith("t_clock_tick.c")
-          || fn.endswith("t_clock_tick.cpp")
+          fn.endswith("funcIdBase.h")
   ;
   return isTick;
 }
@@ -121,7 +130,7 @@ void Util::copySrcFile(std::string filePath,std::string destRootDir){
   auto duration = now.time_since_epoch();
   auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
   //  新文件路径、新文件目录构建、复制为新文件
-//  std::string filePathCopy="/tmp/"+filePath+"_"+std::to_string(millis);
+//  std::string filePathCopy="/tmp/"+filePath+"_"+std::to_csv_line(millis);
   std::string filePathCopy=destRootDir+"/"+filePath+"_"+std::to_string(millis);
   std::filesystem::path fpCopy(filePathCopy);
   const std::filesystem::path &dir = fpCopy.parent_path();

@@ -13,7 +13,8 @@
 #include <fmt/core.h>
 
 #include "CTk/CTkVst.h"
-#include "FndCTkClROVst.h"
+#include "CTk/CollectIncMacro_PPCb.h"
+#include "CTk/Constant.h"
 #include "Util.h"
 
 using namespace llvm;
@@ -34,7 +35,6 @@ public:
             :
             CI(_CI),
             insertVst(_rewriter_ptr, _astContext, _CI, _SM),
-            findTCCallROVisitor(_CI, _SM, _langOptions, _astContext),
             SM(_SM)  {
       //构造函数
 //      _rewriter_ptr->overwriteChangedFiles();//C'正常.
@@ -50,10 +50,10 @@ public:
       FileID mainFileId;
       std::string filePath;
       Util::getMainFileIDMainFilePath(SM,mainFileId,filePath);
-      if(Util::endsWith(filePath,".c")){
-        std::cout << fmt::format("忽略c语言源码文件，文件路径:{}\n",filePath)  ;
-        return ;
-      }
+//      if(Util::endsWith(filePath,".c")){
+//        std::cout << fmt::format("忽略c语言源码文件，文件路径:{}\n",filePath)  ;
+//        return ;
+//      }
 
       //若是系统文件 或 tick文件则跳过
       if(Util::isSysSrcFile(filePath)  || Util::isTickSrcFile(filePath)){
@@ -70,23 +70,17 @@ public:
       }
 
 
+        Constant c;
 
-//////////////////1. 若已插入 ，则不用处理
+//////////////////1. 若已插入'#pragma 消息' ，则不用处理
       //时钟函数只插入一次，不重复插入：
       //若已经有时钟函数调用，则标记为已处理，且直接返回，不做任何处理。
       {
-      //{本循环遍历直接在本源文件中的函数调用们
-      auto Decls = Ctx.getTranslationUnitDecl()->decls();
-      for (auto &Decl : Decls) {
-        if (!SM.isInMainFile(Decl->getLocation())){
-          continue;
-        }
-        findTCCallROVisitor.TraverseDecl(Decl);
-      }
-      //}
 
-      if(findTCCallROVisitor.curMainFileHas_TCTkCall){
-        //若已经有时钟函数调用，则标记为已处理，且直接返回，不做任何处理。
+      bool hasPragmaMsg = CollectIncMacro_PPCb::pragma_message_set.find(c.NameSpace_funcIdAsmIns) != CollectIncMacro_PPCb::pragma_message_set.end();
+      if(hasPragmaMsg){
+          //若已经有#include "funcIdBase.h"，则标记为已处理，且直接返回，不做任何处理。
+        std::cout << fmt::format("跳过，因为此文件已经被处理, 文件路径:{} 已经包含头文件 {}\n",filePath,c.funcIdBaseH) ;
         return;
       }
       }
@@ -109,19 +103,15 @@ public:
           continue;
         }
 
-        FileID fileId = SM.getFileID(declJ->getLocation());
-
-//        Util::printDecl(Ctx,CI, "查看", "TranslationUnitDecl.decls.j", declJ, false);
-
 
         insertVst.TraverseDecl(declJ);
       }
       //}
-//////////////////3.插入包含语句
+//////////////////3.插入'#pragma 消息'语句
 
       bool insertResult;
-      Util::insertIncludeToFileStart(CTkVst::IncludeStmt_TCTk, mainFileId, SM, insertVst.mRewriter_ptr,insertResult);//此时  insertVst.mRewriter.getRewriteBufferFor(mainFileId)  != NULL， 可以做插入
-      std::string msg=fmt::format("插入include到文件{},对mainFileId:{},结果:{}\n",filePath,mainFileId.getHashValue(),insertResult);
+      Util::insertIncludeToFileStart(c.PrgMsgStmt_funcIdAsmIns, mainFileId, SM, insertVst.mRewriter_ptr,insertResult);//此时  insertVst.mRewriter.getRewriteBufferFor(mainFileId)  != NULL， 可以做插入
+      std::string msg=fmt::format("插入'#pragma 消息'到文件{},对mainFileId:{},结果:{}\n",filePath,mainFileId.getHashValue(),insertResult);
       std::cout<< msg ;
 
 //////////////////4.应用修改到源文件
@@ -150,7 +140,6 @@ public:
 public:
     CompilerInstance &CI;
     CTkVst insertVst;
-    FndCTkClROVst findTCCallROVisitor;
     SourceManager &SM;
     //两次HandleTranslationUnit的ASTConsumer只能每次新建，又期望第二次不要发生，只能让标志字段mainFileProcessed写成static
     static bool mainFileProcessed;

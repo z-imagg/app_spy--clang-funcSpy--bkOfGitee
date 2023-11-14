@@ -5,32 +5,40 @@
 #include "clang/AST/RecursiveASTVisitor.h"
 #include <fmt/core.h>
 #include "CTk/Util.h"
+#include "CTk/SrcFileIdAdmin.h"
 
 using namespace clang;
 
+    const std::string LocId::csv_field_ls="filePath,line,column,abs_location_id,funcName,srcFileId,locationId";
+    LocId LocId::buildFor(std::string fp, const std::string funcQualifiedName, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
 
-    LocId LocId::buildFor(std::string fp, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
-//      const SourceLocation &funcDeclBeginLoc = funcDecl->getBeginLoc();
+    int srcFileId=SrcFileIdAdmin::getSrcFileId(fp);
       int line;
       int column;
-//      Decl::Kind kind = funcDecl->getKind();
-//      Stmt::StmtClass xx = funcDecl->getBody()->getStmtClass();
       Util::extractLineAndColumn(SM,funcDeclBeginLoc,line,column);
-      return LocId(fp,line,column);
+      return LocId(fp,funcQualifiedName,srcFileId,line,column);
+    }
+
+    std::string LocId::to_csv_line(){
+        int abs_location_id=this->abs_location_id();
+      return fmt::format("{},{},{},{},{}",filePath,line,column,abs_location_id,funcName,srcFileId,locationId);
     }
 
     std::string LocId::to_string(){
-      return fmt::format("{}:{},{}",filePath,line,column);
+        int abs_location_id=this->abs_location_id();
+        return fmt::format("filePath={},line={},column={},abs_location_id={},funcName={},srcFileId={},locationId={}",
+                                filePath,   line,   column,     abs_location_id,    funcName,   srcFileId,  locationId);
     }
+
 LocId:: LocId(
-//            Decl::Kind declKind, Stmt::StmtClass stmtClass,
-            std::string filePath,int line, int column)
+            std::string filePath,const std::string funcQualifiedName, int srcFileId,int line, int column)
     :
-//    declKind(declKind),
-//    stmtClass(stmtClass),
       filePath(filePath),
+      funcName(funcQualifiedName),
+      srcFileId(srcFileId),
       line(line),
-    column(column)
+    column(column),
+    locationId(-1)
     {
 
     }

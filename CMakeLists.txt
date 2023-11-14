@@ -29,7 +29,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 set(LLVM_DIR "/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
 #set(xxx "")
 
-project(clang-tutor)
+project(clangPlugin-FuncStartInsertAsm)
 #project放到默认编译器定义之后，否则cmake会死循环
 
 
@@ -61,7 +61,7 @@ message("CLANG STATUS:
 include_directories(SYSTEM "${LLVM_INCLUDE_DIRS};${CLANG_INCLUDE_DIRS}")
 
 #===============================================================================
-# 3. CLANG-TUTOR BUILD CONFIGURATION
+# 3. clangPlugin-FuncStartInsertAsm BUILD CONFIGURATION
 #===============================================================================
 # Use the same C++ standard as LLVM does
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "")
@@ -102,4 +102,4 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 #===============================================================================
 add_subdirectory(lib)
 add_subdirectory(tools)
-add_subdirectory(t_clock_tick)
+add_subdirectory(funcIdBase)

@@ -19,20 +19,27 @@ std::unordered_set : 无排序,  去重。  这是这里的选择
 
 class LocId{
 public:
-    static LocId buildFor(std::string fp, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM);
+    const static std::string csv_field_ls;
+    static LocId buildFor(std::string fp, const std::string funcQualifiedName, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM);
 
+    std::string to_csv_line();
     std::string to_string();
 public:
-//    Decl::Kind declKind;
-//    Stmt::StmtClass stmtClass;
+    std::string filePath;
+    int srcFileId;
+
     int line;
     int column;
-    std::string filePath;
+    /* locationId 与 <filePath,line,column> 一一对应 */
+    int locationId;
+
+    //函数名 ： 冗余字段
+    const std::string funcName;
 
     LocId( ){};
     LocId(
 //            Decl::Kind declKind, Stmt::StmtClass stmtClass,
-            std::string filePath,int line, int column);
+            std::string filePath,const std::string funcQualifiedName, int srcFileId, int line, int column);
 
 
     // 重写哈希函数
@@ -42,7 +49,21 @@ public:
     bool operator==(const LocId& that) const ;
 
 
+    const int LIMIT_FUNC_IN_1_SRC_FILE=10000;
+    /**
+     * 一个源文件中最大支持 LIMIT_FUNC_IN_1_SRC_FILE(即10000) 个函数
+     * 如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
+     * 指令中以四字节存储的funcId, 因此最多源文件数目是 2**32/(LIMIT_FUNC_IN_1_SRC_FILE 即10**4) == 429496.7296
+     * @return
+     */
+    int abs_location_id(){
+        //一个源文件中最大支持 10000 个函数
 
+        //如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
+        assert(locationId<LIMIT_FUNC_IN_1_SRC_FILE);
+
+        return srcFileId*(LIMIT_FUNC_IN_1_SRC_FILE)+locationId;
+    }
 
 };
 #endif //LocId_H
