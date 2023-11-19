@@ -21,7 +21,7 @@ using namespace clang;
 
     std::string LocId::to_csv_line(){
         int abs_location_id=this->abs_location_id();
-      return fmt::format("{},{},{},{},{}",filePath,line,column,abs_location_id,funcName,srcFileId,locationId);
+      return fmt::format("{},{},{},{},{},{},{}",filePath,line,column,abs_location_id,funcName,srcFileId,locationId);
     }
 
     std::string LocId::to_string(){
