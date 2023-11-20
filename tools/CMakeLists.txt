@@ -1,10 +1,10 @@
 
 
 MESSAGE("CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
-#CMAKE_SOURCE_DIR: /pubx/clang-ctk/
+#CMAKE_SOURCE_DIR: /crk/clang-add-funcIdAsm/
 
 MESSAGE("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
-#CMAKE_CURRENT_SOURCE_DIR: /pubx/clang-ctk/tools
+#CMAKE_CURRENT_SOURCE_DIR: /crk/clang-add-funcIdAsm/tools
 
 set(CTkAlone_SOURCES
 "${CMAKE_CURRENT_SOURCE_DIR}/../tools/CTkMain.cpp"
