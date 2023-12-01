@@ -1,13 +1,22 @@
 #!/bin/bash
 
 
-
-#加载 func.sh中的函数 ifelse
-# source bash-simplify/func.sh
-#PS4='Line ${LINENO}: '    bash -x   ./build-libfmt.sh 
+######{此脚本调试步骤:
+###{1. 干运行（置空ifelse）以 确定参数行是否都被短路:
+#PS4='Line ${LINENO}: '    bash -x   ./build-libfmt.sh   #bash调试执行 且 显示 行号
+#使用 ifelse空函数
 function ifelse(){
     :
 }
+###}
+
+
+###2. 当 确定参数行都被短路 时, 再 使用 真实 ifelse 函数:
+#加载 func.sh中的函数 ifelse
+# source bash-simplify/func.sh
+######}
+
+
 source bash-simplify/dir_util.sh
 
 #当前脚本文件名, 此处 CurScriptF=example.sh
