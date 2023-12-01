@@ -30,12 +30,12 @@ PrjHmD="/crk"
 
 { \
 ifelse  $CurScriptF $LINENO || true || { \
-  test -e $PrjHome && test -d $PrjHome
-    "已有$PrjHome，无需创建"
-    cd $PrjHome 
+  test -e $PrjHmD && test -d $PrjHmD
+    "已有$PrjHmD ，无需创建"
+    cd $PrjHmD 
   #else:
-    createDir_CurUsrOwn_EnterIt $PrjHome  
-      "目录$PrjHome 创建完成" 
+    createDir_CurUsrOwn_EnterIt $PrjHmD  
+      "目录$PrjHmD 创建完成" 
 } \
 } && \
 
@@ -43,6 +43,8 @@ ifelse  $CurScriptF $LINENO || true || { \
 
 #1. 下载git仓库 fmt.git
 
+
+{ \
 #https://github.com/fmtlib/fmt.git
 REPO_URL="https://prgrmz07:ChiPLVkNmksbkDe5pzMF@gitcode.net/pubx/fmtlib/fmt.git"
 RepoName="fmt"
@@ -61,7 +63,6 @@ _=end
 
 }
 
-{ \
 ifelse  $CurScriptF $LINENO || true || { \
   test -e $GitDir && test -d $GitDir
     "已有fmt的git仓库,无需下载"
@@ -75,6 +76,7 @@ ifelse  $CurScriptF $LINENO || true || { \
 
 # set +x
 #2. 编译 fmt
+{ \
 BUILD_HOME="$REPO_HOME/build"
 LibFmtArchiv="$BUILD_HOME/libfmt.a"
 
@@ -95,7 +97,6 @@ ls -lh $LibFmtArchiv && file $LibFmtArchiv && \
 _=end
 }
 
-{ \
 ifelse  $CurScriptF $LINENO || true || { \
   test -f $LibFmtArchiv
     "已编译出 $LibFmtArchiv,无需再次编译"
