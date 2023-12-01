@@ -19,7 +19,7 @@ source bash-simplify/func.sh
 
 source bash-simplify/dir_util.sh
 
-#当前脚本文件名, 此处 CurScriptF=example.sh
+#当前脚本文件名, 此处 CurScriptF=build-libfmt.sh
 CurScriptF=$(pwd)/$0
 
 
