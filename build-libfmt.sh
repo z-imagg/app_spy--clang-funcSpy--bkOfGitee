@@ -1,8 +1,13 @@
 #!/bin/bash
 
 
+
 #加载 func.sh中的函数 ifelse
-source bash-simplify/func.sh
+# source bash-simplify/func.sh
+#PS4='Line ${LINENO}: '    bash -x   ./build-libfmt.sh 
+function ifelse(){
+    :
+}
 source bash-simplify/dir_util.sh
 
 #当前脚本文件名, 此处 CurScriptF=example.sh
@@ -15,13 +20,15 @@ PrjHmD="/crk"
 #0. 创建 PrjHome 目录 并 进入该目录
 
 
-ifelse  $CurScriptF $LINENO
-  true || test -e $PrjHome && test -d $PrjHome && \
-    true || "已有$PrjHome，无需创建" && \
-    true || cd $PrjHome && \
+ifelse  $CurScriptF $LINENO && {\
+  true || { test -e $PrjHome && test -d $PrjHome ;} #短路正常
+  true || test -e $PrjHome && test -d $PrjHome #短路失败， 'test -d'依然被执行
+    true || "已有$PrjHome，无需创建" 
+    true || cd $PrjHome 
   #else:
-    true || createDir_CurUsrOwn_EnterIt $PrjHome  && \
-      true || "目录$PrjHome 创建完成" && \
+    true || createDir_CurUsrOwn_EnterIt $PrjHome  
+      true || "目录$PrjHome 创建完成" 
+} && \
 
 
 
@@ -46,13 +53,14 @@ _=end
 }
 
 # set -x
-ifelse  $CurScriptF $LINENO
-  true || test -e $GitDir && test -d $GitDir && \
-    true || "已有fmt的git仓库,无需下载" && \
-    true || : && \
+ifelse  $CurScriptF $LINENO && {\
+  true || test -e $GitDir && test -d $GitDir
+    true || "已有fmt的git仓库,无需下载"
+    true || :
   #else:
-    true || { pwd && _gitClone_  ;} && \
+    true || pwd && _gitClone_
       true || " $REPO_HOME git仓库 下载完成"
+} && \
 
 # set +x
 #2. 编译 fmt
@@ -76,11 +84,14 @@ ls -lh $LibFmtArchiv && file $LibFmtArchiv && \
 _=end
 }
 
-ifelse  $CurScriptF $LINENO
-  true || test -f $LibFmtArchiv && \
-    true || "已编译出 $LibFmtArchiv,无需再次编译" && \
-    true || : && \
+ifelse  $CurScriptF $LINENO && { \
+  true || test -f $LibFmtArchiv
+    true || "已编译出 $LibFmtArchiv,无需再次编译"
+    true || :
   #else:
-    true || _build_fmt && \
+    true || _build_fmt
       true || "$RepoName 编译完成"
+} && \
+
+_=end
 ########
