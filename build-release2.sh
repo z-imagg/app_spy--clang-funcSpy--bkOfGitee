@@ -1,3 +1,12 @@
+#!/bin/bash
+
+#下载安装llvm15
+bash llvm15_dl_install.sh
+
+#构建libfmt
+bash build-libfmt.sh
+
+
 BUILD_HOME=/crk/clang-add-funcIdAsm/build/
 mkdir -p $BUILD_HOME
 rm -fr $BUILD_HOME/*

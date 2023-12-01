@@ -112,7 +112,7 @@ std::string Util::pointerToString(void* ptr) {
 bool Util::isSysSrcFile(StringRef fn) {
   bool startWithUsr=fn.startswith("/usr/");
   bool isLLVM01=fn.startswith("/app/llvm_release_home/clang+llvm");
-  bool isLLVM02=fn.startswith("/llvm_release_home/clang+llvm");
+  bool isLLVM02=fn.startswith("/app/llvm_release_home/clang+llvm");
   bool isInternal=(startWithUsr||isLLVM01||isLLVM02);
   return isInternal;
 }
