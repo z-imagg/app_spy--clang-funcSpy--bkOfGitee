@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-set(LIBFMT_DIR "/crk/fmt//")
+set(LIBFMT_DIR "U:/crk/fmt//")
 #set(LIBFMT_STATIC /crk/fmt//include)
 set(LIBFMT_INCLUDE "${LIBFMT_DIR}/include/")
 #set(LIBFMT_STATIC /crk/fmt//build/libfmt.a)
@@ -17,7 +17,7 @@ endif()
 #===============================================================================
 # 0. GET CLANG INSTALLATION DIR
 #修改默认编译器
-set(CT_Clang_INSTALL_DIR "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
+set(CT_Clang_INSTALL_DIR "U:/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CURSES_LIBRARY "/lib64/libncurses.so.6")
 set(CURSES_INCLUDE_PATH "/usr/include/")
@@ -26,7 +26,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 #   gdb显示std::string时报错: There is no member named _M_dataplus。 因此gdb不显示std::string的值.
 #set(CMAKE_C_COMPILER "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/bin/clang")
 #set(CMAKE_CXX_COMPILER "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/bin/clang++")
-set(LLVM_DIR "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
+set(LLVM_DIR "U:/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
 #set(xxx "")
 
 project(clangPlugin-FuncStartInsertAsm)
