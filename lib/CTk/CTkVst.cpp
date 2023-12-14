@@ -71,7 +71,7 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLB
   funcEnterLocIdSet.insert(funcLocId);
 
   //写函数id描述行
-  ofs_funcIdDescLs << funcLocId.to_csv_line() << "\n";
+//  funcIdDescSrv.write(funcLocId); // 把 funcLocId.to_csv_line() 牵涉的列们 都 发送到 funcIdDescWebService 去
 
   return insertResult;
 }
