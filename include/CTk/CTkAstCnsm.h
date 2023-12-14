@@ -80,7 +80,7 @@ public:
       bool hasPragmaMsg = CollectIncMacro_PPCb::pragma_message_set.find(c.NameSpace_funcIdAsmIns) != CollectIncMacro_PPCb::pragma_message_set.end();
       if(hasPragmaMsg){
           //若已经有#include "funcIdBase.h"，则标记为已处理，且直接返回，不做任何处理。
-        std::cout << fmt::format("跳过，因为此文件已经被处理, 文件路径:{} 已经包含头文件 {}\n",filePath,c.funcIdBaseH) ;
+        std::cout << fmt::format("跳过，因为此文件已经被处理, 文件路径:{} 已经包含#pragma消息 {}\n",filePath,c.PrgMsgStmt_funcIdAsmIns) ;
         return;
       }
       }
