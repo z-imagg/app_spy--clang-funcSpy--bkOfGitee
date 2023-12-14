@@ -5,14 +5,14 @@
 #include "clang/AST/RecursiveASTVisitor.h"
 #include <fmt/core.h>
 #include "CTk/Util.h"
-#include "CTk/SrcFileIdAdmin.h"
 
 using namespace clang;
 
     const std::string LocId::csv_field_ls="filePath,line,column,abs_location_id,funcName,srcFileId,locationId";
     LocId LocId::buildFor(std::string fp, const std::string funcQualifiedName, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
 
-    int srcFileId=SrcFileIdAdmin::getSrcFileId(fp);
+    //  int srcFileId=funcIdDescSrv.getSrcFileId(srcFilePath=fp); // 问funcIdDescSrv要SrcFileId;  SrcFileIdAdmin是funcIdDescSrv的一部分功能
+    int srcFileId=0;
       int line;
       int column;
       Util::extractLineAndColumn(SM,funcDeclBeginLoc,line,column);

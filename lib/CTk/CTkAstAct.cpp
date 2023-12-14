@@ -5,7 +5,6 @@
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendPluginRegistry.h"
 #include "clang/Rewrite/Core/Rewriter.h"
-#include "CTk/SrcFileIdAdmin.h"
 
 
 using namespace llvm;
