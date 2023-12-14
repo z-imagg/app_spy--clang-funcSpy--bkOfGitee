@@ -57,7 +57,7 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLB
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
           "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*{}*/",
-          funcLocId.abs_location_id, funcLocId.to_string()///@
+          funcLocId.abs_location_id, funcLocId.to_string()
   );
   llvm::StringRef strRef(cStr_inserted);
   //endregion
@@ -66,7 +66,7 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLB
 
 
   //记录已插入语句的节点ID们以防重： 即使重复遍历了 但不会重复插入
-  funcEnterLocIdSet.insert(funcLocId);///#
+  funcEnterLocIdSet.insert(funcLocId);
 
   //写函数id描述行
 //  funcIdDescSrv.write(funcLocId); // 把 funcLocId.to_csv_line() 牵涉的列们 都 发送到 funcIdDescWebService 去

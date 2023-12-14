@@ -315,8 +315,8 @@ bool Util::hasAttrKind(Stmt *stmt, attr::Kind attrKind){
 }
 void Util::extractLineAndColumn(const clang::SourceManager& SM, const clang::SourceLocation& sourceLocation, int& line, int& column) {
   clang::PresumedLoc presumedLoc = SM.getPresumedLoc(sourceLocation);
-  line = presumedLoc.getLine();///
-  column = presumedLoc.getColumn();///
+  line = presumedLoc.getLine();
+  column = presumedLoc.getColumn();
 }
 
 bool Util::parentIsCompound(ASTContext* astContext, const Stmt* currentStmt) {
