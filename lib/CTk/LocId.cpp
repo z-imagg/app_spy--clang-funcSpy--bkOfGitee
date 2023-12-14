@@ -1,5 +1,6 @@
 
 #include "CTk/LocId.h"
+#include "CTk/SFFnIdClient.h"
 
 #include "clang/AST/AST.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -9,40 +10,49 @@
 using namespace clang;
 
     const std::string LocId::csv_field_ls="filePath,line,column,abs_location_id,funcName,srcFileId,locationId";
-    LocId LocId::buildFor(std::string fp, const std::string funcQualifiedName, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
+    LocId LocId::buildFor(std::string srcFilePath, const std::string funcQualifiedName, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
+   clang::PresumedLoc fnDeclBgPresumedLoc = SM.getPresumedLoc(funcDeclBeginLoc);
+    int fnDclBgPrsmLc_line=fnDeclBgPresumedLoc.getLine();
+    int fnDclBgPrsmLc_column=fnDeclBgPresumedLoc.getColumn();
+ int srcFileId;
+ int abs_location_id;
+  SFFnIdClient::genFuncAbsLocId(
+          srcFilePath, fnDclBgPrsmLc_line, fnDclBgPrsmLc_column
+,
+          srcFileId, abs_location_id
+         );
+     LocId funcLocId(srcFilePath, funcQualifiedName,  fnDclBgPrsmLc_line, fnDclBgPrsmLc_column);
+     funcLocId.fillId(srcFileId,abs_location_id);
 
-    ////  int srcFileId=funcIdDescSrv.getSrcFileId(srcFilePath=fp); // 问funcIdDescSrv要SrcFileId;  SrcFileIdAdmin是funcIdDescSrv的一部分功能
-    int srcFileId=0;
-      int line;
-      int column;
-      Util::extractLineAndColumn(SM,funcDeclBeginLoc,line,column);
-      return LocId(fp,funcQualifiedName,srcFileId,line,column);
+      return funcLocId;
     }
 
     std::string LocId::to_csv_line(){
-        int abs_location_id=this->abs_location_id();
       return fmt::format("{},{},{},{},{},{},{}",filePath,line,column,abs_location_id,funcName,srcFileId,locationId);
     }
 
     std::string LocId::to_string(){
-        int abs_location_id=this->abs_location_id();
         return fmt::format("filePath={},line={},column={},abs_location_id={},funcName={},srcFileId={},locationId={}",
                                 filePath,   line,   column,     abs_location_id,    funcName,   srcFileId,  locationId);
     }
 
 LocId:: LocId(
-            std::string filePath,const std::string funcQualifiedName, int srcFileId,int line, int column)
+            std::string filePath,const std::string funcQualifiedName,  int line, int column)
     :
       filePath(filePath),
       funcName(funcQualifiedName),
-      srcFileId(srcFileId),
       line(line),
-    column(column),
-    locationId(-1)///
+    column(column)
     {
 
     }
 
+
+    void LocId::fillId(int srcFileId, int abs_location_id){
+        this->srcFileId=srcFileId;
+        this->abs_location_id=abs_location_id;
+        return;
+    }
 
     // 重写哈希函数
     size_t LocId::operator()(const LocId& that) const {
