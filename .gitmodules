@@ -7,3 +7,6 @@
 [submodule "yhirose--cpp-httplib"]
 	path = yhirose--cpp-httplib
 	url = https://gitcode.com/crk/yhirose--cpp-httplib.git
+[submodule "nlohmann--json"]
+	path = nlohmann--json
+	url = https://gitcode.com/crk/nlohmann--json.git
