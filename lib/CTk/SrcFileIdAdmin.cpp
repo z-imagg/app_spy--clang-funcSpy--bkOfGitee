@@ -8,6 +8,7 @@
 void SrcFileIdAdmin::save(){
     std::ofstream ofs(srcFileIdDict_json);
     ofs << std::setw(4) << srcFileIdDict << std::endl;
+    ofs.close();//修复bug:打开文件后必须关闭文件. 虽然性能降低了 但不会有bug. 由于一次只编译一个源文件,所以此方法在编译器进程中只会被调用一次,间接导致此bug不会触发.
 }
 
 int SrcFileIdAdmin::getSrcFileId(std::string srcFilePath){
