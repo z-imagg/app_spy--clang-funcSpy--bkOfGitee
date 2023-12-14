@@ -1,3 +1,6 @@
 [submodule "bash-simplify"]
 	path = bash-simplify
 	url = https://prgrmz07:S9UWyxCXr55tD3SiWVxX@gitcode.net/crk/bash-simplify.git
+[submodule "fmtlib-fmt"]
+	path = fmtlib-fmt
+	url = https://prgrmz07:UUFZhAXcBNA24zzxbXHg@gitcode.net/crk/fmtlib-fmt.git
