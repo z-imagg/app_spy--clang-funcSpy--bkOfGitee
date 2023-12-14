@@ -11,7 +11,6 @@ using namespace clang;
 #include <iostream>
 #include <clang/AST/ParentMapContext.h>
 #include <fmt/core.h>
-#include <CTk/SrcFileIdAdmin.h>
 
 using namespace llvm;
 using namespace clang;
@@ -55,11 +54,10 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 
 bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
     //用funcEnterLocIdSet的尺寸作为LocationId的计数器
-    funcLocId.locationId=funcEnterLocIdSet.size();
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
           "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*{}*/",
-          funcLocId.abs_location_id(), funcLocId.to_string()
+          funcLocId.abs_location_id, funcLocId.to_string()
   );
   llvm::StringRef strRef(cStr_inserted);
   //endregion
@@ -71,7 +69,7 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLB
   funcEnterLocIdSet.insert(funcLocId);
 
   //写函数id描述行
-  ofs_funcIdDescLs << funcLocId.to_csv_line() << "\n";
+//  funcIdDescSrv.write(funcLocId); // 把 funcLocId.to_csv_line() 牵涉的列们 都 发送到 funcIdDescWebService 去
 
   return insertResult;
 }
@@ -145,7 +143,7 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
   //获取返回类型
   const QualType funcReturnType = funcDecl->getReturnType();
 
-  return this->_Traverse_Func(
+  return this->_Traverse_Func(//其中的insertAfter_X__funcEnter内Vst.funcEnterLocIdSet、funcLocId.locationId相互配合使得funcLocId.locationId作为funcLocId.srcFileId局部下的自增数
       funcReturnType,
       false,
       endStmtOfFuncBody,
