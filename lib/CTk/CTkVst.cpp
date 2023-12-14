@@ -54,7 +54,7 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 
 bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
     //用funcEnterLocIdSet的尺寸作为LocationId的计数器
-    funcLocId.locationId=funcEnterLocIdSet.size();
+    funcLocId.locationId=funcEnterLocIdSet.size();///#
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
           "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*{}*/",
@@ -67,7 +67,7 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLB
 
 
   //记录已插入语句的节点ID们以防重： 即使重复遍历了 但不会重复插入
-  funcEnterLocIdSet.insert(funcLocId);
+  funcEnterLocIdSet.insert(funcLocId);///#
 
   //写函数id描述行
 //  funcIdDescSrv.write(funcLocId); // 把 funcLocId.to_csv_line() 牵涉的列们 都 发送到 funcIdDescWebService 去
@@ -144,7 +144,7 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
   //获取返回类型
   const QualType funcReturnType = funcDecl->getReturnType();
 
-  return this->_Traverse_Func(
+  return this->_Traverse_Func(//其中的insertAfter_X__funcEnter内Vst.funcEnterLocIdSet、funcLocId.locationId相互配合使得funcLocId.locationId作为funcLocId.srcFileId局部下的自增数
       funcReturnType,
       false,
       endStmtOfFuncBody,

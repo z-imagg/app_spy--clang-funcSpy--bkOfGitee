@@ -62,7 +62,7 @@ public:
         //如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
         assert(locationId<LIMIT_FUNC_IN_1_SRC_FILE);
 
-        return srcFileId*(LIMIT_FUNC_IN_1_SRC_FILE)+locationId;
+        return srcFileId*(LIMIT_FUNC_IN_1_SRC_FILE)+locationId;///
     }
 
 };
