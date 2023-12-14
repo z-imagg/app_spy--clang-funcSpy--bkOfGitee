@@ -58,7 +58,7 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLB
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
           "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*{}*/",
-          funcLocId.abs_location_id(), funcLocId.to_string()
+          funcLocId.abs_location_id(), funcLocId.to_string()///@
   );
   llvm::StringRef strRef(cStr_inserted);
   //endregion
