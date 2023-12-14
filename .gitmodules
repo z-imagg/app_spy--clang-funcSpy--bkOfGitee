@@ -4,3 +4,6 @@
 [submodule "fmtlib-fmt"]
 	path = fmtlib-fmt
 	url = https://prgrmz07:UUFZhAXcBNA24zzxbXHg@gitcode.net/crk/fmtlib-fmt.git
+[submodule "yhirose--cpp-httplib"]
+	path = yhirose--cpp-httplib
+	url = https://gitcode.com/crk/yhirose--cpp-httplib.git
