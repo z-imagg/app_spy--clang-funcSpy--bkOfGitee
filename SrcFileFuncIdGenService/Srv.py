@@ -22,8 +22,13 @@ class SFFnIdResp(BaseModel):
 
 #响应}
 
+def uniqIdGen(key,scope):
+    return None
+
 def genFuncAbsLocId(req:SFFnIdReq)->SFFnIdResp:
     #TODO : 根据输入请求 genSFFnIdReq , 生成输出响应 SFFnIdResp
-    respDto=SFFnIdResp(srcFileId=2000,funcAbsLocId=4)
+    srcFileId=uniqIdGen(req.srcFilePath)
+    fnDclId=uniqIdGen(req.fnDclBgPrsmLoc,srcFileId)
+    respDto=SFFnIdResp(srcFileId,fnDclId)
     return respDto
 
