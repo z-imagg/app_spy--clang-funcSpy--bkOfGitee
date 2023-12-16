@@ -24,12 +24,8 @@ class FFnIdReq(BaseModel):
 class FFnIdRsp(BaseModel):
     fId:FIdType
     fnIdx:FnIdxType
-    # fnAbsLctId:int
+    fnAbsLctId:int
 
-class DBRsp(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-    fIdDct:dict
-    fIdCur:int
 #响应}
 
 class FnLct:
@@ -144,11 +140,26 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
 
 
 
-def getFFnId(req:FFnIdReq)->FFnIdRsp:
-    (fId,areaLctId)=DB().uniqIdGen(req.sF,
-          FnLct.buildFromX(req.fnLct))
-    return FFnIdRsp(fId=fId, fnIdx=areaLctId)
+LIMIT_FUNC_IN_1_SRC_FILE:int =10000
+def calcFnAbsLctId(fId,fnIdx):
+    """
+    /**
+     * 一个源文件中最大支持 LIMIT_FUNC_IN_1_SRC_FILE(即10000) 个函数
+     * 如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
+     * 指令中以四字节存储的funcId, 因此最多源文件数目是 2**32/(LIMIT_FUNC_IN_1_SRC_FILE 即10**4) == 429496.7296
+     * @return
+     */
+    """
+    #一个源文件中最大支持 10000(==LIMIT_FUNC_IN_1_SRC_FILE) 个函数
+    #如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
+    assert fnIdx < LIMIT_FUNC_IN_1_SRC_FILE
+    #fId: srcFileId
+    fnAbsLctId=fId*LIMIT_FUNC_IN_1_SRC_FILE+fnIdx
+    return fnAbsLctId
 
-# def dbAsJson()->str:
-#     db=DB()
-#     return db.asJson()
+def getFFnId(req:FFnIdReq)->FFnIdRsp:
+    (fId,fnIdx)=DB().uniqIdGen(req.sF,
+          FnLct.buildFromX(req.fnLct))
+    return FFnIdRsp(fId=fId, fnIdx=fnIdx,
+            fnAbsLctId=calcFnAbsLctId(fId,fnIdx))
+
