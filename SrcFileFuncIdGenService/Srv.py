@@ -66,8 +66,8 @@ class Manager:
         return val
 
     def uniqSrcFIdGen(self,fPath:str,lc:KeyFnDclBgPrsmLoc)->Tuple[int,int]:
-        fIdval:Val=Manager.uniqId(fPath,Manager.xxx,self)
-        areaLoctIdVal:int=Manager.uniqId(lc, fIdval.areaLoctDct, Val.yyy )
+        fIdval:Val=Manager.uniqId(fPath,self.fIdDct,Manager.xxx,self)
+        areaLoctIdVal:int=Manager.uniqId(lc, fIdval.areaLoctDct, Val.yyy,fIdval )
         fIdval.areaLoctDct[lc]=areaLoctIdVal
         return (fIdval.fId,areaLoctIdVal)
 
@@ -87,6 +87,6 @@ def genFuncAbsLocId(req:SFFnIdReq)->SFFnIdResp:
     global manager
     (fId,areaLoctId)=manager.uniqSrcFIdGen(req.srcFilePath,
           KeyFnDclBgPrsmLoc.buildFromX(req.fnDclBgPrsmLoc))
-    respDto=SFFnIdResp(fId,areaLoctId)
+    respDto=SFFnIdResp(srcFileId=fId,funcAbsLocId=areaLoctId)
     return respDto
 
