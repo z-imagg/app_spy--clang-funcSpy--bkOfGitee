@@ -2,6 +2,11 @@
 from typing import Dict, List, Callable, Tuple
 
 from pydantic import BaseModel
+
+FIdType=int
+FnIdxType=int#FnIdx:函数下标:即在该FId下的各个Fn的局部id
+FilePathType=str
+
 #{请求
 #FuncDeclBeginPresumedLoc: FnLct
 class FnLctDto(BaseModel):
@@ -10,15 +15,15 @@ class FnLctDto(BaseModel):
 
 #GenSFFnIdReq:FFnIdReq
 class FFnIdReq(BaseModel):
-    sF: str
+    sF: FilePathType
     fnLct: FnLctDto
 #请求}
 
 #{响应
 
 class FFnIdRsp(BaseModel):
-    fId:int
-    fnAbsLctId:int
+    fId:FIdType
+    fnAbsLctId:FnIdxType
 
 #响应}
 
@@ -41,8 +46,6 @@ class FnLct:
             return self.line == that.line and self.column == that.column
         return False
 
-FIdType=int
-FnIdxType=int#FnIdx:函数下标:即在该FId下的各个Fn的局部id
 class FIdFat: #FId胖子
     def __init__(self, fId:FIdType):
         self.fId :int = fId
@@ -54,7 +57,6 @@ class FIdFat: #FId胖子
     # def __repr__(self):
     #     return f"Val(fId{self.fId},Dsz{len(self.areaLoctDct)})"
 
-FilePathType=str
 
 import threading
 class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
@@ -114,3 +116,6 @@ def getFFnId(req:FFnIdReq)->FFnIdRsp:
           FnLct.buildFromX(req.fnLct))
     return FFnIdRsp(fId=fId, fnAbsLctId=areaLctId)
 
+def instanceOfDB()->DB:
+    DB()
+    return DB.instance
