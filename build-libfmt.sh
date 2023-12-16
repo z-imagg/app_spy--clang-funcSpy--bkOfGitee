@@ -23,56 +23,18 @@ source bash-simplify/dir_util.sh
 CurScriptF=$(pwd)/$0
 
 
-PrjHmD="/crk"
-
-
-#0. 创建 PrjHome 目录 并 进入该目录
-
-{ \
-ifelse  $CurScriptF $LINENO || true || { \
-  test -e $PrjHmD && test -d $PrjHmD
-    "已有$PrjHmD ，无需创建"
-    cd $PrjHmD 
-  #else:
-    createDir_CurUsrOwn_EnterIt $PrjHmD  
-      "目录$PrjHmD 创建完成" 
-} \
-} && \
-
 
 
 #1. 下载git仓库 fmt.git
 
 
-{ \
 #https://github.com/fmtlib/fmt.git
-REPO_URL="https://prgrmz07:ChiPLVkNmksbkDe5pzMF@gitcode.net/pubx/fmtlib/fmt.git"
-RepoName="fmt"
-REPO_HOME="$PrjHmD/$RepoName"
-GitDir="$REPO_HOME/.git/"
+REPO_HOME="/crk/bochs/clang-add-funcIdAsm/fmtlib-fmt"
+GitDir="$REPO_HOME"
 Ver="10.0.0"
 CmtId="a0b8a92e3d1532361c2f7feb63babc5c18d00ef2"
-ErrMsg1="错误, $Ver 的commitId不是 $CmtId, 退出码13"
 
-function _gitClone_() {
-git clone   $REPO_URL $REPO_HOME && \
-git --git-dir=$GitDir checkout $Ver && \
-CurHeadCmtId=$(git --git-dir=$GitDir rev-parse HEAD) && \
-{ [ "X$CurHeadCmtId" == "X$CmtId" ]  || { echo $ErrMsg1 && exit 13 ;} ;} && \
-_=end
-
-}
-
-ifelse  $CurScriptF $LINENO || true || { \
-  test -e $GitDir && test -d $GitDir
-    "已有fmt的git仓库,无需下载"
-    :
-  #else:
-    pwd && _gitClone_
-      " $REPO_HOME git仓库 下载完成"
-} \
-} && \
-
+gitCko_tagBrc_asstCmtId $REPO_HOME $Ver $CmtId
 
 # set +x
 #2. 编译 fmt
@@ -103,7 +65,7 @@ ifelse  $CurScriptF $LINENO || true || { \
     :
   #else:
     _build_fmt
-      "$RepoName 编译完成"
+      "fmtlib-fm 编译完成"
 } \
 } && \
 

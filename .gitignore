@@ -39,3 +39,11 @@
 
 .vscode/
 
+
+include/cpp_httplib
+
+include/nlohmann
+
+*.pyc
+
+SrcFileFuncIdGenService/__pycache__/

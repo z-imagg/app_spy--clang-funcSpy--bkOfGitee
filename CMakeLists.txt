@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-set(LIBFMT_DIR "/crk/fmt//")
+set(LIBFMT_DIR "/crk/bochs/clang-add-funcIdAsm/fmtlib-fmt/")
 #set(LIBFMT_STATIC /crk/fmt//include)
 set(LIBFMT_INCLUDE "${LIBFMT_DIR}/include/")
 #set(LIBFMT_STATIC /crk/fmt//build/libfmt.a)
