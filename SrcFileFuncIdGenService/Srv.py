@@ -55,10 +55,28 @@ class FIdFat: #FId胖子
     #     return f"Val(fId{self.fId},Dsz{len(self.areaLoctDct)})"
 
 FilePathType=str
+
+import threading
 class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
+    #{线程安全单例模式 开始
+    instance = None
+    _lock = threading.Lock()
+    def __new__(cls, *args, **kwargs):
+        if not cls.instance:
+            with cls._lock:
+                if not cls.instance:
+                    cls.instance = super().__new__(cls)
+                    ###{ __init__内容 开始
+                    cls.instance.fIdDct: Dict[FilePathType, FIdFat] = {}
+                    cls.instance.fIdCur: int = 0
+                    ### __init__内容 结束}
+                    print(f"创建DB实例:id={id(cls.instance)}")
+        return cls.instance
+    #线程安全单例模式 结束}
+
     def __init__(self):
-        self.fIdDct:Dict[FilePathType, FIdFat]={}
-        self.fIdCur:int=0
+        pass
+
 
     def fIdNext(self):
         val:FIdFat=FIdFat(self.fIdCur)
@@ -90,11 +108,9 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         raise Exception(f"uniqId:不应该到达这里,k{key},d{dct},iCO{idCurOut}")
 
 
-db:DB=DB()
 
 def getFFnId(req:FFnIdReq)->FFnIdRsp:
-    # global manager
-    (fId,areaLctId)=db.uniqIdGen(req.sF,
-             FnLct.buildFromX(req.fnLct))
+    (fId,areaLctId)=DB().uniqIdGen(req.sF,
+          FnLct.buildFromX(req.fnLct))
     return FFnIdRsp(fId=fId, fnAbsLctId=areaLctId)
 
