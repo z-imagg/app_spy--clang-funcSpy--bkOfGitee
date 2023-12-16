@@ -3,28 +3,28 @@ from typing import Dict, List, Callable, Tuple
 
 from pydantic import BaseModel
 #{请求
-#FuncDeclBeginPresumedLoc: FnDclBgPrsmLoc
-class FnDclBgPrsmLoc(BaseModel):
+#FuncDeclBeginPresumedLoc: FnLct
+class FnLct(BaseModel):
     line: int
     column: int
 
-#GenSFFnIdReq:SFFnIdReq
-class SFFnIdReq(BaseModel):
-    srcFilePath: str
-    fnDclBgPrsmLoc: FnDclBgPrsmLoc
+#GenSFFnIdReq:FFnIdReq
+class FFnIdReq(BaseModel):
+    sF: str
+    fnLct: FnLct
 #请求}
 
 #{响应
 
-class SFFnIdResp(BaseModel):
-    srcFileId:int
-    funcAbsLocId:int
+class FFnIdRsp(BaseModel):
+    fId:int
+    fnAbsLctId:int
 
 #响应}
 
 class KeyFnDclBgPrsmLoc:
     @staticmethod
-    def buildFromX(lc:FnDclBgPrsmLoc)->'KeyFnDclBgPrsmLoc':
+    def buildFromX(lc:FnLct)-> 'KeyFnDclBgPrsmLoc':
         klc:KeyFnDclBgPrsmLoc=KeyFnDclBgPrsmLoc(lc.line,lc.column)
         # klc.line:int = lc.line
         # klc.column:int = lc.column
@@ -65,7 +65,7 @@ class Manager:
         self.fIdCur=self.fIdCur+1
         return val
 
-    def uniqSrcFIdGen(self,fPath:str,lc:KeyFnDclBgPrsmLoc)->Tuple[int,int]:
+    def uniqIdGen(self, fPath:str, lc:KeyFnDclBgPrsmLoc)->Tuple[int, int]:
         fIdval:Val=Manager.uniqId(fPath,self.fIdDct,Manager.xxx,self)
         areaLoctIdVal:int=Manager.uniqId(lc, fIdval.areaLoctDct, Val.yyy,fIdval )
         fIdval.areaLoctDct[lc]=areaLoctIdVal
@@ -83,10 +83,9 @@ class Manager:
 
 manager:Manager=Manager()
 
-def genFuncAbsLocId(req:SFFnIdReq)->SFFnIdResp:
+def genFFnId(req:FFnIdReq)->FFnIdRsp:
     # global manager
-    (fId,areaLoctId)=manager.uniqSrcFIdGen(req.srcFilePath,
-          KeyFnDclBgPrsmLoc.buildFromX(req.fnDclBgPrsmLoc))
-    respDto=SFFnIdResp(srcFileId=fId,funcAbsLocId=areaLoctId)
-    return respDto
+    (fId,areaLctId)=manager.uniqIdGen(req.sF,
+                                      KeyFnDclBgPrsmLoc.buildFromX(req.fnLct))
+    return FFnIdRsp(fId=fId, fnAbsLctId=areaLctId)
 
