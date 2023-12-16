@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from typing import Dict, List, Callable, Tuple
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 FIdType=int
 FnIdxType=int#FnIdx:函数下标:即在该FId下的各个Fn的局部id
@@ -26,6 +26,10 @@ class FFnIdRsp(BaseModel):
     fnIdx:FnIdxType
     # fnAbsLctId:int
 
+class DBRsp(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    fIdDct:dict
+    fIdCur:int
 #响应}
 
 class FnLct:
@@ -37,7 +41,10 @@ class FnLct:
         self.column:int = column
 
     def __repr__(self):
-        return f"FnLct【line:{self.line},column:{self.column}】"
+        return f"L{self.line}C{self.column}"
+
+    def __str__(self):
+        return self.__repr__()
 
     def __hash__(self):
         return hash(self.line % 11)
@@ -58,7 +65,15 @@ class FIdFat: #FId胖子
     # def __repr__(self):
     #     return f"Val(fId{self.fId},Dsz{len(self.areaLoctDct)})"
 
+    def toJsonDct(self):
+        _fnIdxDct=dict([ (k.__str__(),v) for k,v in self.fnIdxDct.items()])
+        dct = {
+            "fnIdxCur": self.fnIdxCur,
+            "fId": self.fId,
+            "fnIdxDct": _fnIdxDct
+        }
 
+        return dct
 import threading
 class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
     #{线程安全单例模式 开始
@@ -110,6 +125,18 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
 
         raise Exception(f"uniqId:不应该到达这里,k{key},d{dct},iCO{idCurOut}")
 
+    def toJsonText(self):
+        _fIdDct=dict([ (k,v.toJsonDct()) for k,v in  self.fIdDct.items()])
+        # asJosnText:str="\n".join(lnLs)
+        dct={
+            "fIdCur":self.fIdCur,
+            "fIdDct":_fIdDct
+        }
+        return dct
+
+# def db2json(db:DB):
+#     return db.toJsonText()
+
 
 
 def getFFnId(req:FFnIdReq)->FFnIdRsp:
@@ -117,6 +144,6 @@ def getFFnId(req:FFnIdReq)->FFnIdRsp:
           FnLct.buildFromX(req.fnLct))
     return FFnIdRsp(fId=fId, fnIdx=areaLctId)
 
-def instanceOfDB()->DB:
-    DB()
-    return DB.instance
+# def dbAsJson()->str:
+#     db=DB()
+#     return db.asJson()

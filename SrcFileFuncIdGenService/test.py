@@ -2,8 +2,8 @@
 
 
 from Srv import FFnIdRsp, FFnIdReq, getFFnId, FnLctDto,DB
-
-DB()
+import json
+db=DB()
 
 req1: FFnIdReq=FFnIdReq(sF="/tmp/xxx.c", fnLct=FnLctDto(line=12, column=4))
 req2: FFnIdReq=FFnIdReq(sF="/tmp/xxx.c", fnLct=FnLctDto(line=99, column=22))

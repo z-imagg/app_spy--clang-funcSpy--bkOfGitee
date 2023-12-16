@@ -31,8 +31,11 @@ import uvicorn
 from typing import Union
 
 from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
+
 from pydantic import BaseModel
-from Srv import FFnIdRsp, FFnIdReq, getFFnId, instanceOfDB
+from Srv import FFnIdRsp, FFnIdReq, getFFnId, DB
+import json
 
 app = FastAPI()
 
@@ -41,9 +44,11 @@ app = FastAPI()
 def read_root():
     return {"access": "false"}
 
-@app.get("/SrcFileFuncIdGenService/instanceOfDB")
-def __instanceOfDB():
-    return instanceOfDB()
+@app.get("/SrcFileFuncIdGenService/dbAsJson", response_class=PlainTextResponse)
+def __dbAsJson():
+    db=DB()
+    jtext=json.dumps(db,default=DB.toJsonText)
+    return jtext
 
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId", response_model=FFnIdRsp)
 def __genFuncAbsLocId(reqDto: FFnIdReq):
