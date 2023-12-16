@@ -11,7 +11,7 @@ https://github.com/tiangolo/fastapi.git
 
 
 可调试 运行:
-python SFFnIdGenSrv.py
+python Main.py
 
 swagger:
 http://127.0.0.1:8002/docs
@@ -32,7 +32,7 @@ from typing import Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
-from GenFuncAbsLocId import SFFnIdResp,GenSFFnIdReq,genFuncAbsLocId
+from Srv import SFFnIdResp,SFFnIdReq,genFuncAbsLocId
 
 
 
@@ -44,7 +44,7 @@ def read_root():
     return {"access": "false"}
 
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId",response_model=SFFnIdResp)
-def __genFuncAbsLocId(reqDto: GenSFFnIdReq):
+def __genFuncAbsLocId(reqDto: SFFnIdReq):
     respDto=genFuncAbsLocId(reqDto)
     return respDto
 

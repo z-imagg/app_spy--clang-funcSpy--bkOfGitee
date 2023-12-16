@@ -3,13 +3,15 @@
 
 from pydantic import BaseModel
 #{请求
-class FuncDeclBeginPresumedLoc(BaseModel):
+#FuncDeclBeginPresumedLoc: FnDclBgPrsmLoc
+class FnDclBgPrsmLoc(BaseModel):
     line: int
     column: int
 
-class GenSFFnIdReq(BaseModel):
+#GenSFFnIdReq:SFFnIdReq
+class SFFnIdReq(BaseModel):
     srcFilePath: str
-    funcDeclBeginPresumedLoc: FuncDeclBeginPresumedLoc
+    fnDclBgPrsmLoc: FnDclBgPrsmLoc
 #请求}
 
 #{响应
@@ -20,8 +22,7 @@ class SFFnIdResp(BaseModel):
 
 #响应}
 
-def genFuncAbsLocId(req:GenSFFnIdReq)->SFFnIdResp:
-
+def genFuncAbsLocId(req:SFFnIdReq)->SFFnIdResp:
     #TODO : 根据输入请求 genSFFnIdReq , 生成输出响应 SFFnIdResp
     respDto=SFFnIdResp(srcFileId=2000,funcAbsLocId=4)
     return respDto
