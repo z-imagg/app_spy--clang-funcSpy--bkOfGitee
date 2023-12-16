@@ -25,16 +25,16 @@ class SFFnIdResp(BaseModel):
 class KeyFnDclBgPrsmLoc:
     @staticmethod
     def buildFromX(lc:FnDclBgPrsmLoc)->'KeyFnDclBgPrsmLoc':
-        klc:KeyFnDclBgPrsmLoc=KeyFnDclBgPrsmLoc
-        klc.line:int = lc.line
-        klc.column:int = lc.column
+        klc:KeyFnDclBgPrsmLoc=KeyFnDclBgPrsmLoc(lc.line,lc.column)
+        # klc.line:int = lc.line
+        # klc.column:int = lc.column
         return klc
     def __init__(self, line:int, column:int):
         self.line:int = line
         self.column:int = column
 
     def __repr__(self):
-        return f"KeyFnDclBgPrsmLoc(L{self.line},C{self.column})"
+        return f"KeyFnDclBgPrsmLoc【line:{self.line},column:{self.column}】"
 
     def __hash__(self):
         return hash(self.line % 11)
@@ -52,8 +52,8 @@ class Val:
     def yyy(self):
         self.areaLoctIdCur= self.areaLoctIdCur + 1
         return self.areaLoctIdCur
-    def __repr__(self):
-        return f"Val(fId{self.fId},Dsz{len(self.areaLoctDct)})"
+    # def __repr__(self):
+    #     return f"Val(fId{self.fId},Dsz{len(self.areaLoctDct)})"
 
 class Manager:
     def __init__(self):
@@ -84,7 +84,7 @@ class Manager:
 manager:Manager=Manager()
 
 def genFuncAbsLocId(req:SFFnIdReq)->SFFnIdResp:
-    global manager
+    # global manager
     (fId,areaLoctId)=manager.uniqSrcFIdGen(req.srcFilePath,
           KeyFnDclBgPrsmLoc.buildFromX(req.fnDclBgPrsmLoc))
     respDto=SFFnIdResp(srcFileId=fId,funcAbsLocId=areaLoctId)
