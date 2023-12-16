@@ -158,7 +158,7 @@ def calcFnAbsLctId(fId,fnIdx):
     return fnAbsLctId
 
 def getFFnId(req:FFnIdReq)->FFnIdRsp:
-    (fId,fnIdx)=DB().uniqIdGen(req.sF,
+    (fId,fnIdx)=DB().uniqIdGen(req.sF.strip(),
           FnLct.buildFromX(req.fnLct))
     return FFnIdRsp(fId=fId, fnIdx=fnIdx,
             fnAbsLctId=calcFnAbsLctId(fId,fnIdx))
