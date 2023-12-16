@@ -32,9 +32,7 @@ from typing import Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
-from Srv import FFnIdRsp,FFnIdReq,getFFnId
-
-
+from Srv import FFnIdRsp, FFnIdReq, getFFnId, instanceOfDB
 
 app = FastAPI()
 
@@ -42,6 +40,10 @@ app = FastAPI()
 @app.get("/")
 def read_root():
     return {"access": "false"}
+
+@app.get("/SrcFileFuncIdGenService/instanceOfDB")
+def __instanceOfDB():
+    return instanceOfDB()
 
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId", response_model=FFnIdRsp)
 def __genFuncAbsLocId(reqDto: FFnIdReq):
