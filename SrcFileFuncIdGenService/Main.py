@@ -32,7 +32,7 @@ from typing import Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
-from Srv import FFnIdRsp,FFnIdReq,genFFnId
+from Srv import FFnIdRsp,FFnIdReq,getFFnId
 
 
 
@@ -45,7 +45,7 @@ def read_root():
 
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId", response_model=FFnIdRsp)
 def __genFuncAbsLocId(reqDto: FFnIdReq):
-    respDto=genFFnId(reqDto)
+    respDto=getFFnId(reqDto)
     return respDto
 
 
