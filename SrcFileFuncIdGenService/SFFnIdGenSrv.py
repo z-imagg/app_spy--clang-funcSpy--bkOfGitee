@@ -32,24 +32,8 @@ from typing import Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+from GenFuncAbsLocId import SFFnIdResp,GenSFFnIdReq,genFuncAbsLocId
 
-#{请求
-class FuncDeclBeginPresumedLoc(BaseModel):
-    line: int
-    column: int
-
-class GenSFFnIdReq(BaseModel):
-    srcFilePath: str
-    funcDeclBeginPresumedLoc: FuncDeclBeginPresumedLoc
-#请求}
-
-#{响应
-
-class SFFnIdResp(BaseModel):
-    srcFileId:int
-    funcAbsLocId:int
-
-#响应}
 
 
 app = FastAPI()
@@ -60,9 +44,8 @@ def read_root():
     return {"access": "false"}
 
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId",response_model=SFFnIdResp)
-def read_item(genSFFnIdReq: GenSFFnIdReq):
-    #TODO : 根据输入请求 genSFFnIdReq , 生成输出响应 SFFnIdResp
-    respDto=SFFnIdResp(srcFileId=2000,funcAbsLocId=4)
+def __genFuncAbsLocId(reqDto: GenSFFnIdReq):
+    respDto=genFuncAbsLocId(reqDto)
     return respDto
 
 
