@@ -23,7 +23,8 @@ class FFnIdReq(BaseModel):
 
 class FFnIdRsp(BaseModel):
     fId:FIdType
-    fnAbsLctId:FnIdxType
+    fnIdx:FnIdxType
+    # fnAbsLctId:int
 
 #响应}
 
@@ -114,7 +115,7 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
 def getFFnId(req:FFnIdReq)->FFnIdRsp:
     (fId,areaLctId)=DB().uniqIdGen(req.sF,
           FnLct.buildFromX(req.fnLct))
-    return FFnIdRsp(fId=fId, fnAbsLctId=areaLctId)
+    return FFnIdRsp(fId=fId, fnIdx=areaLctId)
 
 def instanceOfDB()->DB:
     DB()

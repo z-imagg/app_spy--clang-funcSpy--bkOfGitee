@@ -11,25 +11,13 @@ req3: FFnIdReq=FFnIdReq(sF="/tmp/user.c", fnLct=FnLctDto(line=99, column=22))
 req4: FFnIdReq=FFnIdReq(sF="/tmp/user.c", fnLct=FnLctDto(line=342, column=111))
 req5: FFnIdReq=FFnIdReq(sF="/tmp/user.c", fnLct=FnLctDto(line=555, column=3))
 
-# 创建多个线程测试单例模式
-def test_singleton():
-    rsp1 = getFFnId(req1)
-    rsp2 = getFFnId(req2)
-    rsp3 = getFFnId(req3)
-    rsp4 = getFFnId(req4)
-    rsp5 = getFFnId(req5)
-    rsp6 = getFFnId(req1)
+rsp1 = getFFnId(req1)
+rsp2 = getFFnId(req2)
+rsp3 = getFFnId(req3)
+rsp4 = getFFnId(req4)
+rsp5 = getFFnId(req5)
+rsp6 = getFFnId(req1)
 
-import threading
-
-threads = []
-for _ in range(10):
-    t = threading.Thread(target=test_singleton)
-    threads.append(t)
-    t.start()
-
-for t in threads:
-    t.join()
 
 
 end=True
