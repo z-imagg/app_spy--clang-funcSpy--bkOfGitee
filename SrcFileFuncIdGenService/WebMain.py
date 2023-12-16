@@ -11,7 +11,7 @@ https://github.com/tiangolo/fastapi.git
 
 
 可调试 运行:
-python Main.py
+python WebMain.py
 
 swagger:
 http://127.0.0.1:8002/docs
@@ -40,9 +40,9 @@ import json
 app = FastAPI()
 
 
-@app.get("/")
-def read_root():
-    return {"access": "false"}
+# @app.get("/")
+# def read_root():
+#     return {"access": "false"}
 
 @app.get("/SrcFileFuncIdGenService/dbAsJson", response_class=PlainTextResponse)
 def __dbAsJson():
