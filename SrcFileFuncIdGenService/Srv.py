@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from typing import Dict, List
+from typing import Dict, List, Callable, Tuple
 
 from pydantic import BaseModel
 #{请求
@@ -23,6 +23,12 @@ class SFFnIdResp(BaseModel):
 #响应}
 
 class KeyFnDclBgPrsmLoc:
+    @staticmethod
+    def buildFromX(lc:FnDclBgPrsmLoc)->'KeyFnDclBgPrsmLoc':
+        klc:KeyFnDclBgPrsmLoc=KeyFnDclBgPrsmLoc
+        klc.line:int = lc.line
+        klc.column:int = lc.column
+        return klc
     def __init__(self, line:int, column:int):
         self.line:int = line
         self.column:int = column
@@ -41,47 +47,46 @@ class KeyFnDclBgPrsmLoc:
 class Val:
     def __init__(self, fId:int):
         self.fId :int = fId
-        self.areaLocDct:Dict[KeyFnDclBgPrsmLoc,int]={}
+        self.areaLoctIdCur:int=0
+        self.areaLoctDct:Dict[KeyFnDclBgPrsmLoc, int]={}
+    def yyy(self):
+        self.areaLoctIdCur= self.areaLoctIdCur + 1
+        return self.areaLoctIdCur
     def __repr__(self):
-        return f"Val(fId{self.fId},Dsz{len(self.areaLocDct)})"
+        return f"Val(fId{self.fId},Dsz{len(self.areaLoctDct)})"
 
 class Manager:
     def __init__(self):
         self.fIdDct:Dict[str, Val]={}
         self.fIdCur:int=0
 
-    def uniqSrcFIdGen(self,fId):
+    def xxx(self):
+        val:Val=Val(self.fIdCur)
+        self.fIdCur=self.fIdCur+1
+        return val
 
-        if not self.fIdDct.__contains__(fId):
-            self.fIdCur= self.fIdCur + 1
-            self.fIdDct.__setitem__(fId, self.fIdCur)
-        return self.fIdDct.get(fId)
+    def uniqSrcFIdGen(self,fPath:str,lc:KeyFnDclBgPrsmLoc)->Tuple[int,int]:
+        fIdval:Val=Manager.uniqId(fPath,Manager.xxx,self)
+        areaLoctIdVal:int=Manager.uniqId(lc, fIdval.areaLoctDct, Val.yyy )
+        fIdval.areaLoctDct[lc]=areaLoctIdVal
+        return (fIdval.fId,areaLoctIdVal)
 
     @staticmethod
-    def uniqId(key,dct:Dict,idCurOut:List[int]):
+    def uniqId(key,dct:Dict,idGenFunc:Callable,*params):
         if not dct.__contains__(key):
-            idCurOut[0]= idCurOut[0] + 1
-            dct.__setitem__(key, idCurOut[0])
+            idGen=idGenFunc(*params)
+            dct.__setitem__(key, idGen)
         return dct.get(key)
 
         raise Exception(f"uniqId:不应该到达这里,k{key},d{dct},iCO{idCurOut}")
 
 
-def uniqLocIdGen(fId,fnLoc: FnDclBgPrsmLoc):
-    # global fIdCur,fIdDct
-    if not fIdDct.__contains__(fId):
-        fIdCur= fIdCur + 1
-        fIdDct.__setitem__(fId, fIdCur)
-    return fIdDct.get(fId)
-
-    raise Exception(f"uniqSrcFIdGen:不应该到达这里,{fId}")
-
+manager:Manager=Manager()
 
 def genFuncAbsLocId(req:SFFnIdReq)->SFFnIdResp:
-    # global fIdCur,fIdDct
-    #TODO : 根据输入请求 genSFFnIdReq , 生成输出响应 SFFnIdResp
-    srcFileId=uniqSrcFIdGen(req.srcFilePath)
-    fnDclId=uniqLocIdGen(srcFileId,req.fnDclBgPrsmLoc)
-    respDto=SFFnIdResp(srcFileId,fnDclId)
+    global manager
+    (fId,areaLoctId)=manager.uniqSrcFIdGen(req.srcFilePath,
+          KeyFnDclBgPrsmLoc.buildFromX(req.fnDclBgPrsmLoc))
+    respDto=SFFnIdResp(fId,areaLoctId)
     return respDto
 
