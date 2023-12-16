@@ -87,6 +87,7 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
                     ###{ __init__内容 开始
                     cls.instance.fIdDct: Dict[FilePathType, FIdFat] = {}
                     cls.instance.fIdCur: int = 0
+                    cls.reqSingleThreadLock: int = threading.Lock()
                     ### __init__内容 结束}
                     print(f"创建DB实例:id={id(cls.instance)}")
         return cls.instance
@@ -103,18 +104,22 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
 
     def uniqIdGen(self, fPth:str, fnLct:FnLct)->Tuple[FIdType, FnIdxType]:
 
-        fIdFat: FIdFat =None
-        if not self.fIdDct.__contains__(fPth):
-            DB.insertId(fPth, self.fIdDct, DB.fIdNext, self)
-        fIdFat=self.fIdDct.get(fPth)
+        #强制串行各个请求,即 强制串行当前各个clang编译命令中的clang插件的生成函数id请求
+        with self.reqSingleThreadLock:
+            fIdFat: FIdFat =None
+            if not self.fIdDct.__contains__(fPth):
+                DB.insertId(fPth, self.fIdDct, DB.fIdNext, self)
+            fIdFat=self.fIdDct.get(fPth)
 
-        fnIdx: FnIdxType =None
-        if not fIdFat.fnIdxDct.__contains__(fnLct):
-            DB.insertId(fnLct, fIdFat.fnIdxDct, FIdFat.fnIdxNext, fIdFat)
-        fnIdx=fIdFat.fnIdxDct.get(fnLct)
+            fnIdx: FnIdxType =None
+            if not fIdFat.fnIdxDct.__contains__(fnLct):
+                DB.insertId(fnLct, fIdFat.fnIdxDct, FIdFat.fnIdxNext, fIdFat)
+            fnIdx=fIdFat.fnIdxDct.get(fnLct)
 
-        # fIdFat.fnIdxDct[fnLct]=fnIdx
-        return (fIdFat.fId,fnIdx)
+            # fIdFat.fnIdxDct[fnLct]=fnIdx
+            return (fIdFat.fId,fnIdx)
+
+        raise Exception("reqSingleThreadLock失败?")
 
     @staticmethod
     def insertId(key, dct:Dict, idGenFunc:Callable, *params):
