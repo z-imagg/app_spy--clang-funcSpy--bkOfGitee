@@ -19,10 +19,7 @@ int &srcFileId_output, int &funcAbsLocId_output
 
     httplib::Client client("localhost", 8002);
 
-    web_srv_dto::FFnIdReq fFnIdReq;
-    fFnIdReq.sF=srcFilePath;
-    fFnIdReq.fnLct.line=funcDeclBeginPresumedLoc_line;
-    fFnIdReq.fnLct.column=funcDeclBeginPresumedLoc_column;
+    web_srv_dto::FFnIdReq fFnIdReq(srcFilePath,funcDeclBeginPresumedLoc_line,funcDeclBeginPresumedLoc_column);
 
     //请求例子 : { "sF": "user.c ", "fnLct": { "line": 0, "column": 0 } }
 

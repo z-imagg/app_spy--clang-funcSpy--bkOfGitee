@@ -9,6 +9,12 @@ namespace  web_srv_dto{
         int line;
         int column;
     public:
+        FnLctDto(){};
+        FnLctDto(int line, int column)
+            :
+        line(line),
+        column(column)
+        {}
         //用宏NLOHMANN_DEFINE_TYPE_INTRUSIVE定义方法to_json、from_json，免去手写.
         //  参考: https://github.com/nlohmann/json?tab=readme-ov-file#basic-usage   https://github.com/nlohmann/json?tab=readme-ov-file#examples-1
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(FnLctDto,line,column)
@@ -18,6 +24,13 @@ namespace  web_srv_dto{
         std::string sF;
         FnLctDto fnLct;
     public:
+        FFnIdReq(){};
+        FFnIdReq(std::string _sF,int line, int column)
+            :
+        sF(_sF),
+        fnLct(line,column)
+        {
+        };
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(FFnIdReq, sF, fnLct)
     };
 //请求结束}
