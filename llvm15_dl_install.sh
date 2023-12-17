@@ -1,23 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-######{此脚本调试步骤:
-###{1. 干运行（置空ifelse）以 确定参数行是否都被短路:
-#PS4='[${BASH_SOURCE##*/}] [$FUNCNAME] [$LINENO]: '    bash -x   ./build-libfmt.sh   #bash调试执行 且 显示 行号
-#使用 ifelse空函数
-# function ifelse(){
-#     :
-# }
-###}
 
-###2. 当 确定参数行都被短路 时, 再 使用 真实 ifelse 函数:
-#加载 func.sh中的函数 ifelse
-source bash-simplify/func.sh
-######}
+source /crk/bochs/bash-simplify/func.sh
+source /crk/bochs/bash-simplify/dir_util.sh
 
-source bash-simplify/dir_util.sh
+getCurScriptDirName $0
+#当前脚本文件 绝对路径 CurScriptF, 当前脚本文件 名 CurScriptNm, 当前脚本文件 所在目录 绝对路径 CurScriptNm
+#CurScriptDir == /crk/bochs/clang-add-funcIdAsm/
+cd $CurScriptDir && \
 
-#当前脚本文件名, 此处 CurScriptF=llvm15_dl_install.sh
-CurScriptF=$(pwd)/$0
 
 #llvm15 下载、安装 到目录 /app/llvm_release_home
 { \
@@ -28,6 +19,10 @@ LLVM15PkgMd5F="$LLVM15Name.tar.xz.md5sum.txt"
 
 AppHmD="/app/llvm_release_home"
 LLVM15HmD="$AppHmD/$LLVM15Name"
+
+cat << 'EOF' > "${AppHmD}/${LLVM15PkgMd5F}"
+24927e91021e97fb07d7c95ee1b4bac5  /app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4.tar.xz
+EOF
 
 #0. 创建 AppHome目录 并 进入该目录
 function _createAppHomeDirThenEnterIt(){
@@ -53,7 +48,7 @@ function _downloadLLVM15() {
 }
 
 ifelse  $CurScriptF $LINENO || true || { \
-  md5sum --check $LLVM15PkgMd5F
+  md5sum --check ${AppHmD}/$LLVM15PkgMd5F
     "已有LLVM15包,无需下载"
     :
   #else:
@@ -67,8 +62,7 @@ ifelse  $CurScriptF $LINENO || true || { \
 function _unpackLLVM15() {
     rm -fr $LLVM15HmD && \
     echo "解压 $LLVM15PkgName ..." && \
-    tar -xf "$LLVM15PkgName" -C . && \
-    md5sum $LLVM15PkgName > $LLVM15PkgMd5F
+    tar -xf "$LLVM15PkgName" -C .
 }
 
 ifelse  $CurScriptF $LINENO || true || { \

@@ -72,6 +72,9 @@ class FIdFat: #FId胖子
         return dct
 import threading
 class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
+    """DB类中 下划线开头的方法 都是内部方法，外部不要调用，因为本类用锁强制串行多线程，乱调用 可能导致 锁获取方法 不对  可能导致 死锁或数据错乱
+
+    """
     #{线程安全单例模式 开始
     instance = None
     _lock = threading.Lock()
@@ -83,6 +86,7 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
                     ###{ __init__内容 开始
                     cls.instance.fIdDct: Dict[FilePathType, FIdFat] = {}
                     cls.instance.fIdCur: int = 0
+                    cls.instance.exited:bool=False
                     cls.reqSingleThreadLock: int = threading.Lock()
                     ### __init__内容 结束}
                     print(f"创建DB实例:id={id(cls.instance)}")
@@ -100,29 +104,37 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         self.fIdCur=self.fIdCur+1
         return val
 
-    def uniqIdGen(self, fPth:str, fnLct:FnLct)->Tuple[FIdType, FnIdxType]:
+    def lock_uniqIdGen(self, fPth:str, fnLct:FnLct)->Tuple[FIdType, FnIdxType]:
 
         #强制串行各个请求,即 强制串行当前各个clang编译命令中的clang插件的生成函数id请求
         with self.reqSingleThreadLock:
+            assert not self.exited
+
             fIdFat: FIdFat =None
             if not self.fIdDct.__contains__(fPth):
-                DB.insertId(fPth, self.fIdDct, DB.fIdNext, self)
+                DB._insertId(fPth, self.fIdDct, DB.fIdNext, self)
             fIdFat=self.fIdDct.get(fPth)
 
             fnIdx: FnIdxType =None
             if not fIdFat.fnIdxDct.__contains__(fnLct):
-                DB.insertId(fnLct, fIdFat.fnIdxDct, FIdFat.fnIdxNext, fIdFat)
+                DB._insertId(fnLct, fIdFat.fnIdxDct, FIdFat.fnIdxNext, fIdFat)
             fnIdx=fIdFat.fnIdxDct.get(fnLct)
 
-            # 每7秒将函数id数据库写磁盘一次. 注意线程安全（放在这里，各线程强制串行，因此是线程安全的）
-            _writeDisk()
+            # 每30秒将函数id数据库写磁盘一次. 注意线程安全（放在这里，各线程强制串行，因此是线程安全的）
+            self._writeDisk()
 
             return (fIdFat.fId,fnIdx)
 
         raise Exception("reqSingleThreadLock失败?")
 
+    def lock_shutdownDB(self):
+        with self.reqSingleThreadLock:
+            self._writeDisk()
+            self.exited:bool=True
+
+
     @staticmethod
-    def insertId(key, dct:Dict, idGenFunc:Callable, *params):
+    def _insertId(key, dct:Dict, idGenFunc:Callable, *params):
         if not dct.__contains__(key):
             idGen=idGenFunc(*params)
             dct.__setitem__(key, idGen)
@@ -130,7 +142,7 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
 
         raise Exception(f"uniqId:不应该到达这里,k{key},d{dct},iCO{idCurOut}")
 
-    def toJsonText(self):
+    def _toJsonText(self):
         _fIdDct=dict([ (k,v.toJsonDct()) for k,v in  self.fIdDct.items()])
         # asJosnText:str="\n".join(lnLs)
         dct={
@@ -141,42 +153,37 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         return dct
 
 
-def calcFnAbsLctId(fId,fnIdx):
-    """
-    /**
-     * 一个源文件中最大支持 LIMIT_FUNC_IN_1_SRC_FILE(即10000) 个函数
-     * 如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
-     * 指令中以四字节存储的funcId, 因此最多源文件数目是 2**32/(LIMIT_FUNC_IN_1_SRC_FILE 即10**4) == 429496.7296
-     * @return
-     */
-    """
-    #一个源文件中最大支持 10000(==LIMIT_FUNC_IN_1_SRC_FILE) 个函数
-    #如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
-    assert fnIdx < DB.LIMIT_FUNC_IN_1_SRC_FILE
-    #fId: srcFileId
-    fnAbsLctId=fId*DB.LIMIT_FUNC_IN_1_SRC_FILE+fnIdx
-    return fnAbsLctId
+    @staticmethod
+    def _calcFnAbsLctId(fId, fnIdx):
+        """
+        /**
+         * 一个源文件中最大支持 LIMIT_FUNC_IN_1_SRC_FILE(即10000) 个函数
+         * 如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
+         * 指令中以四字节存储的funcId, 因此最多源文件数目是 2**32/(LIMIT_FUNC_IN_1_SRC_FILE 即10**4) == 429496.7296
+         * @return
+         */
+        """
+        #一个源文件中最大支持 10000(==LIMIT_FUNC_IN_1_SRC_FILE) 个函数
+        #如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
+        assert fnIdx < DB.LIMIT_FUNC_IN_1_SRC_FILE
+        #fId: srcFileId
+        fnAbsLctId=fId*DB.LIMIT_FUNC_IN_1_SRC_FILE+fnIdx
+        return fnAbsLctId
 
-def _timeToWriteDisk():
-    import datetime
-    from datetime import datetime
-    nw=datetime.now()
-    #判断当前秒针是否整除7
-    return nw.second % 7
+    @staticmethod
+    def _timeToWriteDisk():
+        import datetime
+        from datetime import datetime
+        nw=datetime.now()
+        #判断当前秒针是否整除3-
+        return nw.second % 30
 
-def _writeDisk():
-    db=DB()
-    jtext:str = json.dumps(db, default=DB.toJsonText)
-    #每7秒将函数id数据库写磁盘一次。多个线程写同一个文件，确保各线程串行写入是最简单的线程安全办法。
-    if(_timeToWriteDisk()):
-        with open("fId_db.json","w") as fw:
-            fw.write(jtext)
+    def _writeDisk(self):
+        import json
+        jtext:str = json.dumps(self, default=DB._toJsonText)
+        #每30秒将函数id数据库写磁盘一次。多个线程写同一个文件，确保各线程串行写入是最简单的线程安全办法。
+        if(DB._timeToWriteDisk()):
+            with open("fId_db.json","w") as fw:
+                fw.write(jtext)
 
-import json
-def getFFnId(req:FFnIdReq)->FFnIdRsp:
-    db=DB()
-    (fId,fnIdx)=db.uniqIdGen(req.sF.strip(),
-          FnLct.buildFromX(req.fnLct))
-    return FFnIdRsp(fId=fId, fnIdx=fnIdx,
-            fnAbsLctId=calcFnAbsLctId(fId,fnIdx))
 
