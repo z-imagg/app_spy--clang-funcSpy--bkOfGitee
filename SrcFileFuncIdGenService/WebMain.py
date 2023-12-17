@@ -51,7 +51,7 @@ app = FastAPI()
 @app.get("/_shutdown")
 async def _shutdown():
     db=DB()
-    db.shutdownDB()
+    db.lock_shutdownDB()
 
     loop = asyncio.get_running_loop()
     tasks = asyncio.all_tasks(loop)
@@ -75,12 +75,7 @@ nullok
 """
 
 
-
-@app.get("/SrcFileFuncIdGenService/dbAsJson", response_class=PlainTextResponse)
-def __dbAsJson():
-    db=DB()
-    jtext=json.dumps(db,default=DB.toJsonText)
-    return jtext
+#要看 当前函数id们 请直接看文件
 
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId", response_model=FFnIdRsp)
 def __genFuncAbsLocId(reqDto: FFnIdReq):
