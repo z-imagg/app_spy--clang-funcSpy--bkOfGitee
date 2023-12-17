@@ -120,7 +120,7 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
                 DB._insertId(fnLct, fIdFat.fnIdxDct, FIdFat.fnIdxNext, fIdFat)
             fnIdx=fIdFat.fnIdxDct.get(fnLct)
 
-            # 每7秒将函数id数据库写磁盘一次. 注意线程安全（放在这里，各线程强制串行，因此是线程安全的）
+            # 每30秒将函数id数据库写磁盘一次. 注意线程安全（放在这里，各线程强制串行，因此是线程安全的）
             self._writeDisk()
 
             return (fIdFat.fId,fnIdx)
@@ -175,13 +175,13 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         import datetime
         from datetime import datetime
         nw=datetime.now()
-        #判断当前秒针是否整除7
-        return nw.second % 7
+        #判断当前秒针是否整除3-
+        return nw.second % 30
 
     def _writeDisk(self):
         import json
         jtext:str = json.dumps(self, default=DB._toJsonText)
-        #每7秒将函数id数据库写磁盘一次。多个线程写同一个文件，确保各线程串行写入是最简单的线程安全办法。
+        #每30秒将函数id数据库写磁盘一次。多个线程写同一个文件，确保各线程串行写入是最简单的线程安全办法。
         if(DB._timeToWriteDisk()):
             with open("fId_db.json","w") as fw:
                 fw.write(jtext)
