@@ -1,23 +1,14 @@
 #!/bin/bash
 
-######{此脚本调试步骤:
-###{1. 干运行（置空ifelse）以 确定参数行是否都被短路:
-#PS4='[${BASH_SOURCE##*/}] [$FUNCNAME] [$LINENO]: '    bash -x   ./build-libfmt.sh   #bash调试执行 且 显示 行号
-#使用 ifelse空函数
-# function ifelse(){
-#     :
-# }
-###}
 
-###2. 当 确定参数行都被短路 时, 再 使用 真实 ifelse 函数:
-#加载 func.sh中的函数 ifelse
-source bash-simplify/func.sh
-######}
+source /crk/bochs/bash-simplify/func.sh
+source /crk/bochs/bash-simplify/dir_util.sh
 
-source bash-simplify/dir_util.sh
+getCurScriptDirName $0
+#当前脚本文件 绝对路径 CurScriptF, 当前脚本文件 名 CurScriptNm, 当前脚本文件 所在目录 绝对路径 CurScriptNm
+#CurScriptDir == /crk/bochs/clang-add-funcIdAsm/
+cd $CurScriptDir && \
 
-#当前脚本文件名, 此处 CurScriptF=llvm15_dl_install.sh
-CurScriptF=$(pwd)/$0
 
 #llvm15 下载、安装 到目录 /app/llvm_release_home
 { \

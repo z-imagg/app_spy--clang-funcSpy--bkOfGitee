@@ -1,12 +1,19 @@
 #!/bin/bash
 
+source /crk/bochs/bash-simplify/dir_util.sh
+
+getCurScriptDirName $0
+#当前脚本文件 绝对路径 CurScriptF, 当前脚本文件 名 CurScriptNm, 当前脚本文件 所在目录 绝对路径 CurScriptNm
+#CurScriptDir == /crk/bochs/clang-add-funcIdAsm/
+cd $CurScriptDir && \
+
 #下载安装llvm15
 bash llvm15_dl_install.sh
 
 #构建libfmt
 bash build-libfmt.sh
 
-BUILD_HOME=/crk/clang-add-funcIdAsm/build/
+BUILD_HOME=$CurScriptDir/build/
 mkdir -p $BUILD_HOME
 rm -fr $BUILD_HOME/*
 cd $BUILD_HOME
