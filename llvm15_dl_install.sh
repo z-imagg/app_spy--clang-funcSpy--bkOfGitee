@@ -48,7 +48,7 @@ function _downloadLLVM15() {
 }
 
 ifelse  $CurScriptF $LINENO || true || { \
-  md5sum --check $LLVM15PkgMd5F
+  md5sum --check ${AppHmD}/$LLVM15PkgMd5F
     "已有LLVM15包,无需下载"
     :
   #else:
