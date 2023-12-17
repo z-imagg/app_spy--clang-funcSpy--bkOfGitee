@@ -5,34 +5,58 @@
 #include "cpp_httplib/httplib.h"
 #include <string>
 
-
+#include "CTk/SFFnIdClient_json.h"
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
 void SFFnIdClient::genFuncAbsLocId(
-std::string srcFilePath,int funcDeclBeginPresumedLoc_line,int funcDeclBeginPresumedLoc_column
+std::string srcFilePath, int funcDeclBeginPresumedLoc_line, int funcDeclBeginPresumedLoc_column
 ,
-int &srcFileId_output, int &funcAbsLocId_output
+int &srcFileId_out, int &funcIdx_out, int &funcAbsLocId_out
         ){
-    //TODO 用某 c++ web request lib 访问 本地 SFFnIdService, 解析结果, 并返回结果
     //SFFnId:Source File and Function Id
 
 
-// HTTP
     httplib::Client client("localhost", 8002);
 
-//    auto response = client.Get("/SrcFileFuncnIdGenService/genFuncAbsLocId");
+    web_srv_dto::FFnIdReq fFnIdReq(srcFilePath,funcDeclBeginPresumedLoc_line,funcDeclBeginPresumedLoc_column);
 
-/**
- * inline Result Client::Post(const std::string &path, const std::string &body,
-                           const std::string &content_type)
- */
+    //请求例子 : { "sF": "user.c ", "fnLct": { "line": 0, "column": 0 } }
+
+    //请求转json对象
+    json req_json_obj = fFnIdReq;
+
+    //json对象转文本
+    std::string req_body_text=req_json_obj.dump();
+
+    //接口路径、接口content_type
     std::string url("/SrcFileFuncIdGenService/genFuncAbsLocId");
-    std::string body("");//TODO srcFilePath,funcDeclBeginPresumedLoc_line,funcDeclBeginPresumedLoc_column
     std::string content_type("application/json");
-    httplib::Result response = client.Post(url, body, content_type);
-    response->status;
-    std::cout << "响应"<<response->body << "\n";
-    nlohmann::basic_json respJson=json::parse(response->body);
-    //TODO 还是需要json解析
+
+    //调用接口
+    httplib::Result response = client.Post(url, req_body_text, content_type);
+
+    std::cout << "响应状态码"<<response->status << "\n";
+    //  响应状态码200
+    std::cout << "响应体"<<response->body << "\n";
+
+    //响应例子: { "fId": 2, "fnIdx": 1, "fnAbsLctId": 20001 }
+
+    //响应文本转json对象
+    nlohmann::json rsp_json_obj=json::parse(response->body);
+
+    //json对象转dto 写法1
+    web_srv_dto::FFnIdRsp fFnIdRsp=rsp_json_obj;
+
+    //json对象转dto 写法2
+//    auto fFnIdRsp=rsp_json_obj.template get<web_srv_dto::FFnIdRsp>();
+/*
+         int fId;
+        int fnIdx;
+        int fnAbsLctId;
+ */
+    //写返回值
+    srcFileId_out=fFnIdRsp.fId;
+    funcIdx_out=fFnIdRsp.fnIdx;
+    funcAbsLocId_out=fFnIdRsp.fnAbsLctId;
 }

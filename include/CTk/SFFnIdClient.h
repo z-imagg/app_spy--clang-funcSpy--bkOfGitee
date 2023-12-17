@@ -10,7 +10,7 @@ public:
     static void genFuncAbsLocId(
     std::string srcFilePath,int funcDeclBeginLoc_line,int funcDeclBeginLoc_column
     ,
-    int &srcFileId_output, int &funcAbsLocId_output
+    int &srcFileId_output, int& funcIdx_output, int &funcAbsLocId_output
     );
 };
 

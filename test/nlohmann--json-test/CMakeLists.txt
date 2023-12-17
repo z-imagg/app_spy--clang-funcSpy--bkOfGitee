@@ -1,0 +1,24 @@
+
+
+MESSAGE("CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+#CMAKE_SOURCE_DIR: /crk/clang-add-funcIdAsm/
+
+MESSAGE("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+#CMAKE_CURRENT_SOURCE_DIR: /crk/clang-add-funcIdAsm/tools
+
+set(nlohmann--json-test_SOURCES
+"${CMAKE_CURRENT_SOURCE_DIR}/../../lib/CTk/SFFnIdClient.cpp"
+"nlohmann--json-test--main.cpp"
+        )
+
+    add_executable(
+        nlohmann--json-test
+      ${nlohmann--json-test_SOURCES}
+      )
+
+    target_include_directories(
+    nlohmann--json-test
+      PRIVATE
+      "${CMAKE_CURRENT_SOURCE_DIR}/../../include"
+    )
+
