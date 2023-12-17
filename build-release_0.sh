@@ -7,8 +7,14 @@ getCurScriptDirName $0
 #CurScriptDir == /crk/bochs/clang-add-funcIdAsm/
 cd $CurScriptDir && \
 
+#获取调用者 是否开启了 bash -x  即 是否开启 bash 调试
+#返回变量 _out_en_dbg, _out_dbg
+get_out_en_dbg && \
+echo "$_out_en_dbg,【$_out_dbg】" && \
+
+
 export LIB_CTk_CXX_FLAGS="  "
-bash _build-release_x.sh
+bash $_out_dbg _build-release_x.sh
 unset LIB_CTk_CXX_FLAGS
 #构建的Release版本 :
 # -rwxrwxr-x 1 zz zz 874K  7月 24 13:13 /crk/clang-add-funcIdAsm/build/lib/libCTk.so

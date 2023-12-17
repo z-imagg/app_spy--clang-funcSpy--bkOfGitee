@@ -7,11 +7,18 @@ getCurScriptDirName $0
 #CurScriptDir == /crk/bochs/clang-add-funcIdAsm/
 cd $CurScriptDir && \
 
+
+#获取调用者 是否开启了 bash -x  即 是否开启 bash 调试
+#返回变量 _out_en_dbg, _out_dbg
+get_out_en_dbg && \
+echo "$_out_en_dbg,【$_out_dbg】" && \
+
+
 #下载安装llvm15
-bash llvm15_dl_install.sh
+bash $_out_dbg llvm15_dl_install.sh
 
 #构建libfmt
-bash build-libfmt.sh
+bash $_out_dbg build-libfmt.sh
 
 BUILD_HOME=$CurScriptDir/build/
 mkdir -p $BUILD_HOME
