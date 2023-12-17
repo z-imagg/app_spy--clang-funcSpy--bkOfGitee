@@ -89,6 +89,8 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         return cls.instance
     #线程安全单例模式 结束}
 
+    LIMIT_FUNC_IN_1_SRC_FILE: int = 10000
+
     def __init__(self):
         pass
 
@@ -131,16 +133,12 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         # asJosnText:str="\n".join(lnLs)
         dct={
             "fIdCur":self.fIdCur,
-            "fIdDct":_fIdDct
+            "fIdDct":_fIdDct,
+            "LIMIT_FUNC_IN_1_SRC_FILE":DB.LIMIT_FUNC_IN_1_SRC_FILE
         }
         return dct
 
-# def db2json(db:DB):
-#     return db.toJsonText()
 
-
-
-LIMIT_FUNC_IN_1_SRC_FILE:int =10000
 def calcFnAbsLctId(fId,fnIdx):
     """
     /**
@@ -152,9 +150,9 @@ def calcFnAbsLctId(fId,fnIdx):
     """
     #一个源文件中最大支持 10000(==LIMIT_FUNC_IN_1_SRC_FILE) 个函数
     #如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
-    assert fnIdx < LIMIT_FUNC_IN_1_SRC_FILE
+    assert fnIdx < DB.LIMIT_FUNC_IN_1_SRC_FILE
     #fId: srcFileId
-    fnAbsLctId=fId*LIMIT_FUNC_IN_1_SRC_FILE+fnIdx
+    fnAbsLctId=fId*DB.LIMIT_FUNC_IN_1_SRC_FILE+fnIdx
     return fnAbsLctId
 
 def getFFnId(req:FFnIdReq)->FFnIdRsp:
