@@ -114,7 +114,9 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
                 DB.insertId(fnLct, fIdFat.fnIdxDct, FIdFat.fnIdxNext, fIdFat)
             fnIdx=fIdFat.fnIdxDct.get(fnLct)
 
-            # fIdFat.fnIdxDct[fnLct]=fnIdx
+            # 每7秒将函数id数据库写磁盘一次. 注意线程安全（放在这里，各线程强制串行，因此是线程安全的）
+            _writeDisk()
+
             return (fIdFat.fId,fnIdx)
 
         raise Exception("reqSingleThreadLock失败?")
@@ -155,8 +157,25 @@ def calcFnAbsLctId(fId,fnIdx):
     fnAbsLctId=fId*DB.LIMIT_FUNC_IN_1_SRC_FILE+fnIdx
     return fnAbsLctId
 
+def _timeToWriteDisk():
+    import datetime
+    from datetime import datetime
+    nw=datetime.now()
+    #判断当前秒针是否整除7
+    return nw.second % 7
+
+def _writeDisk():
+    db=DB()
+    jtext:str = json.dumps(db, default=DB.toJsonText)
+    #每7秒将函数id数据库写磁盘一次。多个线程写同一个文件，确保各线程串行写入是最简单的线程安全办法。
+    if(_timeToWriteDisk()):
+        with open("fId_db.json","w") as fw:
+            fw.write(jtext)
+
+import json
 def getFFnId(req:FFnIdReq)->FFnIdRsp:
-    (fId,fnIdx)=DB().uniqIdGen(req.sF.strip(),
+    db=DB()
+    (fId,fnIdx)=db.uniqIdGen(req.sF.strip(),
           FnLct.buildFromX(req.fnLct))
     return FFnIdRsp(fId=fId, fnIdx=fnIdx,
             fnAbsLctId=calcFnAbsLctId(fId,fnIdx))
