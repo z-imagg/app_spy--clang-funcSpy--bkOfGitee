@@ -47,3 +47,5 @@ include/nlohmann
 *.pyc
 
 SrcFileFuncIdGenService/__pycache__/
+
+SrcFileFuncIdGenService/fId_db.json

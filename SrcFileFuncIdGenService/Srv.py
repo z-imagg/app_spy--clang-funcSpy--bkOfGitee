@@ -89,6 +89,8 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         return cls.instance
     #线程安全单例模式 结束}
 
+    LIMIT_FUNC_IN_1_SRC_FILE: int = 10000
+
     def __init__(self):
         pass
 
@@ -112,7 +114,9 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
                 DB.insertId(fnLct, fIdFat.fnIdxDct, FIdFat.fnIdxNext, fIdFat)
             fnIdx=fIdFat.fnIdxDct.get(fnLct)
 
-            # fIdFat.fnIdxDct[fnLct]=fnIdx
+            # 每7秒将函数id数据库写磁盘一次. 注意线程安全（放在这里，各线程强制串行，因此是线程安全的）
+            _writeDisk()
+
             return (fIdFat.fId,fnIdx)
 
         raise Exception("reqSingleThreadLock失败?")
@@ -131,16 +135,12 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         # asJosnText:str="\n".join(lnLs)
         dct={
             "fIdCur":self.fIdCur,
-            "fIdDct":_fIdDct
+            "fIdDct":_fIdDct,
+            "LIMIT_FUNC_IN_1_SRC_FILE":DB.LIMIT_FUNC_IN_1_SRC_FILE
         }
         return dct
 
-# def db2json(db:DB):
-#     return db.toJsonText()
 
-
-
-LIMIT_FUNC_IN_1_SRC_FILE:int =10000
 def calcFnAbsLctId(fId,fnIdx):
     """
     /**
@@ -152,13 +152,30 @@ def calcFnAbsLctId(fId,fnIdx):
     """
     #一个源文件中最大支持 10000(==LIMIT_FUNC_IN_1_SRC_FILE) 个函数
     #如果超出界限，则占据到下一个源文件的funcId范围了，显然是严重错误
-    assert fnIdx < LIMIT_FUNC_IN_1_SRC_FILE
+    assert fnIdx < DB.LIMIT_FUNC_IN_1_SRC_FILE
     #fId: srcFileId
-    fnAbsLctId=fId*LIMIT_FUNC_IN_1_SRC_FILE+fnIdx
+    fnAbsLctId=fId*DB.LIMIT_FUNC_IN_1_SRC_FILE+fnIdx
     return fnAbsLctId
 
+def _timeToWriteDisk():
+    import datetime
+    from datetime import datetime
+    nw=datetime.now()
+    #判断当前秒针是否整除7
+    return nw.second % 7
+
+def _writeDisk():
+    db=DB()
+    jtext:str = json.dumps(db, default=DB.toJsonText)
+    #每7秒将函数id数据库写磁盘一次。多个线程写同一个文件，确保各线程串行写入是最简单的线程安全办法。
+    if(_timeToWriteDisk()):
+        with open("fId_db.json","w") as fw:
+            fw.write(jtext)
+
+import json
 def getFFnId(req:FFnIdReq)->FFnIdRsp:
-    (fId,fnIdx)=DB().uniqIdGen(req.sF.strip(),
+    db=DB()
+    (fId,fnIdx)=db.uniqIdGen(req.sF.strip(),
           FnLct.buildFromX(req.fnLct))
     return FFnIdRsp(fId=fId, fnIdx=fnIdx,
             fnAbsLctId=calcFnAbsLctId(fId,fnIdx))
