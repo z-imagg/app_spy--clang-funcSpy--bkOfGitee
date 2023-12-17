@@ -186,9 +186,4 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
             with open("fId_db.json","w") as fw:
                 fw.write(jtext)
 
-    def getFFnId(self,req:FFnIdReq)->FFnIdRsp:
-        (fId,fnIdx)=self.lock_uniqIdGen(req.sF.strip(),
-                                        FnLct.buildFromX(req.fnLct))
-        return FFnIdRsp(fId=fId, fnIdx=fnIdx,
-                        fnAbsLctId=DB._calcFnAbsLctId(fId, fnIdx))
 

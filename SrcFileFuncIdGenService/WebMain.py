@@ -78,10 +78,12 @@ nullok
 #要看 当前函数id们 请直接看文件
 
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId", response_model=FFnIdRsp)
-def __genFuncAbsLocId(reqDto: FFnIdReq):
+def __genFuncAbsLocId(req: FFnIdReq)->FFnIdRsp:
     db=DB()
-    return db.getFFnId(reqDto)
-
+    (fId,fnIdx)=db.lock_uniqIdGen(req.sF.strip(),
+            FnLct.buildFromX(req.fnLct))
+    return FFnIdRsp(fId=fId, fnIdx=fnIdx,
+        fnAbsLctId=DB._calcFnAbsLctId(fId, fnIdx))
 
 if __name__ == "__main__":
     config = uvicorn.Config(app, host="0.0.0.0", port=8002)
