@@ -10,9 +10,9 @@
 using json = nlohmann::json;
 
 void SFFnIdClient::genFuncAbsLocId(
-std::string srcFilePath,int funcDeclBeginPresumedLoc_line,int funcDeclBeginPresumedLoc_column
+std::string srcFilePath, int funcDeclBeginPresumedLoc_line, int funcDeclBeginPresumedLoc_column
 ,
-int &srcFileId_output, int &funcAbsLocId_output
+int &srcFileId_out, int &funcIdx_out, int &funcAbsLocId_out
         ){
     //SFFnId:Source File and Function Id
 
@@ -50,8 +50,13 @@ int &srcFileId_output, int &funcAbsLocId_output
 
     //json对象转dto 写法2
 //    auto fFnIdRsp=rsp_json_obj.template get<web_srv_dto::FFnIdRsp>();
-
+/*
+         int fId;
+        int fnIdx;
+        int fnAbsLctId;
+ */
     //写返回值
-    srcFileId_output=fFnIdRsp.fId;
-    funcAbsLocId_output=fFnIdRsp.fnAbsLctId;
+    srcFileId_out=fFnIdRsp.fId;
+    funcIdx_out=fFnIdRsp.fnIdx;
+    funcAbsLocId_out=fFnIdRsp.fnAbsLctId;
 }

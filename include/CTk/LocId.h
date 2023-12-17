@@ -26,12 +26,12 @@ public:
     std::string to_string();
 public:
     std::string filePath;
-    int srcFileId;
+    int srcFileId;//srcFileId==fId
 
     int line;
     int column;
     /* locationId 与 <filePath,line,column> 一一对应 */
-    int locationId;//字段locationId 等待删除
+    int locationId;//冗余字段locationId==funcIdx
     int abs_location_id;
 
     //函数名 ： 冗余字段
@@ -42,7 +42,7 @@ public:
 //            Decl::Kind declKind, Stmt::StmtClass stmtClass,
             std::string filePath,const std::string funcQualifiedName, int line, int column);
 
-    void fillId(int srcFileId, int abs_location_id);
+    void fillId(int srcFileId,int funcIdx, int abs_location_id);
     // 重写哈希函数
     size_t operator()(const LocId& that) const ;
 

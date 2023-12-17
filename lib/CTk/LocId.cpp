@@ -15,14 +15,15 @@ using namespace clang;
     int fnDclBgPrsmLc_line=fnDeclBgPresumedLoc.getLine();
     int fnDclBgPrsmLc_column=fnDeclBgPresumedLoc.getColumn();
  int srcFileId;
+ int funcIdx;
  int abs_location_id;
   SFFnIdClient::genFuncAbsLocId(
           srcFilePath, fnDclBgPrsmLc_line, fnDclBgPrsmLc_column
 ,
-          srcFileId, abs_location_id
+          srcFileId,funcIdx, abs_location_id
          );
      LocId funcLocId(srcFilePath, funcQualifiedName,  fnDclBgPrsmLc_line, fnDclBgPrsmLc_column);
-     funcLocId.fillId(srcFileId,abs_location_id);
+     funcLocId.fillId(srcFileId,funcIdx,abs_location_id);
 
       return funcLocId;
     }
@@ -48,8 +49,9 @@ LocId:: LocId(
     }
 
 
-    void LocId::fillId(int srcFileId, int abs_location_id){
+    void LocId::fillId(int srcFileId, int funcIdx, int abs_location_id){
         this->srcFileId=srcFileId;
+        this->locationId = funcIdx;
         this->abs_location_id=abs_location_id;
         return;
     }
