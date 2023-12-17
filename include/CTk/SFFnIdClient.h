@@ -1,6 +1,9 @@
 
 #ifndef Ctk_FFIdClient_H
 #define Ctk_FFIdClient_H
+
+#define HTTP_STATUS_OK 200
+
 /**访问 源文件Id、函数Id生成服务
  *
  */

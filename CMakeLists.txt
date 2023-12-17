@@ -14,6 +14,7 @@ if (NOT EXISTS "${LIBFMT_INCLUDE}")
   MESSAGE(FATAL_ERROR "libfmt头文件目录${LIBFMT_INCLUDE} 不存在，请参照 build-libfmt.sh 构建libfmt静态库")
 endif()
 
+MESSAGE(STATUS "LIBFMT_STATIC:${LIBFMT_STATIC};LIBFMT_INCLUDE:${LIBFMT_INCLUDE}")
 #===============================================================================
 # 0. GET CLANG INSTALLATION DIR
 #修改默认编译器

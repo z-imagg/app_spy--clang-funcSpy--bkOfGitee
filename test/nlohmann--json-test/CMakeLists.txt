@@ -16,9 +16,16 @@ set(nlohmann--json-test_SOURCES
       ${nlohmann--json-test_SOURCES}
       )
 
+    target_link_libraries(
+        nlohmann--json-test
+        "${LIBFMT_STATIC}"   #/crk/fmt//build/libfmt.a
+        )
+
     target_include_directories(
     nlohmann--json-test
       PRIVATE
       "${CMAKE_CURRENT_SOURCE_DIR}/../../include"
+        "${LIBFMT_INCLUDE}"
     )
 
+MESSAGE(STATUS "nlohmann--json-test,,LIBFMT_STATIC:${LIBFMT_STATIC};LIBFMT_INCLUDE:${LIBFMT_INCLUDE}")
