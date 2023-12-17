@@ -49,4 +49,4 @@ include/nlohmann
 
 SrcFileFuncIdGenService/__pycache__/
 
-SrcFileFuncIdGenService/fId_db.json
+SrcFileFuncIdGenService/fId_db.json*
