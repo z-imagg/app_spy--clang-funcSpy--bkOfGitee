@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 
 source /crk/bochs/bash-simplify/func.sh

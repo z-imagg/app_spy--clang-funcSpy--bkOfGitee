@@ -33,6 +33,7 @@
 
 .idea
 *build*
+!_build-*.sh
 !build-*.sh
 *.swp
 

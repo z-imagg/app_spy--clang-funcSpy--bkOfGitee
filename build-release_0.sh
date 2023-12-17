@@ -7,9 +7,8 @@ getCurScriptDirName $0
 #CurScriptDir == /crk/bochs/clang-add-funcIdAsm/
 cd $CurScriptDir && \
 
-export  LIB_CTk_CXX_FLAGS=" -fno-omit-frame-pointer -Wall   -O0    -g2"
+export LIB_CTk_CXX_FLAGS="  "
 bash _build-release_x.sh
 unset LIB_CTk_CXX_FLAGS
-
-#构建的Release版本,带调试信息(变量名称和行号、局部变量),  当出现问题方便排查:
-# -rwxrwxr-x 1 zz zz 27M  7月 24 15:03 /crk/clang-add-funcIdAsm/build/lib/libCTk.so
+#构建的Release版本 :
+# -rwxrwxr-x 1 zz zz 874K  7月 24 13:13 /crk/clang-add-funcIdAsm/build/lib/libCTk.so

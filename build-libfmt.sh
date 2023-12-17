@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 
 ######{此脚本调试步骤:
@@ -23,13 +23,19 @@ source bash-simplify/dir_util.sh
 CurScriptF=$(pwd)/$0
 
 
+source /crk/bochs/bash-simplify/dir_util.sh
+
+getCurScriptDirName $0
+#当前脚本文件 绝对路径 CurScriptF, 当前脚本文件 名 CurScriptNm, 当前脚本文件 所在目录 绝对路径 CurScriptNm
+#CurScriptDir == /crk/bochs/clang-add-funcIdAsm/
+cd $CurScriptDir && \
 
 
 #1. 下载git仓库 fmt.git
 
 
 #https://github.com/fmtlib/fmt.git
-REPO_HOME="/crk/bochs/clang-add-funcIdAsm/fmtlib-fmt"
+REPO_HOME="$CurScriptDir/fmtlib-fmt"
 GitDir="$REPO_HOME"
 Ver="10.0.0"
 CmtId="a0b8a92e3d1532361c2f7feb63babc5c18d00ef2"
