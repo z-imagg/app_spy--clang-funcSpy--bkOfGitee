@@ -50,6 +50,7 @@ LibFmtArchiv="$BUILD_HOME/libfmt.a"
 
 function _build_fmt() {
 
+cmakeInstall && \
 _CXX__FLAG=" -fno-omit-frame-pointer -Wall   -O0  -fPIC " && \
 echo $BUILD_HOME && rm -fr $BUILD_HOME && mkdir $BUILD_HOME && cd $BUILD_HOME && \
 cmake \
