@@ -29,7 +29,7 @@ EOF
 
 #0. 创建 AppHome目录 并 进入该目录
 function _createAppHomeDirThenEnterIt(){
-    sudo mkdir $AppHmD && \
+    sudo mkdir -p $AppHmD && \
     sudo chown -R z.z $AppHmD && \
     cd $AppHmD
 }
