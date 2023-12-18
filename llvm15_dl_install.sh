@@ -20,9 +20,12 @@ LLVM15PkgMd5F="$LLVM15Name.tar.xz.md5sum.txt"
 AppHmD="/app/llvm_release_home"
 LLVM15HmD="$AppHmD/$LLVM15Name"
 
+
+function _gen_LLVM15PkgMd5F(){
 cat << 'EOF' > "${AppHmD}/${LLVM15PkgMd5F}"
 24927e91021e97fb07d7c95ee1b4bac5  /app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4.tar.xz
 EOF
+}
 
 #0. 创建 AppHome目录 并 进入该目录
 function _createAppHomeDirThenEnterIt(){
@@ -36,7 +39,7 @@ ifelse  $CurScriptF $LINENO || true || { \
     "已有AppHomeDir，无需创建"
     cd $AppHmD
   #else:
-    _createAppHomeDirThenEnterIt
+    _createAppHomeDirThenEnterIt && _gen_LLVM15PkgMd5F
       "目录$AppHmD 创建完成"
 } \
 } && \
