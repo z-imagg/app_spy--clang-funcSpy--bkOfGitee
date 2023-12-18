@@ -37,6 +37,8 @@ cd $BUILD_HOME
 # LIB_CTk_CXX_FLAGS=" -fno-omit-frame-pointer -Wall   -O0    -g2"
 # -rwxrwxr-x 1 zz zz 27M  7月 24 15:03 /crk/clang-add-funcIdAsm/build/lib/libCTk.so
 
+{ cmake --version 1&>2 /dev/null || sudo apt install cmake -y ;} && \
+
 cmake -DCMAKE_BUILD_TYPE=Release   -DCMAKE_CXX_FLAGS="$LIB_CTk_CXX_FLAGS"   -DCMAKE_C_FLAGS="$LIB_CTk_CXX_FLAGS"  ..
 #-DCMAKE_VERBOSE_MAKEFILE=True
 make -j8

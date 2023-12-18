@@ -19,10 +19,8 @@ sleep 0.2 && \
 mvFile_AppendCurAbsTime $CurScriptDir/fId_db.json && \
 echo "$CurScriptDir/fId_db.json 已经移动" && \
 
-#miniconda activate 不要开调试
-set +x && source /app/miniconda3/bin/activate && \
-#恢复可能的调试
-{ { $_out_en_dbg && set -x && : ;} || : ;} && \
+#miniconda activate
+miniconda3Activate && \
 
 #echo "xxx" && \
 
