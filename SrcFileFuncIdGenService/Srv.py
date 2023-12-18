@@ -121,7 +121,7 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
             fnIdx=fIdFat.fnIdxDct.get(fnLct)
 
             # 每30秒将函数id数据库写磁盘一次. 注意线程安全（放在这里，各线程强制串行，因此是线程安全的）
-            self._writeDisk()
+            # self._writeDisk()
 
             return (fIdFat.fId,fnIdx)
 
