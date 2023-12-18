@@ -20,6 +20,9 @@ LLVM15PkgMd5F="$LLVM15Name.tar.xz.md5sum.txt"
 AppHmD="/app/llvm_release_home"
 LLVM15HmD="$AppHmD/$LLVM15Name"
 
+#检测是否已经安装clang
+Clang=$LLVM15HmD/bin/clang && \
+$Clang --version 1>&2>/dev/null && echo "已经安装$Clang,正常退出" && exit 0
 
 function _gen_LLVM15PkgMd5F(){
 cat << 'EOF' > "${AppHmD}/${LLVM15PkgMd5F}"
