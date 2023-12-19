@@ -1,10 +1,10 @@
 
 
 MESSAGE("CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
-#CMAKE_SOURCE_DIR: /crk/clang-add-funcIdAsm/
+#CMAKE_SOURCE_DIR: /bal/clang-add-funcIdAsm/
 
 MESSAGE("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
-#CMAKE_CURRENT_SOURCE_DIR: /crk/clang-add-funcIdAsm/tools
+#CMAKE_CURRENT_SOURCE_DIR: /bal/clang-add-funcIdAsm/tools
 
 set(nlohmann--json-test_SOURCES
 "${CMAKE_CURRENT_SOURCE_DIR}/../../lib/CTk/SFFnIdClient.cpp"
