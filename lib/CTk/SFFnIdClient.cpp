@@ -67,9 +67,9 @@ int &srcFileId_out, int &funcIdx_out, int &funcAbsLocId_out
         logw.close();
     }
 
-    std::cout << "响应状态码"<<response->status << "\n";
+    // std::cout << "响应状态码"<<response->status << "\n";
     //  响应状态码200
-    std::cout << "响应体"<<response->body << "\n";
+    // std::cout << "响应体"<<response->body << "\n";
 
     //响应例子: { "fId": 2, "fnIdx": 1, "fnAbsLctId": 20001 }
 
