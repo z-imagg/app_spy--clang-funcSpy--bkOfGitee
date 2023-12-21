@@ -22,10 +22,13 @@ echo "$CurScriptDir/fId_db.json 已经移动" && \
 #miniconda activate
 miniconda3Activate && \
 
+#pypi清华源
+tsinghua_pypi_src && \
+
 #echo "xxx" && \
 
-pip -q install fastapi && \
-pip -q install "uvicorn[standard]" && \
+pip  install fastapi && \
+pip  install "uvicorn[standard]" && \
 
 #启动函数id生成服务
 { nohup python WebMain.py & } && \
