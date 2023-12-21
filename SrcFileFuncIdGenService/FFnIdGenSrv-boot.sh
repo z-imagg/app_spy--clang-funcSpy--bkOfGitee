@@ -32,6 +32,6 @@ pip  install "uvicorn[standard]" && \
 #启动函数id生成服务
 { nohup python WebMain.py & } && \
 
-sleep 0.5 && \
+sleep 2 && \
 alive_pid=$(lsof -t  -i :$PORT) && \
 echo "启动函数id生成服务(pid:$alive_pid)成功"
