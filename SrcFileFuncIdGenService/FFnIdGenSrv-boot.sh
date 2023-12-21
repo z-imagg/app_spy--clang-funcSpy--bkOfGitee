@@ -19,13 +19,12 @@ sleep 0.2 && \
 mvFile_AppendCurAbsTime $CurScriptDir/fId_db.json && \
 echo "$CurScriptDir/fId_db.json 已经移动" && \
 
-#miniconda activate
-miniconda3Activate && \
 
 #pypi清华源
 tsinghua_pypi_src && \
 
-#echo "xxx" && \
+#miniconda activate
+miniconda3Activate && \
 
 pip  install fastapi && \
 pip  install "uvicorn[standard]" && \
