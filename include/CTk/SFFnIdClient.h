@@ -3,6 +3,8 @@
 #define Ctk_FFIdClient_H
 
 #define HTTP_STATUS_OK 200
+//最多重试3次
+#define SFFnIdSvr_RETRY_LMT 3
 
 /**访问 源文件Id、函数Id生成服务
  *

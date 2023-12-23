@@ -41,9 +41,10 @@ int &srcFileId_out, int &funcIdx_out, int &funcAbsLocId_out
     auto error=response.error();
     //若第一次连接正常，则不会进入重试循环；否则（即第一次连接失败），则进入重试循环
     {
+        int _k=0;
         std::ofstream logw("/crk/error_clang-add-funcIdAsm.log",std::ios_base::app);
         //写错误消息到文件/crk/error_clang-add-funcIdAsm.log
-        while(error!=httplib::Error::Success){
+        while(error!=httplib::Error::Success && (_k++) < SFFnIdSvr_RETRY_LMT){//最多重试SFFnIdSvr_RETRY_LMT次
             sleep(1);//等待1秒钟再连接
             std::string errMsg=fmt::format("连接失败, 请检查函数id生成服务是否启动,http://{}:{}/{}\n", host, port, api_path) ;
             logw<<errMsg;
@@ -60,8 +61,10 @@ int &srcFileId_out, int &funcIdx_out, int &funcAbsLocId_out
             logw<<errMsg;
             logw.flush();
             logw.close();
-            std::cout<<errMsg;
-            exit(exitCode);
+            std::cout.flush();
+            fflush(stdout);
+            std::exit(exitCode);//clang插件中无法正常退出, 打印的消息也不会显示
+//            exit(exitCode);
         }
 
         logw.close();

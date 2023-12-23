@@ -55,8 +55,8 @@ public:
 
 
     PluginASTAction::ActionType getActionType() override {
-      //本插件自动运行:  在MainAction后运行本插件
-      return AddAfterMainAction;
+        //本插件自动运行:  在MainAction后运行本插件
+        return  AddAfterMainAction;
     }
 
 //    void EndSourceFileAction() override { }  //   貌似有时候并没有调用EndSourceFileAction，因此去掉
