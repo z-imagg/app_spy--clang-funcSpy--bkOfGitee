@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from Dto import FFnIdReq, FnLctDto
 from SqliteDB import initDb, closeDb
-from Srv import FFnIdRsp , DB, FnLct
+from Srv import FFnIdRsp , WebSrv, FnLct
 import json
 from WebMain import __genFuncAbsLocId
 
