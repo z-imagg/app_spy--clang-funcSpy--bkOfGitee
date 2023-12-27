@@ -50,10 +50,10 @@ class WebSrv:#DB:DataBase:数据库. 数据其 是 全局唯一变量
             from peewee import SqliteDatabase
             fnDb:SqliteDatabase=SrcFile._meta.database
             with fnDb.atomic():
-                fl:SrcFile=SrcFile.get_or_none(SrcFile.sF==fPth)
-                if fl is None:
-                    fl:SrcFile=SrcFile.create(sF=fPth)
-                func:Func=Func.create(fId=fl.fId,line=fnLine,column=fnColumn,funcQualifiedName=funcQualifiedName)
+                fl:SrcFile=SrcFile.get_or_create(sF=fPth)[0]
+                func:Func=Func.get_or_none(fId=fl.fId,line=fnLine,column=fnColumn)
+                if func is None:
+                    func:Func=Func.create(fId=fl.fId,line=fnLine,column=fnColumn,funcQualifiedName=funcQualifiedName)
                 fnRsp:FFnIdRsp=FFnIdRsp(fId=func.fId, fnAbsLctId=func.fnAbsLctId)
                 return fnRsp
 
