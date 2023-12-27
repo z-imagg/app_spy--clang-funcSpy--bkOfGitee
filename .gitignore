@@ -52,3 +52,8 @@ SrcFileFuncIdGenService/__pycache__/
 SrcFileFuncIdGenService/fId_db.json*
 
 SrcFileFuncIdGenService/fn.db
+SrcFileFuncIdGenService/fn.db-*
+
+SrcFileFuncIdGenService/fn.db-shm
+
+SrcFileFuncIdGenService/fn.db-wal
