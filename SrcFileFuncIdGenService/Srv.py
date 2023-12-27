@@ -6,11 +6,15 @@ from typing import Dict, List, Callable, Tuple
 from pydantic import BaseModel, ConfigDict
 
 from Dto import FnLct, FFnIdRsp
-from SqliteDB import fnDb, SrcFile, Func, closeDb
+from SqliteDB import SrcFile, Func, closeDb
 
 
 
 import threading
+
+from Util import IAmNotMain
+
+
 class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
     """DB类中 下划线开头的方法 都是内部方法，外部不要调用，因为本类用锁强制串行多线程，乱调用 可能导致 锁获取方法 不对  可能导致 死锁或数据错乱
 
@@ -58,6 +62,5 @@ class DB:#DB:DataBase:数据库. 数据其 是 全局唯一变量
 
 
 
-
-
+IAmNotMain(__name__)
 
