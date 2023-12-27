@@ -45,11 +45,17 @@ class WebSrv:#DB:DataBase:数据库. 数据其 是 全局唯一变量
         #实际上数据库表中的unique约束可以起到强制全局串行的作用，但在web请求的地方强制串行效率更高
         #强制串行各个请求,即 强制串行当前各个clang编译命令中的clang插件的生成函数id请求
         with self.reqSingleThreadLock:
+            fPth=fPth.strip()
             assert not self.exited
-            srcF:SrcFile=SrcFile.create(sF=fPth.strip())
-            func:Func=Func.create(fId=srcF.fId,line=fnLine,column=fnColumn,funcQualifiedName=funcQualifiedName)
-            fnRsp:FFnIdRsp=FFnIdRsp(fId=func.fId, fnAbsLctId=func.fnAbsLctId)
-            return fnRsp
+            from peewee import SqliteDatabase
+            fnDb:SqliteDatabase=SrcFile._meta.database
+            with fnDb.atomic():
+                fl:SrcFile=SrcFile.get_or_none(SrcFile.sF==fPth)
+                if fl is None:
+                    fl:SrcFile=SrcFile.create(sF=fPth)
+                func:Func=Func.create(fId=fl.fId,line=fnLine,column=fnColumn,funcQualifiedName=funcQualifiedName)
+                fnRsp:FFnIdRsp=FFnIdRsp(fId=func.fId, fnAbsLctId=func.fnAbsLctId)
+                return fnRsp
 
         raise Exception("reqSingleThreadLock失败?")
     def lock_shutdownWebSrv(self):

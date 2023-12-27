@@ -53,7 +53,7 @@ def initDb():
 
 
 def closeDb():
-    fnDb=SrcFile._meta.database
+    fnDb:SqliteDatabase=SrcFile._meta.database
     if not fnDb.is_closed():
         fnDb.close()
 
