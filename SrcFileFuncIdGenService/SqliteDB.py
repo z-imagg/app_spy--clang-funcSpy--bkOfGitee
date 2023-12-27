@@ -41,8 +41,14 @@ def __print_db_abs_path(db:SqliteDatabase):
     print(f"sqlite数据库文件绝对路径:{dbFileAbsPath}",)
 
 def initDb():
-
-    fnDb = SqliteDatabase('fn.db')
+    """
+    https://docs.peewee-orm.com/en/latest/peewee/database.html
+    https://sqlite.org/pragma.html
+    """
+    fnDb = SqliteDatabase('fn.db', pragmas={
+    'journal_mode': 'wal',
+    'cache_size': -1 * 64000,  # 64MB
+    })
     __print_db_abs_path(fnDb)
 
     SrcFile._meta.database = fnDb

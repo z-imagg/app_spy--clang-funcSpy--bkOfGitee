@@ -16,8 +16,8 @@ PORT=8002 && \
 { alive_pid=$(lsof -t  -i :$PORT) || : ;} && \
 { [ "X$alive_pid" == "X" ] || kill -9 $alive_pid  ;}  && \
 sleep 0.2 && \
-mvFile_AppendCurAbsTime $CurScriptDir/fId_db.json && \
-echo "$CurScriptDir/fId_db.json 已经移动" && \
+mvFile_AppendCurAbsTime $CurScriptDir/fn.db && \
+echo "$CurScriptDir/fn.db 已经移动" && \
 
 
 #pypi清华源
