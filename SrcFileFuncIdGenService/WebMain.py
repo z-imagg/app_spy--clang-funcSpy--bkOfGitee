@@ -27,26 +27,15 @@ https://www.uvicorn.org/
 中文文档:
 https://fastapi.tiangolo.com/zh/tutorial/body-nested-models/
 """
-import uvicorn
-
-from typing import Union
-
-from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
-
-from pydantic import BaseModel
-from Srv import FFnIdRsp, FFnIdReq, DB, FnLct
-import json
-
 import asyncio
-from asyncio.exceptions import CancelledError
+
+import uvicorn
+from fastapi import FastAPI
+
+from Dto import FFnIdReq, FFnIdRsp, FnLct
+from Srv import DB
 
 app = FastAPI()
-
-
-# @app.get("/")
-# def read_root():
-#     return {"access": "false"}
 
 
 @app.get("/_shutdown")
@@ -81,10 +70,9 @@ nullok
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId", response_model=FFnIdRsp)
 def __genFuncAbsLocId(req: FFnIdReq)->FFnIdRsp:
     db=DB()
-    (fId,fnIdx)=db.lock_uniqIdGen(req.sF.strip(),
-            FnLct.buildFromX(req.fnLct))
-    return FFnIdRsp(fId=fId, fnIdx=fnIdx,
-        fnAbsLctId=DB._calcFnAbsLctId(fId, fnIdx))
+    fnRsp:FFnIdRsp=db.lock_uniqIdGen(req.sF.strip(),
+            FnLct.buildFromX(req.fnLct),req.funcQualifiedName)
+    return fnRsp
 
 if __name__ == "__main__":
     config = uvicorn.Config(app, host="0.0.0.0", port=8002)
