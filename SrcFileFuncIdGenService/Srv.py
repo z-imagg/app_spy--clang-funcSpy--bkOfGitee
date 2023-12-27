@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from typing import Dict, List, Callable, Tuple
 
 from pydantic import BaseModel, ConfigDict
