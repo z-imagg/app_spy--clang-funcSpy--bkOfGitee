@@ -23,15 +23,17 @@ namespace  web_srv_dto{
     public:
         std::string sF;
         FnLctDto fnLct;
+        std::string funcQualifiedName;
     public:
         FFnIdReq(){};
-        FFnIdReq(std::string _sF,int line, int column)
+        FFnIdReq(std::string _sF,int line, int column,const std::string funcQualifiedName)
             :
         sF(_sF),
-        fnLct(line,column)
+        fnLct(line,column),
+        funcQualifiedName(funcQualifiedName)
         {
         };
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(FFnIdReq, sF, fnLct)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(FFnIdReq, sF, fnLct, funcQualifiedName)
     };
 //请求结束}
 

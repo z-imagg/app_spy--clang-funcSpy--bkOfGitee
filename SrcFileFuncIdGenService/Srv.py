@@ -17,6 +17,7 @@ class FnLctDto(BaseModel):
 class FFnIdReq(BaseModel):
     sF: FilePathType
     fnLct: FnLctDto
+    funcQualifiedName: str
 #请求}
 
 #{响应

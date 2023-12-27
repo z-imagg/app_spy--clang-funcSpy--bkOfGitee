@@ -18,7 +18,7 @@ using namespace clang;
  int funcIdx;
  int abs_location_id;
   SFFnIdClient::genFuncAbsLocId(
-          srcFilePath, fnDclBgPrsmLc_line, fnDclBgPrsmLc_column
+          srcFilePath, fnDclBgPrsmLc_line, fnDclBgPrsmLc_column, funcQualifiedName
 ,
           srcFileId,funcIdx, abs_location_id
          );

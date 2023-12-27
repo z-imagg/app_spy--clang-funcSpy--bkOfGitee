@@ -12,7 +12,7 @@
 using json = nlohmann::json;
 
 void SFFnIdClient::genFuncAbsLocId(
-std::string srcFilePath, int funcDeclBeginPresumedLoc_line, int funcDeclBeginPresumedLoc_column
+std::string srcFilePath, int funcDeclBeginPresumedLoc_line, int funcDeclBeginPresumedLoc_column, const std::string funcQualifiedName
 ,
 int &srcFileId_out, int &funcIdx_out, int &funcAbsLocId_out
         ){
@@ -22,7 +22,7 @@ int &srcFileId_out, int &funcIdx_out, int &funcAbsLocId_out
     int port=8002;
     httplib::Client client(host, port);
 
-    web_srv_dto::FFnIdReq fFnIdReq(srcFilePath,funcDeclBeginPresumedLoc_line,funcDeclBeginPresumedLoc_column);
+    web_srv_dto::FFnIdReq fFnIdReq(srcFilePath,funcDeclBeginPresumedLoc_line,funcDeclBeginPresumedLoc_column,funcQualifiedName);
 
     //请求例子 : { "sF": "user.c ", "fnLct": { "line": 0, "column": 0 } }
 
