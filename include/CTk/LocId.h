@@ -30,8 +30,6 @@ public:
 
     int line;
     int column;
-    /* locationId 与 <filePath,line,column> 一一对应 */
-    int locationId;//冗余字段locationId==funcIdx
     int abs_location_id;
 
     //函数名 ： 冗余字段
@@ -42,7 +40,6 @@ public:
 //            Decl::Kind declKind, Stmt::StmtClass stmtClass,
             std::string filePath,const std::string funcQualifiedName, int line, int column);
 
-    void fillId(int srcFileId,int funcIdx, int abs_location_id);
     // 重写哈希函数
     size_t operator()(const LocId& that) const ;
 

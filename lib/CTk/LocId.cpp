@@ -9,32 +9,30 @@
 
 using namespace clang;
 
-    const std::string LocId::csv_field_ls="filePath,line,column,abs_location_id,funcName,srcFileId,locationId";
     LocId LocId::buildFor(std::string srcFilePath, const std::string funcQualifiedName, const SourceLocation funcDeclBeginLoc, const clang::SourceManager& SM){
    clang::PresumedLoc fnDeclBgPresumedLoc = SM.getPresumedLoc(funcDeclBeginLoc);
     int fnDclBgPrsmLc_line=fnDeclBgPresumedLoc.getLine();
     int fnDclBgPrsmLc_column=fnDeclBgPresumedLoc.getColumn();
  int srcFileId;
- int funcIdx;
+// int funcIdx;
  int abs_location_id;
+ LocId funcLocId(srcFilePath, funcQualifiedName,  fnDclBgPrsmLc_line, fnDclBgPrsmLc_column);
   SFFnIdClient::genFuncAbsLocId(
           srcFilePath, fnDclBgPrsmLc_line, fnDclBgPrsmLc_column, funcQualifiedName
 ,
-          srcFileId,funcIdx, abs_location_id
+          funcLocId.srcFileId, funcLocId.abs_location_id
          );
-     LocId funcLocId(srcFilePath, funcQualifiedName,  fnDclBgPrsmLc_line, fnDclBgPrsmLc_column);
-     funcLocId.fillId(srcFileId,funcIdx,abs_location_id);
 
       return funcLocId;
     }
 
     std::string LocId::to_csv_line(){
-      return fmt::format("{},{},{},{},{},{},{}",filePath,line,column,abs_location_id,funcName,srcFileId,locationId);
+      return fmt::format("{},{},{},{},{},{}",filePath,line,column,abs_location_id,funcName,srcFileId);
     }
 
     std::string LocId::to_string(){
-        return fmt::format("filePath={},line={},column={},abs_location_id={},funcName={},srcFileId={},locationId={}",
-                                filePath,   line,   column,     abs_location_id,    funcName,   srcFileId,  locationId);
+        return fmt::format("filePath={},line={},column={},abs_location_id={},funcName={},srcFileId={}",
+                                filePath,   line,   column,     abs_location_id,    funcName,   srcFileId);
     }
 
 LocId:: LocId(
@@ -49,12 +47,6 @@ LocId:: LocId(
     }
 
 
-    void LocId::fillId(int srcFileId, int funcIdx, int abs_location_id){
-        this->srcFileId=srcFileId;
-        this->locationId = funcIdx;
-        this->abs_location_id=abs_location_id;
-        return;
-    }
 
     // 重写哈希函数
     size_t LocId::operator()(const LocId& that) const {
