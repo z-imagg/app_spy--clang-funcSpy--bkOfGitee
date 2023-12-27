@@ -4,7 +4,7 @@
 int main(int Argc, const char **Argv) {
 
     int srcFileId,fnIdx,funcAbsLocId;
-    SFFnIdClient::genFuncAbsLocId("userName.c",12,0,srcFileId,fnIdx,funcAbsLocId);
+    SFFnIdClient::genFuncAbsLocId("userName.c",12,0,"calcAgeFunc",srcFileId,funcAbsLocId);
 
     std::cout << "srcFileId:"<< srcFileId << "\n";
     std::cout << "fnIdx:"<< fnIdx << "\n";
