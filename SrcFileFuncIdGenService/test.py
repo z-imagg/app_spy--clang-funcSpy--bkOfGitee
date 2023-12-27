@@ -23,4 +23,8 @@ rsp6 = __genFuncAbsLocId(req1)
 
 closeDb()
 end=True
-# sqlite3 --cmd ".schema *"  /bal/clang-add-funcIdAsm/SrcFileFuncIdGenService/fn.db
+"""
+echo ".headers on
+.mode column
+.schema * --indent"  | sqlite3    fn.db >  fn.db.sql
+"""

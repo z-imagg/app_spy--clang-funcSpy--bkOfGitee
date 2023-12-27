@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS "tbl_Func"(
+  "fnAbsLctId" INTEGER NOT NULL PRIMARY KEY,
+  "fId" INTEGER NOT NULL,
+  "funcQualifiedName" VARCHAR(255) NOT NULL,
+  "line" INTEGER NOT NULL,
+  "column" INTEGER NOT NULL,
+  UNIQUE(fId, line, column)
+);
+CREATE TABLE IF NOT EXISTS "tbl_SrcFile"(
+  "fId" INTEGER NOT NULL PRIMARY KEY,
+  "sF" VARCHAR(255) NOT NULL
+);
