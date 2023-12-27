@@ -38,13 +38,12 @@ namespace  web_srv_dto{
 //请求结束}
 
 //{响应开始
-    class FFnIdRsp{ // 响应例子: { "fId": 2, "fnIdx": 1, "fnAbsLctId": 20001 }
+    class FFnIdRsp{ // 响应例子: { "fId": 2,  "fnAbsLctId": 20001 }
     public:
         int fId;
-        int fnIdx;
         int fnAbsLctId;
     public:
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(FFnIdRsp, fId, fnIdx, fnAbsLctId)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(FFnIdRsp, fId, fnAbsLctId)
     };
 //响应结束}
 
