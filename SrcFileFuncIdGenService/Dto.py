@@ -30,19 +30,6 @@ class FFnIdRsp(PydtBaseModel):
 
 #响应}
 
-class FnLct:
-    @staticmethod
-    def buildFromX(fnLct:FnLctDto)-> 'FnLct':
-        return FnLct(fnLct.line, fnLct.column)
-    def __init__(self, line:int, column:int):
-        self.line:int = line
-        self.column:int = column
-
-    def __repr__(self):
-        return f"L{self.line}C{self.column}"
-
-    def __str__(self):
-        return self.__repr__()
 
 
 

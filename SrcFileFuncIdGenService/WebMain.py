@@ -32,7 +32,7 @@ import asyncio
 import uvicorn
 from fastapi import FastAPI
 
-from Dto import FFnIdReq, FFnIdRsp, FnLct
+from Dto import FFnIdReq, FFnIdRsp
 from Srv import WebSrv
 
 app = FastAPI()
@@ -69,8 +69,7 @@ nullok
 
 @app.post("/SrcFileFuncIdGenService/genFuncAbsLocId", response_model=FFnIdRsp)
 def __genFuncAbsLocId(req: FFnIdReq)->FFnIdRsp:
-    fnRsp:FFnIdRsp=WebSrv().lock_saveFunc(req.sF.strip(),
-                                          FnLct.buildFromX(req.fnLct), req.funcQualifiedName)
+    fnRsp:FFnIdRsp=WebSrv().lock_saveFunc(req.sF, req.fnLct.line,req.fnLct.column, req.funcQualifiedName)
     return fnRsp
 
 if __name__ == "__main__":
