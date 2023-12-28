@@ -4,12 +4,11 @@
 import datetime
 from peewee import *
 
-from Util import IAmNotMain
+from py_util.Util import IAmNotMain, make_table_name, __print_db_abs_path
+
 
 # fnDb = SqliteDatabase('fn.db')
 
-def make_table_name(model_class):
-    return   f'tbl_{model_class.__name__}'
 
 class BaseEntity(Model):
     class Meta:
@@ -35,10 +34,6 @@ class Func(BaseEntity):
 
 
 
-def __print_db_abs_path(db:SqliteDatabase):
-    import os
-    dbFileAbsPath:str=os.path.abspath(db.database)
-    print(f"sqlite数据库文件绝对路径:{dbFileAbsPath}",)
 
 def initDb():
     """

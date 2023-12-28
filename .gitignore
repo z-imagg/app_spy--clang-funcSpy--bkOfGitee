@@ -57,3 +57,5 @@ SrcFileFuncIdGenService/fn.db-*
 SrcFileFuncIdGenService/fn.db-shm
 
 SrcFileFuncIdGenService/fn.db-wal
+
+SrcFileFuncIdGenService/py_util
