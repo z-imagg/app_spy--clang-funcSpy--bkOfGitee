@@ -28,6 +28,7 @@ miniconda3Activate && \
 
 pip  install fastapi && \
 pip  install "uvicorn[standard]" && \
+pip  install peewee && \
 
 #启动函数id生成服务
 { nohup python WebMain.py & } && \
