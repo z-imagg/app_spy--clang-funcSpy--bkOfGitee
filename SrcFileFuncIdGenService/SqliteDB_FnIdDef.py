@@ -33,7 +33,7 @@ class Func(SqliteBaseEntity):
 
 def initDb():
 
-    fnDb:SqliteDatabase=initSqliteDb()
+    fnDb:SqliteDatabase=initSqliteDb('fn.db')
 
     SrcFile._meta.database = fnDb
     Func._meta.database = fnDb
