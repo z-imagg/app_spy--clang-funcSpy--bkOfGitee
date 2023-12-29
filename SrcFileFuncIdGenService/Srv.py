@@ -10,7 +10,7 @@ from SqliteDB_FnIdDef import SrcFile, Func, closeDb, initDb
 
 import threading
 
-from Util import IAmNotMain
+from py_util.Util import IAmNotMain
 
 
 class WebSrv:#DB:DataBase:数据库. 数据其 是 全局唯一变量

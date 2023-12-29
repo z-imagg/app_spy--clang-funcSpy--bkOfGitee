@@ -3,7 +3,7 @@
 
 from pydantic import BaseModel as PydtBaseModel
 
-from Util import IAmNotMain
+from py_util.Util import IAmNotMain
 
 FIdType=int
 FnIdxType=int#FnIdx:函数下标:即在该FId下的各个Fn的局部id
