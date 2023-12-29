@@ -4,7 +4,7 @@
 import datetime
 from peewee import *
 
-from py_util.Util import IAmNotMain, make_table_name, __print_db_abs_path
+from py_util.Util import IAmNotMain, make_table_name, __print_db_abs_path, initSqliteDb, closeSqliteDb
 
 
 # fnDb = SqliteDatabase('fn.db')
@@ -36,15 +36,8 @@ class Func(BaseEntity):
 
 
 def initDb():
-    """
-    https://docs.peewee-orm.com/en/latest/peewee/database.html
-    https://sqlite.org/pragma.html
-    """
-    fnDb = SqliteDatabase('fn.db', pragmas={
-    'journal_mode': 'wal',
-    'cache_size': -1 * 64000,  # 64MB
-    })
-    __print_db_abs_path(fnDb)
+
+    fnDb:SqliteDatabase=initSqliteDb()
 
     SrcFile._meta.database = fnDb
     Func._meta.database = fnDb
@@ -54,9 +47,7 @@ def initDb():
 
 
 def closeDb():
-    fnDb:SqliteDatabase=SrcFile._meta.database
-    if not fnDb.is_closed():
-        fnDb.close()
+    closeSqliteDb(SrcFile._meta.database)
 
 
 
