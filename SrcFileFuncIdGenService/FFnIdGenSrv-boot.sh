@@ -30,6 +30,11 @@ pip  install fastapi && \
 pip  install "uvicorn[standard]" && \
 pip  install peewee && \
 
+lnkDest="/bal/clang-add-funcIdAsm/SrcFileFuncIdGenService/py_util" && \
+lnkSrc="/bal/py_util" && \
+{ [ -e $lnkDest ] || \
+ln -s $lnkSrc $$lnkDest ;} && \
+
 #启动函数id生成服务
 { nohup python WebMain.py & } && \
 
