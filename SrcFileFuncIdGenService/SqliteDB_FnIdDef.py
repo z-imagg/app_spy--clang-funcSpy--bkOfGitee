@@ -4,23 +4,19 @@
 import datetime
 from peewee import *
 
-from py_util.Util import IAmNotMain, make_table_name, __print_db_abs_path, initSqliteDb, closeSqliteDb
+from py_util.Util import IAmNotMain, make_table_name, __print_db_abs_path, initSqliteDb, closeSqliteDb, SqliteBaseEntity
 
 
 # fnDb = SqliteDatabase('fn.db')
 
 
-class BaseEntity(Model):
-    class Meta:
-        database = None
-        table_function = make_table_name
 
-class SrcFile(BaseEntity):
+class SrcFile(SqliteBaseEntity):
     fId = AutoField(primary_key=True)
     sF= CharField()
     class Meta: pass
 
-class Func(BaseEntity):
+class Func(SqliteBaseEntity):
     fnAbsLctId = IntegerField(primary_key=True)
     fId = IntegerField()#引用SrcFile.fId
     funcQualifiedName = CharField()
