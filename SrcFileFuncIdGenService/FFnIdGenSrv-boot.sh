@@ -31,6 +31,7 @@ pip  install "uvicorn[standard]" && \
 pip  install peewee && \
 
 makLnk "/bal/py_util" "/bal/clang-add-funcIdAsm/SrcFileFuncIdGenService/py_util"
+#mklink /D  f:\bal\clang-add-funcIdAsm\SrcFileFuncIdGenService\py_util f:\bal\py_util
 
 #启动函数id生成服务
 { nohup python WebMain.py & } && \
