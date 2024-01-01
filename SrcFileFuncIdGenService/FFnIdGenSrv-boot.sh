@@ -28,7 +28,7 @@ miniconda3Activate && \
 
 pip  install fastapi && \
 pip  install "uvicorn[standard]" && \
-pip  install peewee && \
+pip  install peewee arrow && \
 
 makLnk "/bal/py_util" "/bal/clang-add-funcIdAsm/SrcFileFuncIdGenService/py_util"
 
