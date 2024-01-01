@@ -31,9 +31,9 @@ class Func(SqliteBaseEntity):
 
 
 
-def fn_initDb(removeDbFile:bool=True):
+def fn_initDb(moveDbFile:bool=True):
 
-    fnDb:SqliteDatabase=initSqliteDb('/bal/clang-add-funcIdAsm/SrcFileFuncIdGenService/fn.db',removeDbFile=removeDbFile)
+    fnDb:SqliteDatabase=initSqliteDb('/bal/clang-add-funcIdAsm/SrcFileFuncIdGenService/fn.db',moveDbFile=moveDbFile)
 
     SrcFile._meta.database = fnDb
     Func._meta.database = fnDb
