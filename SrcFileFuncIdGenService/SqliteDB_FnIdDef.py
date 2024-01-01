@@ -31,9 +31,9 @@ class Func(SqliteBaseEntity):
 
 
 
-def fn_initDb():
+def fn_initDb(removeDbFile:bool=True):
 
-    fnDb:SqliteDatabase=initSqliteDb('fn.db')
+    fnDb:SqliteDatabase=initSqliteDb('fn.db',removeDbFile=removeDbFile)
 
     SrcFile._meta.database = fnDb
     Func._meta.database = fnDb
