@@ -22,7 +22,7 @@ set(CTk_SOURCES
       )
 
 target_link_libraries(CTk
-        "${LIBFMT_STATIC}"   #/crk/fmt//build/libfmt.a
+        "${LIBFMT_STATIC}"   #/bal/fmt//build/libfmt.a
         )
 
     # Configure include directories for 'plugin'

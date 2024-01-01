@@ -36,5 +36,5 @@ set(CTkAlone_SOURCES
     target_link_libraries(
     CTkAlone
       "clangTooling"
-   "${LIBFMT_STATIC}"  #/crk/fmt//build/libfmt.a
+   "${LIBFMT_STATIC}"  #/bal/fmt//build/libfmt.a
     )
