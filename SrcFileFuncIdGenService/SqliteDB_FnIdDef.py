@@ -31,7 +31,7 @@ class Func(SqliteBaseEntity):
 
 
 
-def initDb():
+def fn_initDb():
 
     fnDb:SqliteDatabase=initSqliteDb('fn.db')
 
@@ -42,7 +42,7 @@ def initDb():
     fnDb.create_tables([SrcFile, Func])
 
 
-def closeDb():
+def fn_closeDb():
     closeSqliteDb(SrcFile._meta.database)
 
 

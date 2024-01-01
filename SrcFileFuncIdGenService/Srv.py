@@ -6,7 +6,7 @@ from typing import Dict, List, Callable, Tuple
 from pydantic import BaseModel, ConfigDict
 
 from Dto import  FFnIdRsp
-from SqliteDB_FnIdDef import SrcFile, Func, closeDb, initDb
+from SqliteDB_FnIdDef import SrcFile, Func, fn_closeDb, fn_initDb
 
 import threading
 
@@ -26,7 +26,7 @@ class WebSrv:#DB:DataBase:数据库. 数据其 是 全局唯一变量
                 if not cls.instance:
                     cls.instance = super().__new__(cls)
                     ###{ __init__内容 开始
-                    initDb()
+                    fn_initDb()
                     cls.instance.exited:bool=False
                     cls.reqSingleThreadLock: int = threading.Lock()
                     ### __init__内容 结束}
@@ -61,7 +61,7 @@ class WebSrv:#DB:DataBase:数据库. 数据其 是 全局唯一变量
     def lock_shutdownWebSrv(self):
         with self.reqSingleThreadLock:
             if not self.exited:
-                closeDb()
+                fn_closeDb()
                 self.exited:bool=True
 
 

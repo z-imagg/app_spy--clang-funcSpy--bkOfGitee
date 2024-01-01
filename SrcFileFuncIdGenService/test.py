@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 from Dto import FFnIdReq, FnLctDto
-from SqliteDB_FnIdDef import initDb, closeDb
+from SqliteDB_FnIdDef import fn_initDb, fn_closeDb
 from Srv import FFnIdRsp , WebSrv
 import json
 from WebMain import __genFuncAbsLocId
 
-initDb()
+fn_initDb()
 
 req1: FFnIdReq=FFnIdReq(sF="/tmp/xxx.c", fnLct=FnLctDto(line=12, column=4),funcQualifiedName="funcName1")
 req2: FFnIdReq=FFnIdReq(sF="/tmp/xxx.c", fnLct=FnLctDto(line=99, column=22),funcQualifiedName="funcName2")
@@ -21,7 +21,7 @@ rsp5 = __genFuncAbsLocId(req5)
 rsp6 = __genFuncAbsLocId(req1)
 
 
-closeDb()
+fn_closeDb()
 end=True
 """
 echo ".headers on
