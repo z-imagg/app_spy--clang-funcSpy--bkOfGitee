@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import datetime
 from peewee import *
 
-from py_util.Util import IAmNotMain, make_table_name, __print_db_abs_path, initSqliteDb, closeSqliteDb, SqliteBaseEntity
+from py_util.Util import IAmNotMain, initSqliteDb, closeSqliteDb, SqliteBaseEntity
 
 
 # fnDb = SqliteDatabase('fn.db')
