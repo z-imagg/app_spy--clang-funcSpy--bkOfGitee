@@ -56,10 +56,10 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLB
     //用funcEnterLocIdSet的尺寸作为LocationId的计数器
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
-          "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*{}*/",
+          "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : & {} ); /*TODO 函数地址放在第3个or指令中 {}*/",
           // "jmp 0f" : 0指后面的标号 "0:", f指的是forward即向前跳(而不是向后跳转)
           //参考xv6中文件kinit1_func_id__local_label__demo.png
-          funcLocId.abs_location_id, funcLocId.to_string()
+          funcLocId.abs_location_id, funcLocId.funcName, funcLocId.to_string()
   );
   llvm::StringRef strRef(cStr_inserted);
   //endregion
