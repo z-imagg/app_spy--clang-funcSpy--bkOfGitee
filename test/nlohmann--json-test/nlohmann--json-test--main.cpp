@@ -7,7 +7,7 @@ double func01(char ch, float flt){
     __asm__  __volatile__ (
             "jmp 0f \n\t"
             "or $0xFFFFFFFF,%%edi \n\t"
-            "or $11,%%edi \n\t"
+            "or $1024,%%edi \n\t"
             "or %0,%%edi \n\t"
             "0: \n\t"
             :
