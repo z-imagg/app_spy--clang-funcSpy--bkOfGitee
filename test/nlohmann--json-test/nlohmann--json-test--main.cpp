@@ -2,13 +2,13 @@
 
 #include <iostream>
 /* 参考gcc内敛汇编:  https://www.cnblogs.com/sky-heaven/p/7561625.html */
-double func01(char ch, float flt){
+inline double func01(char ch, float flt){
     int integer=ch*flt;
     __asm__  __volatile__ (
             "jmp 0f \n\t"
             "or $0xFFFFFFFF,%%edi \n\t"
-            "or $1024,%%edi \n\t"
-            "or %0,%%edi \n\t"
+            "orL $16,%%edi \n\t"
+            "orL %0,%%edi \n\t"
             "0: \n\t"
             :
             : "m"(func01)
