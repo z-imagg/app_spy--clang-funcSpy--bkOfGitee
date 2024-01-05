@@ -11,7 +11,7 @@ static inline double func01(){
             "orL %1,%%edi \n\t"
             "0: \n\t"
             :
-            : "i"(1024+FUNC_ID),"m"(func01)
+            : "i"(FUNC_ID),"m"(func01)
             );
 
 
