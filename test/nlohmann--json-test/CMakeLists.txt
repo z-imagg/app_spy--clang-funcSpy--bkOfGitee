@@ -1,5 +1,5 @@
 
-
+set(CMAKE_C_FLAGS "-O1" )
 MESSAGE("CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 #CMAKE_SOURCE_DIR: /bal/clang-add-funcIdAsm/
 
