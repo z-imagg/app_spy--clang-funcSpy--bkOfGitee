@@ -8,6 +8,7 @@ static inline double func01(){
             "jmp 0f \n\t"
             "or $0xFFFFFFFF,%%edi \n\t"
             "orL %0,%%edi \n\t"
+            "orL $257,%%edi \n\t"
             "orL %1,%%edi \n\t"
             "0: \n\t"
             :
