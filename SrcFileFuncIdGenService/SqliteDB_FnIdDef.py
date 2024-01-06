@@ -30,7 +30,7 @@ class Func(SqliteBaseEntity):
 
 
 
-
+FuncIdBegin:int=257
 def fn_initDb(moveDbFile:bool=True):
 
     fnDb:SqliteDatabase=initSqliteDb('/bal/clang-add-funcIdAsm/SrcFileFuncIdGenService/fn.db',moveDbFile=moveDbFile)
@@ -41,6 +41,9 @@ def fn_initDb(moveDbFile:bool=True):
     fnDb.connect()
     fnDb.create_tables([SrcFile, Func])
 
+    #用给定的值填充自增列并插入，以迫使自增列初始值为给定数值
+    emptyFunc: Func = Func.create(fnAbsLctId=FuncIdBegin,fId=-1,funcQualifiedName="",line=-1,column=-1)
+    Func.delete_by_id(FuncIdBegin)
 
 def fn_closeDb():
     closeSqliteDb(SrcFile._meta.database)
