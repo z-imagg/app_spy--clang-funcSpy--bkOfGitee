@@ -11,12 +11,13 @@ from py_util.Util import IAmNotMain, initSqliteDb, closeSqliteDb, SqliteBaseEnti
 
 
 class SrcFile(SqliteBaseEntity):
-    fId = AutoField(primary_key=True)
+    fId = IntegerField(primary_key=True, unique=True, constraints=[SQL('AUTOINCREMENT')])
     sF= CharField()
     class Meta: pass
 
 class Func(SqliteBaseEntity):
-    fnAbsLctId = IntegerField(primary_key=True)
+    #sqlite的列类型是动态类型（列类型由插入的值类型决定），参考: https://www.cnblogs.com/qiupiaohujie/p/11981732.html
+    fnAbsLctId = IntegerField(primary_key=True, unique=True, constraints=[SQL('AUTOINCREMENT')])
     fId = IntegerField()#引用SrcFile.fId
     funcQualifiedName = CharField()
     line = IntegerField()
