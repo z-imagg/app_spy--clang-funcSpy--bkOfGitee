@@ -1,4 +1,3 @@
-#include "CTk/SFFnIdClient.h"
 
 #include <iostream>
 /* 参考gcc内敛汇编:  https://www.cnblogs.com/sky-heaven/p/7561625.html */
@@ -11,7 +10,8 @@ static inline double func01(){
             "orL %1,%%edi \n\t"         //%0 指代 func01 表示 函数名
             "0: \n\t"                   //0: 表示 标号0
             :                           //输出 ，无输出
-            : "i"(FUNC_ID),"m"(func01)  //输入，i即immedia即立即数, m 即 memory
+            : "i"(FUNC_ID),"i"(func01)  //输入，i即immedia即立即数,
+            //    ‘  "i"(func01)  ’ ： 正常编译 但链接报错( relocation R_X86_64_32 against `.text' can not be used when making a PIE object; )
             );
 
 
