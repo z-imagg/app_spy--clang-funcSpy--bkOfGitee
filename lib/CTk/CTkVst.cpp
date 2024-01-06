@@ -61,6 +61,17 @@ bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLB
           //参考xv6中文件kinit1_func_id__local_label__demo.png
           funcLocId.abs_location_id, funcLocId.funcName, funcLocId.to_string()
   );
+  /**这段gcc内敛汇编大约是如下的样子：
+__asm__  __volatile__ (
+"jmp 0f \n\t"               //0f 表示 0 forward 即 向前跳转到标号0
+"or $0xFFFFFFFF,%%edi \n\t" //$0xFFFFFFFF 表示 常数 0xFFFFFFFF
+"or $257,%%edi \n\t"        //$257 是 常数257 表示 函数id
+"or %0,%%edi \n\t"          //%0 指代 func01 表示 函数名
+"0: \n\t"                  //0: 表示 标号0
+:                          //输出 ，无输出
+: "m"( func01 )           //输入，m 即 memory
+);
+   */
   llvm::StringRef strRef(cStr_inserted);
   //endregion
 
