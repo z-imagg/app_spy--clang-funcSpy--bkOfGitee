@@ -65,3 +65,5 @@ SrcFileFuncIdGenService/py_util
 *.db-shm
 
 *.db-wal
+
+CMakeFiles/
