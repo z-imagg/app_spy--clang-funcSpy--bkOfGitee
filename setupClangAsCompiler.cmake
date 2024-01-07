@@ -1,16 +1,15 @@
 set(LLVM_HOME "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
 list(APPEND CMAKE_MODULE_PATH "${LLVM_HOME}")
 
-list(APPEND CMAKE_PREFIX_PATH "${LLVM_HOME}/lib/cmake/llvm/")
-list(APPEND CMAKE_PREFIX_PATH "${LLVM_HOME}/lib/cmake/clang/")
-
-
-find_package(Clang REQUIRED CONFIG)
-
-find_package(LLVM REQUIRED CONFIG)
+#list(APPEND CMAKE_PREFIX_PATH "${LLVM_HOME}/lib/cmake/llvm/")
+#find_package(LLVM REQUIRED CONFIG)
 #此句会 产生变量 LLVM_DIR
 message(STATUS "找到 LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "使用 LLVMConfig.cmake in: ${LLVM_DIR}")
+
+list(APPEND CMAKE_PREFIX_PATH "${LLVM_HOME}/lib/cmake/clang/")
+find_package(Clang REQUIRED CONFIG)
+
 
 # We incorporate the CMake features provided by LLVM:
 list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
