@@ -10,7 +10,7 @@ if(NOT DEFINED gVarsFIdx)
     message(STATUS "初始化 gVarsFIdx=${gVarsFIdx}")
 endif()
 
-function(save_cmake_vars__cur_diff_prev)
+function(save_cmake_vars__cur_diff_prev _CMAKE_CURRENT_LIST_LINE)
 #    message(STATUS "函数进入 gVarsFIdx=${gVarsFIdx}")
     MATH(EXPR _prevVarsFIdx "${gVarsFIdx} - 1")
 #    set(_prevOutFPath "${_OutFPathPrefix}${_prevVarsFIdx}")
@@ -47,7 +47,7 @@ execute_process(
         ERROR_VARIABLE shStdErr
 )
 
-message(STATUS "保存cmake当前变量们并与上次变量们比较，退出码：【${shExitCode}】， 标准输出: 【${shStdOut}】， 错误输出:【${shStdErr}】")
+message(STATUS "保存cmake当前变量们并与上次变量们比较，第【${_CMAKE_CURRENT_LIST_LINE}】行，退出码：【${shExitCode}】， 标准输出: 【${shStdOut}】， 错误输出:【${shStdErr}】")
 #message(STATUS "函数出来 gVarsFIdx=${gVarsFIdx}")
 
 endfunction()
