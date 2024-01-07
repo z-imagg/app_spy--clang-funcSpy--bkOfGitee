@@ -35,6 +35,7 @@ function(save_cmake_vars__cur_diff_prev _CMAKE_CURRENT_LIST_FILE _CMAKE_CURRENT_
     file(WRITE ${_curOutFPath} "")
     foreach(_varName ${_varNames})
         if (_varName MATCHES "^_"  #忽略_开头的变量名
+                OR _varName MATCHES "^ARGV"  #忽略ARGV开头的变量名
                 OR _varName STREQUAL "gVarsFIdx") #忽略此脚本用到的变量名gVarsFIdx
 #            message(STATUS "忽略变量名【${_varName}】")
             continue()
