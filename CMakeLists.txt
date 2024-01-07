@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13.4)
-include("/bal/clang-add-funcIdAsm/vars_diff.cmake")
+include("/bal/clang-add-funcIdAsm/cmake_script/save_vars__cur_diff_prev/save_vars__cur_diff_prev.cmake")
 #save_cmake_vars__cur_diff_prev()
 
 set(LIBFMT_DIR "/bal/fmtlib-fmt/")
