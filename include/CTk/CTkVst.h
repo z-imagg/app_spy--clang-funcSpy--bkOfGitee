@@ -50,7 +50,7 @@ public:
     }
 
 
-    bool insertAfter_X__funcEnter(LocId funcLocId,SourceLocation funcBodyLBraceLoc );
+    bool insertAfter_X__funcEnter(bool funcIsStatic,bool funcIsInline,LocId funcLocId,SourceLocation funcBodyLBraceLoc );
 
 
     virtual bool TraverseFunctionDecl(FunctionDecl* funcDecl);
@@ -64,6 +64,8 @@ public:
      * @return
      */
     bool _Traverse_Func(
+    bool funcIsStatic,
+    bool funcIsInline,
     QualType funcReturnType,
     bool isaCXXConstructorDecl,
     Stmt *endStmtOfFuncBody,

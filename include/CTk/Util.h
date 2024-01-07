@@ -60,6 +60,13 @@ public:
      */
     static bool funcIsDefault(FunctionDecl *funcDecl);
     /**
+     * inline函数举例:
+     * TODO
+     * @param funcDecl
+     * @return
+     */
+    static bool funcIsInline(FunctionDecl *funcDecl);
+    /**
      * default构造函数体举例:
      * 'User::User( ) = default;'
      * 'User::User( ) {}'
