@@ -30,8 +30,8 @@ resultF="${_OutFPathPrefix}diff_${_prevVarsFIdx}_${_curVarsFIdx}"
 ifFileNotExistedThenExit ${_prevOutFPath} "上次输出文件不存在" 33
 ifFileNotExistedThenExit ${_curOutFPath} "本次输出文件不存在" 44
 
-echo -n "比较上次、当前：‘diff ${_prevOutFPath} ${_curOutFPath}’ , "
 echo -n "差异行数："
 diff --side-by-side --suppress-common-lines ${_prevOutFPath} ${_curOutFPath} > $resultF ;
 wc -l $resultF |  perl -pe 'chomp if eof'
+echo -n "，比较上次和当前：‘diff ${_prevOutFPath} ${_curOutFPath}’ "
 #用命令 “ perl -pe 'chomp if eof'  ” 删除wc输出的换行符号
