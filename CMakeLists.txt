@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13.4)
 include("/bal/clang-add-funcIdAsm/vars_diff.cmake")
-#save_cmake_vars()
+#save_cmake_vars__cur_diff_prev()
 
 set(LIBFMT_DIR "/bal/fmtlib-fmt/")
 #set(LIBFMT_STATIC /bal/fmt//include)
@@ -33,22 +33,22 @@ set(LLVM_DIR "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4
 #set(xxx "")
 
 project(clangPlugin-FuncStartInsertAsm)
-save_cmake_vars()
+save_cmake_vars__cur_diff_prev()
 #project放到默认编译器定义之后，否则cmake会死循环
 
 
 set(CT_LLVM_INCLUDE_DIR "${CT_Clang_INSTALL_DIR}/include/llvm")
-save_cmake_vars()
+save_cmake_vars__cur_diff_prev()
 
 set(CT_LLVM_CMAKE_FILE "${CT_Clang_INSTALL_DIR}/lib/cmake/clang/ClangConfig.cmake")
 
 # http://llvm.org/docs/CMake.html#embedding-llvm-in-your-project
 list(APPEND CMAKE_PREFIX_PATH "${CT_Clang_INSTALL_DIR}/lib/cmake/clang/")
 
-#save_cmake_vars()
+#save_cmake_vars__cur_diff_prev()
 find_package(Clang REQUIRED CONFIG)
 
-#save_cmake_vars()
+#save_cmake_vars__cur_diff_prev()
 # Sanity check. As Clang does not expose e.g. `CLANG_VERSION_MAJOR` through
 # AddClang.cmake, we have to use LLVM_VERSION_MAJOR instead.
 # TODO: Revisit when next version is released.
