@@ -10,6 +10,16 @@ if(NOT DEFINED gVarsFIdx)
     message(STATUS "初始化 gVarsFIdx=${gVarsFIdx}")
 endif()
 
+function(rm_cmake_vars_file )
+    file(GLOB _files "${_OutFPathPrefix}*")
+
+    foreach(_file ${_files})
+        file(REMOVE ${_file})
+    endforeach()
+    message("已删除文件们: ${_files}")
+
+endfunction()
+
 function(save_cmake_vars__cur_diff_prev _CMAKE_CURRENT_LIST_LINE)
 #    message(STATUS "函数进入 gVarsFIdx=${gVarsFIdx}")
     MATH(EXPR _prevVarsFIdx "${gVarsFIdx} - 1")
