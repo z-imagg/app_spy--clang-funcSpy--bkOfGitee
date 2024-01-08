@@ -22,7 +22,7 @@ endfunction()
 
 function(save_cmake_vars__cur_diff_prev __CMakeScriptF _CMAKE_CURRENT_LIST_LINE)
     string(REPLACE ","  "" _CMakeScriptF ${__CMakeScriptF})
-    message(STATUS "入参：_CMakeScriptF=【${_CMakeScriptF}】，CMAKE_CURRENT_LIST_LINE=【${CMAKE_CURRENT_LIST_LINE}】")
+#    message(STATUS "入参：_CMakeScriptF=【${_CMakeScriptF}】，CMAKE_CURRENT_LIST_LINE=【${CMAKE_CURRENT_LIST_LINE}】")
 #    message(STATUS "函数进入 gVarsFIdx=${gVarsFIdx}")
     MATH(EXPR _prevVarsFIdx "${gVarsFIdx} - 1")
 #    set(_prevOutFPath "${_OutFPathPrefix}${_prevVarsFIdx}")
