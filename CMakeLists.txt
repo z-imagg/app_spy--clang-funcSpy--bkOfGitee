@@ -1,32 +1,33 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-include("/bal/clang-add-funcIdAsm/libfmt.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/libfmt.cmake")
 
 #===============================================================================
 # 0. GET CLANG INSTALLATION DIR
 #修改默认编译器
 set(LLVM_HOME "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
 set(CMAKE_VERBOSE_MAKEFILE ON)
-include("/bal/clang-add-funcIdAsm/libncurses.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/libncurses.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/ClAsCxx.cmake")
 set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 #编译器还是使用自带的gcc, 否则 调试时 没有 libstdc++  的调试信息，导致std::string在gdb中不显示，参考：https://stackoverflow.com/questions/58356385/python-exception-class-gdb-error-there-is-no-member-named-m-dataplus-whe/58356946#58356946
 #   gdb显示std::string时报错: There is no member named _M_dataplus。 因此gdb不显示std::string的值.
 #set(CMAKE_C_COMPILER "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/bin/clang")
 #set(CMAKE_CXX_COMPILER "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/bin/clang++")
-set(LLVM_DIR "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
+#set(LLVM_DIR "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
 #set(xxx "")
 
 project(clangPlugin-FuncStartInsertAsm)
 #project放到默认编译器定义之后，否则cmake会死循环
 
 
-set(CT_LLVM_INCLUDE_DIR "${LLVM_HOME}/include/llvm")
+#set(CT_LLVM_INCLUDE_DIR "${LLVM_HOME}/include/llvm")
 
 
 # http://llvm.org/docs/CMake.html#embedding-llvm-in-your-project
-list(APPEND CMAKE_PREFIX_PATH "${LLVM_HOME}/lib/cmake/clang/")
+#list(APPEND CMAKE_PREFIX_PATH "${LLVM_HOME}/lib/cmake/clang/")
 
-find_package(Clang REQUIRED CONFIG)
+#find_package(Clang REQUIRED CONFIG)
 
 # Sanity check. As Clang does not expose e.g. `CLANG_VERSION_MAJOR` through
 # AddClang.cmake, we have to use LLVM_VERSION_MAJOR instead.
@@ -35,16 +36,16 @@ if(NOT "15" VERSION_EQUAL "${LLVM_VERSION_MAJOR}")
   message(FATAL_ERROR "Found LLVM ${LLVM_VERSION_MAJOR}, but need LLVM 15")
 endif()
 
-message(STATUS "Found Clang ${LLVM_PACKAGE_VERSION}")
-message(STATUS "Using ClangConfig.cmake in: ${LLVM_HOME}")
+#message(STATUS "Found Clang ${LLVM_PACKAGE_VERSION}")
+#message(STATUS "Using ClangConfig.cmake in: ${LLVM_HOME}")
 
-message("CLANG STATUS:
-  Includes (clang)    ${CLANG_INCLUDE_DIRS}
-  Includes (llvm)     ${LLVM_INCLUDE_DIRS}"
-)
+#message("CLANG STATUS:
+#  Includes (clang)    ${CLANG_INCLUDE_DIRS}
+#  Includes (llvm)     ${LLVM_INCLUDE_DIRS}"
+#)
 
 # Set the LLVM and Clang header and library paths
-include_directories(SYSTEM "${LLVM_INCLUDE_DIRS};${CLANG_INCLUDE_DIRS}")
+#include_directories(SYSTEM "${LLVM_INCLUDE_DIRS};${CLANG_INCLUDE_DIRS}")
 
 #===============================================================================
 # 3. clangPlugin-FuncStartInsertAsm BUILD CONFIGURATION

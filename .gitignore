@@ -67,3 +67,5 @@ SrcFileFuncIdGenService/py_util
 *.db-wal
 
 CMakeFiles/
+
+.idea0/
