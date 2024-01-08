@@ -26,8 +26,8 @@ using namespace clang;
 #define InstrType1 (1)
 #define EMPTY_STR ""
 
-//无用 and指令, 其 吃掉第一个 gcc内联汇编输入操作数 即 %0
-#define InstrEmpty_EatInOperand_1st "\"and %0,%%edi \\n\\t\" "
+//无用 and指令,
+#define InstrEmpty "\"and $0,%%edi \\n\\t\" "
 
 //储存函数地址的 or指令, 其 吃掉第一个 gcc内联汇编输入操作数 即 %0
 #define InstrStoreFnAddr_InOperand_1st "\"or %0,%%edi \\n\\t\" "

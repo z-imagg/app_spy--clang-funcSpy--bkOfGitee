@@ -59,7 +59,7 @@ const std::string _TypeLs[]={
 _TypeX(0),
 _TypeX(1) }; const int _TypeCnt=_TypeLs->size();
 const std::string InstrLs_FnAddr_InOperand_1st[]={
-InstrEmpty_EatInOperand_1st,
+InstrEmpty,
 InstrStoreFnAddr_InOperand_1st };  const int InstrCnt=InstrLs_FnAddr_InOperand_1st->size();
 const std::string InOperandLs_FnAddr__1FmtPlace[]={
 Comment_Eat_1FmtPlace,
