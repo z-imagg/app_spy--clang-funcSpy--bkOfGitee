@@ -82,15 +82,15 @@ std::string inOperand_1FmtPlace= InOperandLs_FnAddr__1FmtPlace[type];
 /* 参考gcc内敛汇编:  https://www.cnblogs.com/sky-heaven/p/7561625.html */
 std::string  cStr_inserted=
 fmt::format(
-"__asm__  __volatile__ ("
-"\"jmp 0f \\n\\t\" "     //0f 即 "0 forward" 即 向前跳转到标号0 (备注 向前 即 向下)  。  参考xv6中文件kinit1_func_id__local_label__demo.png
-"\"or $0xFFFFFFFF,%%edi \\n\\t\" "
-"\"or ${},%%edi \\n\\t\" " //函数id
+"__asm__  __volatile__ (  \n"
+"\"jmp 0f \\n\\t\"  \n"     //0f 即 "0 forward" 即 向前跳转到标号0 (备注 向前 即 向下)  。  参考xv6中文件kinit1_func_id__local_label__demo.png
+"\"or $0xFFFFFFFF,%%edi \\n\\t\"  \n"
+"\"or ${},%%edi \\n\\t\"  \n" //函数id
 ""+_type+""
 ""+instrFnAddr_inOperand_1st+""  //第三条指令 容纳 "函数地址"(函数地址相对此指令地址的偏移量) 在指令的操作数中
-"\"0: \\n\\t\" "        //标号0 即 内敛汇编紧挨着的原有的c代码
-":"     //output operands 即 输出操作数
-": "+inOperand_1FmtPlace+"" //input  operands 即 输入操作数
+"\"0: \\n\\t\"  \n"        //标号0 即 内敛汇编紧挨着的原有的c代码
+":  \n"     //output operands 即 输出操作数
+": "+inOperand_1FmtPlace+"  \n" //input  operands 即 输入操作数
 // 不需要 list of clobbered registers
 "); /* {} non_static_non_inline_func*/", //注释
 funcLocId.abs_location_id, //函数id
