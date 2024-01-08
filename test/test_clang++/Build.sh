@@ -35,4 +35,8 @@ End of search list.
 
 #编译正常
 
+#正常运行，如下:
+./a.out
+#你好，c++！
+
 
