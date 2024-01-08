@@ -55,17 +55,28 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 bool CTkVst::insertAfter_X__funcEnter(bool funcIsStatic,bool funcIsInline,LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
     //用funcEnterLocIdSet的尺寸作为LocationId的计数器
   //region 构造插入语句
-const std::string EMPTY_STR="";
+const std::string _TypeLs[]={
+_TypeX(0),
+_TypeX(1) }; const int _TypeCnt=_TypeLs->size();
+const std::string InstrLs_FnAddr_InOperand_1st[]={
+InstrEmpty_EatInOperand_1st,
+InstrStoreFnAddr_InOperand_1st };  const int InstrCnt=InstrLs_FnAddr_InOperand_1st->size();
+const std::string InOperandLs_FnAddr__1FmtPlace[]={
+Comment_Eat_1FmtPlace,
+Immediate_1FmtPlace  };  const int InputOperandCnt=InOperandLs_FnAddr__1FmtPlace->size();
+std::string _type;
 
 bool fnStaticOrInline=(funcIsStatic || funcIsInline);
-std::string instruction3=fnStaticOrInline?EMPTY_STR:"\"or %0,%%edi \\n\\t\" ";
-// 若 函数是static或inline则 EMPTY_STR 即 有第三条指令，否则 无 第三条指令
+const int type=fnStaticOrInline?InstrTypeEmpty:InstrType1;
+assert (type < _TypeCnt);
+_type=_TypeLs[type];
 
-std::string inputOperandS_atAsm=
-fnStaticOrInline?EMPTY_STR:fmt::format(" \"i\"( {} ) ",funcLocId.funcName );
-// 若 函数是static或inline则 EMPTY_STR 即 :
+
+std::string instrFnAddr_inOperand_1st= InstrLs_FnAddr_InOperand_1st[type];
+std::string inOperand_1FmtPlace= InOperandLs_FnAddr__1FmtPlace[type];
+// 若 函数是static或inline则 空注释（即CommentEatLibFmt1） 即 :
 //    无法 以 "i"(func)  引用 static函数或inline函数 （若引用，则链接器报错），因此   不插入 "i"(func)
-//否则:
+//否则 插入一条 or:
 //    "i"(func)  能正常引用 无static 且 无 inline 修饰 的 函数，因此 可以插入 "i"(func)
 
 /* 参考gcc内敛汇编:  https://www.cnblogs.com/sky-heaven/p/7561625.html */
@@ -75,14 +86,15 @@ fmt::format(
 "\"jmp 0f \\n\\t\" "     //0f 即 "0 forward" 即 向前跳转到标号0 (备注 向前 即 向下)  。  参考xv6中文件kinit1_func_id__local_label__demo.png
 "\"or $0xFFFFFFFF,%%edi \\n\\t\" "
 "\"or ${},%%edi \\n\\t\" " //函数id
-"" + instruction3 + ""  //第三条指令 容纳 "函数地址"(函数地址相对此指令地址的偏移量) 在指令的操作数中
+""+_type+""
+""+instrFnAddr_inOperand_1st+""  //第三条指令 容纳 "函数地址"(函数地址相对此指令地址的偏移量) 在指令的操作数中
 "\"0: \\n\\t\" "        //标号0 即 内敛汇编紧挨着的原有的c代码
 ":"     //output operands 即 输出操作数
-": {} " //input  operands 即 输入操作数
+": "+inOperand_1FmtPlace+"" //input  operands 即 输入操作数
 // 不需要 list of clobbered registers
 "); /* {} non_static_non_inline_func*/", //注释
 funcLocId.abs_location_id, //函数id
-inputOperandS_atAsm,       //输入操作数, 内放 作为 函数地址 的 函数名
+funcLocId.funcName,       //输入操作数, 内放 作为 函数地址 的 函数名
 funcLocId.to_string()      //注释
   );
 

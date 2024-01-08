@@ -21,6 +21,23 @@ using namespace clang;
 //-----------------------------------------------------------------------------
 // RecursiveASTVisitor
 //-----------------------------------------------------------------------------
+#define _TypeX(x) "\"mov " #x ",%%edi \\n\\t\""
+#define InstrTypeEmpty (0)
+#define InstrType1 (1)
+#define EMPTY_STR ""
+
+//无用 and指令, 其 吃掉第一个 gcc内联汇编输入操作数 即 %0
+#define InstrEmpty_EatInOperand_1st "\"and %0,%%edi \\n\\t\" "
+
+//储存函数地址的 or指令, 其 吃掉第一个 gcc内联汇编输入操作数 即 %0
+#define InstrStoreFnAddr_InOperand_1st "\"or %0,%%edi \\n\\t\" "
+
+//用注释吃掉一个libfmt::format的位置参数 即 一个 '{}'
+#define Comment_Eat_1FmtPlace "\"\"  /* {} */ "
+
+//用注释吃掉一个libfmt::format的位置参数 即 一个 '{}'
+#define Immediate_1FmtPlace " \"i\"( {} ) "
+
 class CTkVst
         : public RecursiveASTVisitor<CTkVst> {
 public:
