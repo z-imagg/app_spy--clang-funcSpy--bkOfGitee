@@ -8,7 +8,6 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/libfmt.cmake")
 set(LLVM_HOME "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 include("${CMAKE_CURRENT_SOURCE_DIR}/libncurses.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/ClAsCxx.cmake")
 set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 #编译器还是使用自带的gcc, 否则 调试时 没有 libstdc++  的调试信息，导致std::string在gdb中不显示，参考：https://stackoverflow.com/questions/58356385/python-exception-class-gdb-error-there-is-no-member-named-m-dataplus-whe/58356946#58356946
 #   gdb显示std::string时报错: There is no member named _M_dataplus。 因此gdb不显示std::string的值.
@@ -19,6 +18,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 
 project(clangPlugin-FuncStartInsertAsm)
 #project放到默认编译器定义之后，否则cmake会死循环
+
+#确保project在find_package之前, 否则 有警告："ADD_LIBRARY called with SHARED option but the target platform does not". 备注：ClAsCxx.cmake内有find_package。
+include("${CMAKE_CURRENT_SOURCE_DIR}/ClAsCxx.cmake")
 
 
 #set(CT_LLVM_INCLUDE_DIR "${LLVM_HOME}/include/llvm")
