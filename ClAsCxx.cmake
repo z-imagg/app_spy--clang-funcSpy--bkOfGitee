@@ -1,5 +1,6 @@
 #测试本脚本的命令: rm -fr ./build;  cmake -C ClAsCxx.cmake  -B ./build/ ; gedit $(ls /tmp/cmkVs__diff*)
-cmake_minimum_required(VERSION 3.13.4)
+#cmake_minimum_required(VERSION 3.13.4)
+
 string(REPLACE ","  "" _CMakeScriptCurF ${CMAKE_CURRENT_LIST_FILE})
 message(STATUS "_CMakeScriptCurF=【${_CMakeScriptCurF}】，CMAKE_CURRENT_LIST_LINE=【${CMAKE_CURRENT_LIST_LINE}】")
 set(CMAKE_VERBOSE_MAKEFILE ON)
