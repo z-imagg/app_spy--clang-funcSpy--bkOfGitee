@@ -26,6 +26,15 @@ endif()
 
 #使用c++17
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "")
+#只加上一行 编译命令中 无"-std=..."
+#加上以下两行 编译命令中 才会出现"-std=gnu++17"
+set(CMAKE_CXX_EXTENSIONS ON)
+add_compile_options(-std=gnu++17)
+#Util.cpp需要c++17,否则其编译会报错:error: no member named 'filesystem' in namespace 'std'
+
+#打印clang的繁琐日志 供调试
+#add_compile_options(-v)
+
 
 #默认构建调试版本
 if(NOT CMAKE_BUILD_TYPE)
