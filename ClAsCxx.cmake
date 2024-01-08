@@ -62,7 +62,7 @@ add_definitions(${LLVM_DEFINITIONS})
 #save_cmake_vars__cur_diff_prev(${_CMakeScriptCurF}, ${CMAKE_CURRENT_LIST_LINE})
 set(CMAKE_C_COMPILER "${LLVM_HOME}/bin/clang")
 set(CMAKE_CXX_COMPILER "${LLVM_HOME}/bin/clang++")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 #save_cmake_vars__cur_diff_prev(${_CMakeScriptCurF}, ${CMAKE_CURRENT_LIST_LINE})
 #set(CMAKE_CXX_LINK_EXECUTABLE "${LLVM_HOME}/bin/ld.lld" )#CMAKE_CXX_LINK_EXECUTABLE
 #set(CMAKE_LINKER ${LLVM_HOME}/bin/lld)
