@@ -197,6 +197,9 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
   bool funcIsStatic = funcDecl->isStatic();
   bool funcIsInline = Util::funcIsInline(funcDecl);
 
+  std::string verboseLogMsg=fmt::format("开发查问题日志funcIsStatic_funcIsInline:【{}:{}:{};funcQualifiedName】,funcIsStatic={},funcIsInline={}\n",filePath,funcBodyLBraceLocId.line,funcBodyLBraceLocId.column,funcIsStatic,funcIsInline);
+  std::cout<<verboseLogMsg;
+
   return this->_Traverse_Func(//其中的insertAfter_X__funcEnter内Vst.funcEnterLocIdSet、funcLocId.locationId相互配合使得funcLocId.locationId作为funcLocId.srcFileId局部下的自增数
       funcIsStatic,funcIsInline,
       funcReturnType,
