@@ -7,3 +7,7 @@ static int zlib_inflateInit2(int strm, int windowBits)
 {
     return 0;
 }
+
+int main(){
+    return 0;
+}
