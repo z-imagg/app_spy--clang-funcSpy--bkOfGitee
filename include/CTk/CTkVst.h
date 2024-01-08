@@ -33,7 +33,7 @@ using namespace clang;
 #define InstrStoreFnAddr_InOperand_1st "\"or %0,%%edi \\n\\t\"   \n"
 
 //用注释吃掉一个libfmt::format的位置参数 即 一个 '{}'
-#define Comment_Eat_1FmtPlace "\"\"  /* {} */ "
+#define Comment_Eat_1FmtPlace "  /* {} */ "
 
 //用注释吃掉一个libfmt::format的位置参数 即 一个 '{}'
 #define Immediate_1FmtPlace " \"i\"( {} ) "
