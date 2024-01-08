@@ -21,6 +21,27 @@
 using namespace llvm;
 using namespace clang;
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <filesystem>
+
+bool Util::readFnEntGccAsmCppTemplate(std::string fPath,std::string& textTemplate) {
+    std::string textRaw;
+    assert(Util::readTextFile(fPath,textRaw));
+}
+bool Util::readTextFile(std::string fPath,std::string& text) {
+//    std::string text;
+    if (std::filesystem::exists(fPath)) {
+        std::ifstream inputFile(fPath);
+        text.assign((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+        return true;
+    }
+
+    // 在这里可以使用变量 text 做其他操作
+    return false;
+}
+
 void Util::printCwd() {
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) != nullptr) {
@@ -29,7 +50,6 @@ void Util::printCwd() {
         std::cerr << "failed_to_get_current_work_directory" << std::endl;
     }
 }
-
 bool Util::endsWith(const std::string& str, const std::string& suffix) {
   if (str.length() < suffix.length()) {
     return false;

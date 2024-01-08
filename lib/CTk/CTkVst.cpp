@@ -55,6 +55,10 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 bool CTkVst::insertAfter_X__funcEnter(bool funcIsStatic,bool funcIsInline,LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
     //用funcEnterLocIdSet的尺寸作为LocationId的计数器
   //region 构造插入语句
+//  std::filesystem::
+std::string templateText;
+assert(Util::readTextFile("/bal/clang-add-funcIdAsm/lib/CTk/fnEnt.gcc_asm.cpp.template",templateText));
+
 const std::string _TypeLs[]={
 _TypeX(0),
 _TypeX(1) }; const int _TypeCnt=_TypeLs->size();
