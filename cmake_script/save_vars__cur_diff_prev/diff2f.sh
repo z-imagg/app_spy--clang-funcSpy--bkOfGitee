@@ -16,19 +16,28 @@ exitCode=$3
 }
 
 
-# me.sh  ${_OutFPathPrefix} ${_prevVarsFIdx} ${_curVarsFIdx}
-#若参数少于3个，则退出（退出码为22）
-[ $# -lt 3 ] && exit 22
+# me.sh  ${_OutFPathPrefix} ${_prevVarsFIdx} ${_curVarsFIdx}  $_CMAKE_CURRENT_LIST_FILE0 $_CMAKE_CURRENT_LIST_LINE
+#若参数少于5个，则退出（退出码为22）
+[ $# -lt 5 ] && exit 22
 
 _OutFPathPrefix=$1
 _prevVarsFIdx=$2
 _curVarsFIdx=$3
+_CMAKE_CURRENT_LIST_FILE0=$4
+_CMAKE_CURRENT_LIST_LINE=$5
+
+_CMAKE_CURRENT_LIST_FILE0Base=$(basename $_CMAKE_CURRENT_LIST_FILE0)
+
 _prevOutFPath="${_OutFPathPrefix}${_prevVarsFIdx}"
 _curOutFPath="${_OutFPathPrefix}${_curVarsFIdx}"
-diffResultF="${_OutFPathPrefix}diff_${_prevVarsFIdx}_${_curVarsFIdx}"
+#差异结果文件名中存放完整的 调用者信息 即 cmake脚本文件名:在该cmake脚本文件的行号
+diffResultF="${_OutFPathPrefix}_diff_${_prevVarsFIdx}_${_curVarsFIdx}_Ln_${_CMAKE_CURRENT_LIST_FILE0Base}_${_CMAKE_CURRENT_LIST_LINE}"
 
 ifFileNotExistedThenExit ${_prevOutFPath} "上次输出文件不存在" 33
 ifFileNotExistedThenExit ${_curOutFPath} "本次输出文件不存在" 44
+
+#差异结果文件中存放完整的 调用者信息 即 cmake脚本文件路径:在该cmake脚本文件的行号
+#echo "#${_CMAKE_CURRENT_LIST_FILE0}:${_CMAKE_CURRENT_LIST_LINE}"> $diffResultF
 
 #完整的差异，不要加'--side-by-side', 否则行被截断
 diff  --suppress-common-lines ${_prevOutFPath} ${_curOutFPath} > $diffResultF

@@ -1,5 +1,5 @@
 set(_Text_gVarsFIdxDesc "变量描述: 'cmake CACHE (INTERNAL)' 即 cmake全局(同级)变量")
-set(_OutFPathPrefix "/tmp/cmake_vars_")
+set(_OutFPathPrefix "/tmp/cmkVs_")
 
 #如果从没有定义过全局变量gVarsFIdx 则定义该全局变量
 if(NOT DEFINED gVarsFIdx)
@@ -20,7 +20,9 @@ function(rm_cmake_vars_file )
 
 endfunction()
 
-function(save_cmake_vars__cur_diff_prev _CMAKE_CURRENT_LIST_FILE _CMAKE_CURRENT_LIST_LINE)
+function(save_cmake_vars__cur_diff_prev __CMakeScriptF _CMAKE_CURRENT_LIST_LINE)
+    string(REPLACE ","  "" _CMakeScriptF ${__CMakeScriptF})
+    message(STATUS "入参：_CMakeScriptF=【${_CMakeScriptF}】，CMAKE_CURRENT_LIST_LINE=【${CMAKE_CURRENT_LIST_LINE}】")
 #    message(STATUS "函数进入 gVarsFIdx=${gVarsFIdx}")
     MATH(EXPR _prevVarsFIdx "${gVarsFIdx} - 1")
 #    set(_prevOutFPath "${_OutFPathPrefix}${_prevVarsFIdx}")
@@ -51,17 +53,17 @@ function(save_cmake_vars__cur_diff_prev _CMAKE_CURRENT_LIST_FILE _CMAKE_CURRENT_
 #####
 # 执行 diff 命令
 execute_process(
-#        COMMAND   bash -x  ...
-        COMMAND   bash  /bal/clang-add-funcIdAsm/cmake_script/save_vars__cur_diff_prev/diff2f.sh ${_OutFPathPrefix} ${_prevVarsFIdx} ${_curVarsFIdx}
+#        COMMAND   bash -x  ...${x[0]}
+        COMMAND   bash  /bal/clang-add-funcIdAsm/cmake_script/save_vars__cur_diff_prev/diff2f.sh ${_OutFPathPrefix} ${_prevVarsFIdx} ${_curVarsFIdx} ${_CMakeScriptF} ${_CMAKE_CURRENT_LIST_LINE}
         RESULT_VARIABLE shExitCode
         OUTPUT_VARIABLE shStdOut
         ERROR_VARIABLE shStdErr
 )
 
 if ( shExitCode STREQUAL "0")
-    message(STATUS "【${_CMAKE_CURRENT_LIST_FILE}:${_CMAKE_CURRENT_LIST_LINE}】与上次变量们比较结果【${shStdOut}】")
+    message(STATUS "【${_CMakeScriptF}:${_CMAKE_CURRENT_LIST_LINE}】与上次变量们比较结果【${shStdOut}】")
 else()
-    message(STATUS "【${_CMAKE_CURRENT_LIST_FILE}:${_CMAKE_CURRENT_LIST_LINE}】与上次变量们比较，报错，退出码：【${shExitCode}】， 标准输出: 【${shStdOut}】， 错误输出:【${shStdErr}】")
+    message(STATUS "【${_CMakeScriptF}:${_CMAKE_CURRENT_LIST_LINE}】与上次变量们比较，报错，退出码：【${shExitCode}】， 标准输出: 【${shStdOut}】， 错误输出:【${shStdErr}】")
 endif()
 #message(STATUS "函数出来 gVarsFIdx=${gVarsFIdx}")
 

@@ -1,4 +1,6 @@
+#测试本脚本的命令: rm -fr ./build;  cmake -C CMakeLists.txt  -B ./build/ ; gedit $(ls /tmp/cmkVs__diff*)
 cmake_minimum_required(VERSION 3.13.4)
+string(REPLACE ","  "" _CMakeScriptCurF ${CMAKE_CURRENT_LIST_FILE})
 include("/bal/clang-add-funcIdAsm/cmake_script/save_vars__cur_diff_prev/save_vars__cur_diff_prev.cmake")
 rm_cmake_vars_file()
 save_cmake_vars__cur_diff_prev(${CMAKE_CURRENT_LIST_FILE}, ${CMAKE_CURRENT_LIST_LINE})
