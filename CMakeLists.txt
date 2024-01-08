@@ -5,7 +5,7 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/libfmt.cmake")
 #===============================================================================
 # 0. GET CLANG INSTALLATION DIR
 #修改默认编译器
-set(LLVM_HOME "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
+#set(LLVM_HOME "/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 include("${CMAKE_CURRENT_SOURCE_DIR}/libncurses.cmake")
 set(CMAKE_EXPORT_COMPILE_COMMANDS True)
