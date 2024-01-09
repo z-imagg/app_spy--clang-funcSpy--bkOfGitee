@@ -21,26 +21,6 @@ using namespace clang;
 //-----------------------------------------------------------------------------
 // RecursiveASTVisitor
 //-----------------------------------------------------------------------------
-#define _TypeX(x) "\"or " #x ",%%edi \\n\\t\"   \n"
-#define __OR_OPERAND_START 1025
-//x从1025开始 是为了确保 _TypeX(x) 中的or指令的操作数始终占据6个字节
-#define InstrTypeEmpty (__OR_OPERAND_START+0)
-#define InstrType1 (__OR_OPERAND_START+1)
-#define EMPTY_STR ""
-
-//无用 and指令,
-#define InstrEmpty "\"nop \\n\\t\"    \"nop \\n\\t\"    \"nop \\n\\t\"  \"nop \\n\\t\"  \"nop \\n\\t\"  \"nop \\n\\t\"   \n"
-//6 == 指令InstrEmpty占的字节数目 == 指令InstrStoreFnAddr_InOperand_1st 的字节数目
-//   因此  指令InstrStoreFnAddr_InOperand_1st 的操作数 必须大于1024
-//储存函数地址的 or指令, 其 吃掉第一个 gcc内联汇编输入操作数 即 %0
-#define InstrStoreFnAddr_InOperand_1st "\"or %0,%%edi \\n\\t\"   \n"
-
-//用注释吃掉一个libfmt::format的位置参数 即 一个 '{}'
-#define Comment_Eat_1FmtPlace "  /* {} */ "
-
-//用注释吃掉一个libfmt::format的位置参数 即 一个 '{}'
-#define Immediate_1FmtPlace " \"i\"( 1025+ ((int*){}) ) "
-
 class CTkVst
         : public RecursiveASTVisitor<CTkVst> {
 public:
