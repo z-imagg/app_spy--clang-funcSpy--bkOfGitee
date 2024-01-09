@@ -32,6 +32,8 @@ using namespace clang;
 
 class Util {
 public:
+    static bool readFnEntGccAsmCppTemplate(std::string fPath,std::string& text);
+    static bool readTextFile(std::string fPath,std::string& text);
     static void printCwd();
     static bool endsWith(const std::string& str, const std::string& suffix);
 
@@ -59,6 +61,13 @@ public:
      * @return
      */
     static bool funcIsDefault(FunctionDecl *funcDecl);
+    /**
+     * inline函数举例:
+     * TODO
+     * @param funcDecl
+     * @return
+     */
+    static bool funcIsInline(FunctionDecl *funcDecl);
     /**
      * default构造函数体举例:
      * 'User::User( ) = default;'

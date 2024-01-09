@@ -52,15 +52,67 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 
 
 
-bool CTkVst::insertAfter_X__funcEnter(LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
+bool CTkVst::insertAfter_X__funcEnter(bool funcIsStatic,bool funcIsInline,LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
     //用funcEnterLocIdSet的尺寸作为LocationId的计数器
   //region 构造插入语句
-  std::string cStr_inserted=fmt::format(
-          "__asm__  __volatile__ (   \"jmp 0f \\n\\t\"    \"or $0xFFFFFFFF,%%edi \\n\\t\"    \"or ${},%%edi \\n\\t\"    \"0: \\n\\t\" : : ); /*{}*/",
-          // "jmp 0f" : 0指后面的标号 "0:", f指的是forward即向前跳(而不是向后跳转)
-          //参考xv6中文件kinit1_func_id__local_label__demo.png
-          funcLocId.abs_location_id, funcLocId.to_string()
+//  std::filesystem::
+std::string templateText;
+assert(Util::readTextFile("/bal/clang-add-funcIdAsm/lib/CTk/fnEnt.gcc_asm.cpp.template",templateText));
+
+const std::string _TypeLs[]={
+_TypeX(0),
+_TypeX(1) }; const int _TypeCnt=_TypeLs->size();
+const std::string InstrLs_FnAddr_InOperand_1st[]={
+InstrEmpty,
+InstrStoreFnAddr_InOperand_1st };  const int InstrCnt=InstrLs_FnAddr_InOperand_1st->size();
+const std::string InOperandLs_FnAddr__1FmtPlace[]={
+Comment_Eat_1FmtPlace,
+Immediate_1FmtPlace  };  const int InputOperandCnt=InOperandLs_FnAddr__1FmtPlace->size();
+std::string _type;
+
+bool fnStaticOrInline=(funcIsStatic || funcIsInline);
+const int type=fnStaticOrInline?InstrTypeEmpty:InstrType1;
+assert (type < _TypeCnt);
+_type=_TypeLs[type];
+
+
+std::string instrFnAddr_inOperand_1st= InstrLs_FnAddr_InOperand_1st[type];
+std::string inOperand_1FmtPlace= InOperandLs_FnAddr__1FmtPlace[type];
+// 若 函数是static或inline则 空注释（即CommentEatLibFmt1） 即 :
+//    无法 以 "i"(func)  引用 static函数或inline函数 （若引用，则链接器报错），因此   不插入 "i"(func)
+//否则 插入一条 or:
+//    "i"(func)  能正常引用 无static 且 无 inline 修饰 的 函数，因此 可以插入 "i"(func)
+
+/* 参考gcc内敛汇编:  https://www.cnblogs.com/sky-heaven/p/7561625.html */
+std::string  cStr_inserted=
+fmt::format(
+"__asm__  __volatile__ (  \n"
+"\"jmp 0f \\n\\t\"  \n"     //0f 即 "0 forward" 即 向前跳转到标号0 (备注 向前 即 向下)  。  参考xv6中文件kinit1_func_id__local_label__demo.png
+"\"or $0xFFFFFFFF,%%edi \\n\\t\"  \n"
+"\"or ${},%%edi \\n\\t\"  \n" //函数id
+""+_type+""
+""+instrFnAddr_inOperand_1st+""  //第三条指令 容纳 "函数地址"(函数地址相对此指令地址的偏移量) 在指令的操作数中
+"\"0: \\n\\t\"  \n"        //标号0 即 内敛汇编紧挨着的原有的c代码
+":  \n"     //output operands 即 输出操作数
+": "+inOperand_1FmtPlace+"  \n" //input  operands 即 输入操作数
+// 不需要 list of clobbered registers
+"); /* {} non_static_non_inline_func*/", //注释
+funcLocId.abs_location_id, //函数id
+funcLocId.funcName,       //输入操作数, 内放 作为 函数地址 的 函数名
+funcLocId.to_string()      //注释
   );
+
+  /**这段gcc内敛汇编大约是如下的样子：
+__asm__  __volatile__ (
+"jmp 0f \n\t"               //0f 表示 0 forward 即 向前跳转到标号0
+"or $0xFFFFFFFF,%%edi \n\t" //$0xFFFFFFFF 表示 常数 0xFFFFFFFF
+"or $257,%%edi \n\t"        //$257 是 常数257 表示 函数id
+"or %0,%%edi \n\t"          //%0 指代 func01 表示 函数名
+"0: \n\t"                  //0: 表示 标号0
+:                          //输出 ，无输出
+: "i"( func01 )           //输入，m 即 memory
+);
+   */
   llvm::StringRef strRef(cStr_inserted);
   //endregion
 
@@ -108,6 +160,7 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
   if(!hasBody){
     return false;
   }
+
   //跳过 constexpr
   bool _isConstexpr = funcDecl->isConstexpr();
   if(_isConstexpr){
@@ -145,7 +198,14 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
   //获取返回类型
   const QualType funcReturnType = funcDecl->getReturnType();
 
+  bool funcIsStatic = funcDecl->isStatic();
+  bool funcIsInline = Util::funcIsInline(funcDecl);
+
+  std::string verboseLogMsg=fmt::format("开发查问题日志funcIsStatic_funcIsInline:【{}:{}:{};funcQualifiedName】,funcIsStatic={},funcIsInline={}\n",filePath,funcBodyLBraceLocId.line,funcBodyLBraceLocId.column,funcIsStatic,funcIsInline);
+  std::cout<<verboseLogMsg;
+
   return this->_Traverse_Func(//其中的insertAfter_X__funcEnter内Vst.funcEnterLocIdSet、funcLocId.locationId相互配合使得funcLocId.locationId作为funcLocId.srcFileId局部下的自增数
+      funcIsStatic,funcIsInline,
       funcReturnType,
       false,
       endStmtOfFuncBody,
@@ -163,7 +223,8 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
 
 
 bool CTkVst::_Traverse_Func(
-//  std::function<FuncDesc( )> funcDescGetter,
+  bool funcIsStatic,
+  bool funcIsInline,
   QualType funcReturnType,
   bool isaCXXConstructorDecl,
   Stmt *endStmtOfFuncBody,
@@ -186,7 +247,7 @@ bool CTkVst::_Traverse_Func(
 
 
         //若 本函数还 没有 插入 函数进入语句，才插入。
-        insertAfter_X__funcEnter(funcBodyLBraceLocId, funcBodyLBraceLoc);
+        insertAfter_X__funcEnter(funcIsStatic,funcIsInline,funcBodyLBraceLocId, funcBodyLBraceLoc);
       }
 //    }
     //endregion

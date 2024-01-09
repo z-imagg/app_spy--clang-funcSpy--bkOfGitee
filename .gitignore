@@ -59,3 +59,13 @@ SrcFileFuncIdGenService/fn.db-shm
 SrcFileFuncIdGenService/fn.db-wal
 
 SrcFileFuncIdGenService/py_util
+
+*.db
+
+*.db-shm
+
+*.db-wal
+
+CMakeFiles/
+
+.idea0/
