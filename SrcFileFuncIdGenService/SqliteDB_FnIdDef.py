@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from peewee import *
+import peewee
 
 from py_util.Util import IAmNotMain, initSqliteDb, closeSqliteDb, SqliteBaseEntity
 
@@ -10,12 +11,23 @@ from py_util.Util import IAmNotMain, initSqliteDb, closeSqliteDb, SqliteBaseEnti
 
 
 
-class SrcFile(SqliteBaseEntity):
+fn_db_name:str="fn"
+def make_table_name__fn(model_class:peewee.ModelBase):
+    tbl_name:str=f't__{fn_db_name}__{model_class.__name__}'
+    print(f"fn表名:{tbl_name}")
+    return   tbl_name
+
+class SqliteBaseEntity_Fn(SqliteBaseEntity):
+    class Meta:
+        table_function = make_table_name__fn
+
+
+class SrcFile(SqliteBaseEntity_Fn):
     fId = IntegerField(primary_key=True, unique=True, constraints=[SQL('AUTOINCREMENT')])
     sF= CharField()
-    class Meta: pass
+    
 
-class Func(SqliteBaseEntity):
+class Func(SqliteBaseEntity_Fn):
     #sqlite的列类型是动态类型（列类型由插入的值类型决定），参考: https://www.cnblogs.com/qiupiaohujie/p/11981732.html
     fnAbsLctId = IntegerField(primary_key=True, unique=True, constraints=[SQL('AUTOINCREMENT')])
     fId = IntegerField()#引用SrcFile.fId
