@@ -6,7 +6,7 @@ from typing import Dict, List, Callable, Tuple
 from pydantic import BaseModel, ConfigDict
 
 from Dto import  FFnIdRsp
-from SqliteDB_FnIdDef import SrcFile, Func, fn_closeDb, fn_initDb
+from SqliteDB_FnIdDef import CptrFn_SrcFile, CptrFn_Func, fn_closeDb, fn_initDb
 
 import threading
 
@@ -48,12 +48,12 @@ class WebSrv:#DB:DataBase:数据库. 数据其 是 全局唯一变量
             fPth=fPth.strip()
             assert not self.exited
             from peewee import SqliteDatabase
-            fnDb:SqliteDatabase=SrcFile._meta.database
+            fnDb:SqliteDatabase=CptrFn_SrcFile._meta.database
             with fnDb.atomic():
-                fl:SrcFile=SrcFile.get_or_create(sF=fPth)[0]
-                func:Func=Func.get_or_none(fId=fl.fId,line=fnLine,column=fnColumn)
+                fl:CptrFn_SrcFile=CptrFn_SrcFile.get_or_create(sF=fPth)[0]
+                func:CptrFn_Func=CptrFn_Func.get_or_none(fId=fl.fId,line=fnLine,column=fnColumn)
                 if func is None:
-                    func:Func=Func.create(fId=fl.fId,line=fnLine,column=fnColumn,funcQualifiedName=funcQualifiedName)
+                    func:CptrFn_Func=CptrFn_Func.create(fId=fl.fId,line=fnLine,column=fnColumn,funcQualifiedName=funcQualifiedName)
                 fnRsp:FFnIdRsp=FFnIdRsp(fId=func.fId, fnAbsLctId=func.fnAbsLctId)
                 return fnRsp
 
