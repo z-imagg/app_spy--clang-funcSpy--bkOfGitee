@@ -550,7 +550,7 @@ void Util::printExpr(ASTContext &Ctx, CompilerInstance &CI, std::string tag, std
   const char *stmtClassName = expr->getStmtClassName();
   Stmt::StmtClass stmtClass = expr->getStmtClass();
   ExprValueKind valueKind = expr->getValueKind();
-  ExprObjeClFnSpyind objeClFnSpyind = expr->getObjeClFnSpyind();
+  ExprObjectKind objectKind = expr->getObjectKind();
   FileID fileId = SM.getFileID(expr->getBeginLoc());
   SourceRange sourceRange=expr->getSourceRange();
 
@@ -561,7 +561,7 @@ void Util::printExpr(ASTContext &Ctx, CompilerInstance &CI, std::string tag, std
                    "getStmtClassName", stmtClassName,
                    "getStmtClass", stmtClass,
                    "getValueKind", valueKind,
-                   "getObjeClFnSpyind", objeClFnSpyind,
+                   "getObjectKind", objectKind,
                    printSourceText);
 
 }
