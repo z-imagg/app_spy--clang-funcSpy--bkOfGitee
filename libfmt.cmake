@@ -1,5 +1,5 @@
 
-#用法 include("/bal/clang-add-funcIdAsm/libfmt.cmake")
+#用法 include("/app_spy/clang-funcSpy/libfmt.cmake")
 
 set(LIBFMT_DIR "/bal/fmtlib-fmt/")
 #set(LIBFMT_STATIC /bal/fmt//include)

@@ -58,7 +58,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fuse-ld=${LLVM_HOME}/bin/ld.lld")
 
 
 MESSAGE("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
-#CMAKE_CURRENT_SOURCE_DIR: /bal/clang-add-funcIdAsm/tools
+#CMAKE_CURRENT_SOURCE_DIR: /app_spy/clang-funcSpy/tools
 
 
 

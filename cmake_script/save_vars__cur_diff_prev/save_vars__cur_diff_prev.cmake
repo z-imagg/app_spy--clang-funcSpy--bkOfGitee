@@ -54,7 +54,7 @@ function(save_cmake_vars__cur_diff_prev __CMakeScriptF _CMAKE_CURRENT_LIST_LINE)
 # 执行 diff 命令
 execute_process(
 #        COMMAND   bash -x  ...${x[0]}
-        COMMAND   bash  /bal/clang-add-funcIdAsm/cmake_script/save_vars__cur_diff_prev/diff2f.sh ${_OutFPathPrefix} ${_prevVarsFIdx} ${_curVarsFIdx} ${_CMakeScriptF} ${_CMAKE_CURRENT_LIST_LINE}
+        COMMAND   bash  /app_spy/clang-funcSpy/cmake_script/save_vars__cur_diff_prev/diff2f.sh ${_OutFPathPrefix} ${_prevVarsFIdx} ${_curVarsFIdx} ${_CMakeScriptF} ${_CMAKE_CURRENT_LIST_LINE}
         RESULT_VARIABLE shExitCode
         OUTPUT_VARIABLE shStdOut
         ERROR_VARIABLE shStdErr

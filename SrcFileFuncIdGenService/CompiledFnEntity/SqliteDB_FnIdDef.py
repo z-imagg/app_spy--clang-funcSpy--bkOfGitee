@@ -45,7 +45,7 @@ class CptrFn_Func(SqliteBaseEntity_CptrFn):
 FuncIdBegin:int=257
 def fn_initDb(moveDbFile:bool=True):
 
-    fnDb:SqliteDatabase=initSqliteDb('/bal/clang-add-funcIdAsm/SrcFileFuncIdGenService/fn.db',moveDbFile=moveDbFile)
+    fnDb:SqliteDatabase=initSqliteDb('/app_spy/clang-funcSpy/SrcFileFuncIdGenService/fn.db',moveDbFile=moveDbFile)
 
     CptrFn_SrcFile._meta.database = fnDb
     CptrFn_Func._meta.database = fnDb
