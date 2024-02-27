@@ -22,7 +22,7 @@ set(ClFnSpy_SOURCES
       )
 
 target_link_libraries(ClFnSpy
-        "${LIBFMT_STATIC}"   #/bal/fmt//build/libfmt.a
+        "${LIBFMT_STATIC}"   #/app_spy/fmt//build/libfmt.a
         )
 
     # Configure include directories for 'plugin'

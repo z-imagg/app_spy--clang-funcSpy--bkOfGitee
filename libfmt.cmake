@@ -1,10 +1,10 @@
 
 #用法 include("/app_spy/clang-funcSpy/libfmt.cmake")
 
-set(LIBFMT_DIR "/bal/fmtlib-fmt/")
-#set(LIBFMT_STATIC /bal/fmt//include)
+set(LIBFMT_DIR "/app_spy/fmtlib-fmt/")
+#set(LIBFMT_STATIC /app_spy/fmt//include)
 set(LIBFMT_INCLUDE "${LIBFMT_DIR}/include/")
-#set(LIBFMT_STATIC /bal/fmt//build/libfmt.a)
+#set(LIBFMT_STATIC /app_spy/fmt//build/libfmt.a)
 set(LIBFMT_STATIC "${LIBFMT_DIR}/build/libfmt.a")
 
 if (NOT EXISTS "${LIBFMT_STATIC}")

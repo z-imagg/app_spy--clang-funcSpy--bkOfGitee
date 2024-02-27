@@ -36,5 +36,5 @@ set(ClFnSpyAlone_SOURCES
     target_link_libraries(
     ClFnSpyAlone
       "clangTooling"
-   "${LIBFMT_STATIC}"  #/bal/fmt//build/libfmt.a
+   "${LIBFMT_STATIC}"  #/app_spy/fmt//build/libfmt.a
     )
