@@ -1,10 +1,10 @@
-#include "CTk/CTkVst.h"
+#include "ClFnSpy/ClFnSpyVst.h"
 
 #include "clang/AST/AST.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendPluginRegistry.h"
-#include "CTk/Util.h"
+#include "ClFnSpy/Util.h"
 
 using namespace clang;
 
@@ -15,19 +15,19 @@ using namespace clang;
 using namespace llvm;
 using namespace clang;
 //-----------------------------------------------------------------------------
-// CTkVst implementation
+// ClFnSpyVst implementation
 //-----------------------------------------------------------------------------
 /*
 
 
 利用  运行clang++的编译 带上本插件.so  实现 对源文件插入funcId生成的嵌入asm语句:
-/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/bin/clang++  -Xclang   -load -Xclang /pubx/analyze_code/clang-ctk/cmake-build-debug/lib/libClFnSpy.so  -Xclang   -add-plugin -Xclang  CTk  -c /pubx/analyze_code/clang-ctk/funcIdBase/test_main.cpp
+/app/llvm_release_home/clang+llvm-15.0.0-x86_64-linux-gnu-rhel-8.4/bin/clang++  -Xclang   -load -Xclang /pubx/analyze_code/clang-ClFnSpy/cmake-build-debug/lib/libClFnSpy.so  -Xclang   -add-plugin -Xclang  ClFnSpy  -c /pubx/analyze_code/clang-ClFnSpy/funcIdBase/test_main.cpp
 
 
  */
 
 
-//std::set<FileID> CTkVst::fileInsertedIncludeStmt;//={};//删除fileInsertedIncludeStmt，不再对间接文件做插入，目前只插入直接文件。
+//std::set<FileID> ClFnSpyVst::fileInsertedIncludeStmt;//={};//删除fileInsertedIncludeStmt，不再对间接文件做插入，目前只插入直接文件。
 
 
 static auto _VarDeclAstNodeKind=ASTNodeKind::getFromNodeKind<VarDecl>();
@@ -52,7 +52,7 @@ static auto _CompoundStmtAstNodeKind=ASTNodeKind::getFromNodeKind<CompoundStmt>(
 
 
 
-bool CTkVst::insertAfter_X__funcEnter(bool funcIsStatic,bool funcIsInline,LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
+bool ClFnSpyVst::insertAfter_X__funcEnter(bool funcIsStatic,bool funcIsInline,LocId funcLocId, SourceLocation funcBodyLBraceLoc ){
     //用funcEnterLocIdSet的尺寸作为LocationId的计数器
   //region 构造插入语句
   std::string cStr_inserted=fmt::format(
@@ -93,7 +93,7 @@ bool CTkVst::insertAfter_X__funcEnter(bool funcIsStatic,bool funcIsInline,LocId 
 
 ////////////////constexpr
 
-bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
+bool ClFnSpyVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
   //跳过非MainFile
   bool _LocFileIDEqMainFileID=Util::LocFileIDEqMainFileID(SM, funcDecl->getLocation());
   if(!_LocFileIDEqMainFileID){
@@ -169,7 +169,7 @@ bool CTkVst::TraverseFunctionDecl(FunctionDecl *funcDecl) {
 
 
 
-bool CTkVst::_Traverse_Func(
+bool ClFnSpyVst::_Traverse_Func(
   bool funcIsStatic,
   bool funcIsInline,
   QualType funcReturnType,

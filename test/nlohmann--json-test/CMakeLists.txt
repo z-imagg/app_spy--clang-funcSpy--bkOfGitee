@@ -7,7 +7,7 @@ MESSAGE("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
 #CMAKE_CURRENT_SOURCE_DIR: /app_spy/clang-funcSpy/tools
 
 set(nlohmann--json-test_SOURCES
-"${CMAKE_CURRENT_SOURCE_DIR}/../../lib/CTk/SFFnIdClient.cpp"
+"${CMAKE_CURRENT_SOURCE_DIR}/../../lib/ClFnSpy/SFFnIdClient.cpp"
 "nlohmann--json-test--main.cpp"
         )
 

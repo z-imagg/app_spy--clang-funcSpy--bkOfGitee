@@ -1,4 +1,4 @@
-#include "CTk/CTkAstCnsm.h"
+#include "ClFnSpy/ClFnSpyAstCnsm.h"
 
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Frontend/FrontendPluginRegistry.h"
@@ -14,19 +14,19 @@ using namespace clang;
 //===----------------------------------------------------------------------===//
 // Command line options
 //===----------------------------------------------------------------------===//
-static llvm::cl::OptionCategory CTkAloneCategory("CTkAlone options");
+static llvm::cl::OptionCategory ClFnSpyAloneCategory("ClFnSpyAlone options");
 
 //===----------------------------------------------------------------------===//
 // PluginASTAction
 //===----------------------------------------------------------------------===//
-class CTkAloneAct : public PluginASTAction {
+class ClFnSpyAloneAct : public PluginASTAction {
 public:
   bool ParseArgs(const CompilerInstance &CI,
                  const std::vector<std::string> &args) override {
     return true;
   }
 
-  //本方法是override的 即 上层定的，只能返回 std::unique_ptr<ASTConsumer>，因此只能每次新创建CTkAstCnsm， 而不能每次给一个固定的CTkAstCnsm对象
+  //本方法是override的 即 上层定的，只能返回 std::unique_ptr<ASTConsumer>，因此只能每次新创建ClFnSpyAstCnsm， 而不能每次给一个固定的ClFnSpyAstCnsm对象
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &CI,
                                                  StringRef file) override {
     SourceManager& SM=CI.getSourceManager();
@@ -38,8 +38,8 @@ public:
 
 
     //Rewriter:3:  Action将Rewriter传递给Consumer
-    //Act中 是 每次都是 新创建 CTkAstCnsm
-    return std::make_unique<CTkAstCnsm>(CI, mRewriter_ptr,
+    //Act中 是 每次都是 新创建 ClFnSpyAstCnsm
+    return std::make_unique<ClFnSpyAstCnsm>(CI, mRewriter_ptr,
                                         &astContext, SM, langOpts);
   }
 
@@ -64,7 +64,7 @@ int main(int Argc, const char **Argv) {
     Util::printCwd();
 
   Expected<tooling::CommonOptionsParser> eOptParser =
-          tooling::CommonOptionsParser::create(Argc, Argv, CTkAloneCategory);
+          tooling::CommonOptionsParser::create(Argc, Argv, ClFnSpyAloneCategory);
   if (auto E = eOptParser.takeError()) {
     errs() << "error when tooling::CommonOptionsParser::create"
            << toString(std::move(E)) << '\n';
@@ -91,7 +91,7 @@ int main(int Argc, const char **Argv) {
 
   // 设置文件名
   const char* FileName=Argv[1];
-  //FileName ==  Argv[1] == "/pubx/analyze_code/clang-ctk/funcIdBase/test_main.cpp";
+  //FileName ==  Argv[1] == "/pubx/analyze_code/clang-ClFnSpy/funcIdBase/test_main.cpp";
 
   clang::FileID MainFileID = CI.getSourceManager().getOrCreateFileID(
           CI.getFileManager().getVirtualFile(FileName, /*Size=*/0, /*ModificationTime=*/0),
@@ -115,7 +115,7 @@ int main(int Argc, const char **Argv) {
    */
 
   // 运行 ClangTool
-  int Result = Tool.run(clang::tooling::newFrontendActionFactory<CTkAloneAct>().get());
+  int Result = Tool.run(clang::tooling::newFrontendActionFactory<ClFnSpyAloneAct>().get());
 
   return Result;
 }

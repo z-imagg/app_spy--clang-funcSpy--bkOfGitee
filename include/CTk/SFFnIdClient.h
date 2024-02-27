@@ -1,6 +1,6 @@
 
-#ifndef Ctk_FFIdClient_H
-#define Ctk_FFIdClient_H
+#ifndef ClFnSpy_FFIdClient_H
+#define ClFnSpy_FFIdClient_H
 
 #define HTTP_STATUS_OK 200
 //最多重试3次

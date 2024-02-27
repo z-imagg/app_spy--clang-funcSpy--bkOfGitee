@@ -1,5 +1,5 @@
-#ifndef CTkVst_H
-#define CTkVst_H
+#ifndef ClFnSpyVst_H
+#define ClFnSpyVst_H
 
 
 #include <clang/Rewrite/Core/Rewriter.h>
@@ -21,8 +21,8 @@ using namespace clang;
 //-----------------------------------------------------------------------------
 // RecursiveASTVisitor
 //-----------------------------------------------------------------------------
-class CTkVst
-        : public RecursiveASTVisitor<CTkVst> {
+class ClFnSpyVst
+        : public RecursiveASTVisitor<ClFnSpyVst> {
 public:
 public:
     /**
@@ -34,7 +34,7 @@ public:
     };
 public:
     //Rewriter:4:  Consumer将Rewriter传递给Visitor
-    explicit CTkVst(const std::shared_ptr<Rewriter> rewriter_ptr, ASTContext *Ctx, CompilerInstance &CI, SourceManager& SM)
+    explicit ClFnSpyVst(const std::shared_ptr<Rewriter> rewriter_ptr, ASTContext *Ctx, CompilerInstance &CI, SourceManager& SM)
     //Rewriter:5:  Consumer将Rewriter传递给Visitor, 并由Visitor.mRewriter接收
     : mRewriter_ptr(rewriter_ptr),
       Ctx(Ctx),
@@ -46,7 +46,7 @@ public:
 //        ofs_funcIdDescLs<<LocId::csv_field_ls<<"\n";
     }
 
-    ~CTkVst(){
+    ~ClFnSpyVst(){
     }
 
 

@@ -4,7 +4,7 @@
 
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/AST/Stmt.h"
-#include "CTk/FuncDesc.h"
+#include "ClFnSpy/FuncDesc.h"
 
 
 using namespace llvm;

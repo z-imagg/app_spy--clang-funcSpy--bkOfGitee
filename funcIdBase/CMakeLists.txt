@@ -1,16 +1,16 @@
 
-set(CTkTest_SOURCES
+set(ClFnSpyTest_SOURCES
 "${CMAKE_CURRENT_SOURCE_DIR}/../funcIdBase/funcIdBase.h"
 "${CMAKE_CURRENT_SOURCE_DIR}/../funcIdBase/test_main.cpp"
 )
 
 add_executable(
-CTkTest
-    ${CTkTest_SOURCES}
+ClFnSpyTest
+    ${ClFnSpyTest_SOURCES}
 )
 
 target_include_directories(
-CTkTest
+ClFnSpyTest
     PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/../funcIdBase"
 )

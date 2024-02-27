@@ -1,4 +1,4 @@
-#include "CTk/CTkAstCnsm.h"
+#include "ClFnSpy/ClFnSpyAstCnsm.h"
 
 #include "clang/AST/AST.h"
 #include "clang/AST/RecursiveASTVisitor.h"
@@ -14,8 +14,8 @@ using namespace clang;
 // FrontendAction
 //-----------------------------------------------------------------------------
 
-#include "CTk/CollectIncMacro_PPCb.h"
-class CTkAstAct : public PluginASTAction {
+#include "ClFnSpy/CollectIncMacro_PPCb.h"
+class ClFnSpyAstAct : public PluginASTAction {
 public:
     std::unique_ptr<ASTConsumer>
     CreateASTConsumer(CompilerInstance &CI,
@@ -36,13 +36,13 @@ public:
 
 //      const std::shared_ptr<Rewriter> &rewriter_ptr = std::make_shared<Rewriter>();
       //Rewriter:3:  Action将Rewriter传递给Consumer
-      //Act中 是 每次都是 新创建 CTkAstCnsm
+      //Act中 是 每次都是 新创建 ClFnSpyAstCnsm
 
 
         // Act中 添加 收集#include、#define的 预处理回调
         PP.addPPCallbacks(std::make_unique<CollectIncMacro_PPCb>(CI));
 
-      return std::make_unique<CTkAstCnsm>(CI,mRewriter_ptr,
+      return std::make_unique<ClFnSpyAstCnsm>(CI,mRewriter_ptr,
                                                            &astContext, SM, langOptions);
     }
 
@@ -70,7 +70,7 @@ private:
 //-----------------------------------------------------------------------------
 // Registration
 //-----------------------------------------------------------------------------
-static FrontendPluginRegistry::Add<CTkAstAct>
-        X(/*Name=*/"CTk",
+static FrontendPluginRegistry::Add<ClFnSpyAstAct>
+        X(/*Name=*/"ClFnSpy",
         /*Description=*/"Checks whether class, variable and function names "
                         "adhere to LLVM's guidelines");

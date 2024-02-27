@@ -48,7 +48,7 @@ public:
         Free
     };
 public:
-    explicit CTkVst(const std::shared_ptr<Rewriter> rewriter_ptr, ASTContext *Ctx, CompilerInstance &CI, SourceManager& SM)
+    explicit ClFnSpyVst(const std::shared_ptr<Rewriter> rewriter_ptr, ASTContext *Ctx, CompilerInstance &CI, SourceManager& SM)
     : mRewriter_ptr(rewriter_ptr),
     Ctx(Ctx),
     CI(CI),
@@ -136,7 +136,7 @@ TraverseXxxStmt(x){
 
 int main(int Argc, const char **Argv) {
   Expected<tooling::CommonOptionsParser> eOptParser =
-          tooling::CommonOptionsParser::create(Argc, Argv, CTkAloneCategory);
+          tooling::CommonOptionsParser::create(Argc, Argv, ClFnSpyAloneCategory);
   if (auto E = eOptParser.takeError()) {
     errs() << "Problem constructing CommonOptionsParser "
            << toString(std::move(E)) << '\n';
@@ -189,7 +189,7 @@ int main(int Argc, const char **Argv) {
    */
 
   // 运行 ClangTool
-  int Result = Tool.run(clang::tooling::newFrontendActionFactory<CTkAloneAct>().get());
+  int Result = Tool.run(clang::tooling::newFrontendActionFactory<ClFnSpyAloneAct>().get());
 
   return Result;
 }

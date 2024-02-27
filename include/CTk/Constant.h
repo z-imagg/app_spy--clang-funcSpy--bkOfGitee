@@ -1,6 +1,6 @@
 
-#ifndef CTk_CONSTANT_H
-#define CTk_CONSTANT_H
+#ifndef ClFnSpy_CONSTANT_H
+#define ClFnSpy_CONSTANT_H
 #include <string>
 
 
@@ -12,4 +12,4 @@ public:
     const   std::string NameSpace_funcIdAsmIns = ":funcId_asm_inserted";
 
 };
-#endif //CTk_CONSTANT_H
+#endif //ClFnSpy_CONSTANT_H

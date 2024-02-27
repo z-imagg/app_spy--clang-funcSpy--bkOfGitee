@@ -1,5 +1,5 @@
-#include "CTk/CTkAstCnsm.h"
+#include "ClFnSpy/ClFnSpyAstCnsm.h"
 
 
 
-bool CTkAstCnsm::mainFileProcessed=false;
+bool ClFnSpyAstCnsm::mainFileProcessed=false;

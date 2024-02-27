@@ -1,11 +1,11 @@
 
-#include "CTk/LocId.h"
-#include "CTk/SFFnIdClient.h"
+#include "ClFnSpy/LocId.h"
+#include "ClFnSpy/SFFnIdClient.h"
 
 #include "clang/AST/AST.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include <fmt/core.h>
-#include "CTk/Util.h"
+#include "ClFnSpy/Util.h"
 
 using namespace clang;
 

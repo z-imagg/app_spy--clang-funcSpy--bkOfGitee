@@ -1,4 +1,4 @@
-#include "CTk/CollectIncMacro_PPCb.h"
+#include "ClFnSpy/CollectIncMacro_PPCb.h"
 #include "clang/Frontend/FrontendActions.h"
 #include "clang/Frontend/CompilerInstance.h"
 #include "llvm/Support/raw_ostream.h"
@@ -6,8 +6,8 @@
 #include <iostream>
 
 
-#include "CTk/Util.h"
-#include "CTk/Constant.h"
+#include "ClFnSpy/Util.h"
+#include "ClFnSpy/Constant.h"
 
 
 

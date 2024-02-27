@@ -1,4 +1,4 @@
-#include "CTk/SFFnIdClient.h"
+#include "ClFnSpy/SFFnIdClient.h"
 
 
 //#define CPPHTTPLIB_OPENSSL_SUPPORT
@@ -7,7 +7,7 @@
 
 #include <fmt/core.h>
 
-#include "CTk/SFFnIdClient_json.h"
+#include "ClFnSpy/SFFnIdClient_json.h"
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 

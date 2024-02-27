@@ -1,5 +1,5 @@
-#ifndef CTkAstCnsm_H
-#define CTkAstCnsm_H
+#ifndef ClFnSpyAstCnsm_H
+#define ClFnSpyAstCnsm_H
 
 #include <clang/Rewrite/Core/Rewriter.h>
 #include <iostream>
@@ -12,9 +12,9 @@
 
 #include <fmt/core.h>
 
-#include "CTk/CTkVst.h"
-#include "CTk/CollectIncMacro_PPCb.h"
-#include "CTk/Constant.h"
+#include "ClFnSpy/ClFnSpyVst.h"
+#include "ClFnSpy/CollectIncMacro_PPCb.h"
+#include "ClFnSpy/Constant.h"
 #include "Util.h"
 
 using namespace llvm;
@@ -26,10 +26,10 @@ using namespace clang;
 
 
 
-class CTkAstCnsm : public ASTConsumer {
+class ClFnSpyAstCnsm : public ASTConsumer {
 public:
     //Rewriter:3:  Action将Rewriter传递给Consumer
-    explicit CTkAstCnsm(CompilerInstance &_CI, const std::shared_ptr<Rewriter> _rewriter_ptr, ASTContext *_astContext,
+    explicit ClFnSpyAstCnsm(CompilerInstance &_CI, const std::shared_ptr<Rewriter> _rewriter_ptr, ASTContext *_astContext,
                         SourceManager &_SM, LangOptions &_langOptions)
             //Rewriter:4:  Consumer将Rewriter传递给Visitor
             :
@@ -87,7 +87,7 @@ public:
 
 //////////////////2. 插入时钟语句
 
-      std::cout<<"提示，开始处理编译单元,文件路径:"<<filePath<< ",CTkAstConsumer:" << this << ",mainFileId:" << mainFileId.getHashValue() << std::endl;
+      std::cout<<"提示，开始处理编译单元,文件路径:"<<filePath<< ",ClFnSpyAstConsumer:" << this << ",mainFileId:" << mainFileId.getHashValue() << std::endl;
 
       //暂时 不遍历间接文件， 否则本文件会被插入两份时钟语句
       //{这样能遍历到本源文件间接包含的文件
@@ -133,13 +133,13 @@ public:
       insertVst.mRewriter_ptr->overwriteChangedFiles();
 
 
-      //可以发现, 本方法 两次被调用 ， 对象地址this 即对象CTkAstCnsm的地址，两次是不同的。 原因在Act中 是 每次都是 新创建 CTkAstCnsm。
+      //可以发现, 本方法 两次被调用 ， 对象地址this 即对象ClFnSpyAstCnsm的地址，两次是不同的。 原因在Act中 是 每次都是 新创建 ClFnSpyAstCnsm。
       mainFileProcessed=true;
     }
 
 public:
     CompilerInstance &CI;
-    CTkVst insertVst;
+    ClFnSpyVst insertVst;
     SourceManager &SM;
     //两次HandleTranslationUnit的ASTConsumer只能每次新建，又期望第二次不要发生，只能让标志字段mainFileProcessed写成static
     static bool mainFileProcessed;

@@ -1,12 +1,12 @@
 
-#include "CTk/Util.h"
+#include "ClFnSpy/Util.h"
 
 #include <clang/Rewrite/Core/Rewriter.h>
 #include <clang/Frontend/CompilerInstance.h>
 #include "clang/AST/Stmt.h"
 #include "clang/Basic/SourceManager.h"
 #include "clang/Frontend/FrontendPluginRegistry.h"
-#include "CTk/FuncDesc.h"
+#include "ClFnSpy/FuncDesc.h"
 #include <clang/AST/ParentMapContext.h>
 
 #include <string>
@@ -550,7 +550,7 @@ void Util::printExpr(ASTContext &Ctx, CompilerInstance &CI, std::string tag, std
   const char *stmtClassName = expr->getStmtClassName();
   Stmt::StmtClass stmtClass = expr->getStmtClass();
   ExprValueKind valueKind = expr->getValueKind();
-  ExprObjectKind objectKind = expr->getObjectKind();
+  ExprObjeClFnSpyind objeClFnSpyind = expr->getObjeClFnSpyind();
   FileID fileId = SM.getFileID(expr->getBeginLoc());
   SourceRange sourceRange=expr->getSourceRange();
 
@@ -561,7 +561,7 @@ void Util::printExpr(ASTContext &Ctx, CompilerInstance &CI, std::string tag, std
                    "getStmtClassName", stmtClassName,
                    "getStmtClass", stmtClass,
                    "getValueKind", valueKind,
-                   "getObjectKind", objectKind,
+                   "getObjeClFnSpyind", objeClFnSpyind,
                    printSourceText);
 
 }
